@@ -1,5 +1,5 @@
 import React from "react";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import { Switch, Route, Redirect } from "react-router";
 import { HashRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
@@ -15,19 +15,7 @@ import Register from "./pages/register";
 import { logoutUser } from "./actions/user";
 
 const PrivateRoute = ({ dispatch, component, ...rest }) => {
-  // sy-TODO: 로그인된 사용자일 경우에는 메인페이지, 아니면 로그인 페이지 표출
-  // if (!Login.isAuthenticated(JSON.parse(localStorage.getItem('authenticated')))) {
-  //     dispatch(logoutUser());
-  //     return (<Redirect to="/login"/>)
-  // } else {
-  //     return ( // eslint-disable-line
-  //         <Route {...rest} render={props => (React.createElement(component, props))}/>
-  //     );
-  // }
-  return (
-    // eslint-disable-line
-    <Route {...rest} render={(props) => React.createElement(component, props)} />
-  );
+  return <Route {...rest} render={(props) => React.createElement(component, props)} />;
 };
 
 const CloseButton = ({ closeToast }) => <i onClick={closeToast} className="la la-close notifications-close" />;

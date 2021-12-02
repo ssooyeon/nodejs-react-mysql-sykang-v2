@@ -1,62 +1,112 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { withRouter, Redirect, Link } from "react-router-dom";
-import { connect, useSelector } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import { Container, Alert, Button, FormGroup, InputGroup, InputGroupAddon, InputGroupText, Input, Label } from "reactstrap";
 import Widget from "../../components/Widget";
 import { registerUser, registerError } from "../../actions/register";
 import microsoft from "../../assets/microsoft.png";
 import Login from "../login";
 
+import { retrieveByAccount, createUser } from "../../actions/users";
+
 export default function Register(props) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const initialUserState = {
+    account: "",
+    email: "",
+    password: "",
+    passwordCheck: "",
+  };
 
-  const isFetching = useSelector((store) => store.auth.isFetching);
-  const errorMessage = useSelector((store) => store.auth.errorMessage);
+  const [user, setUser] = useState(initialUserState);
+  const [checkDoneAccount, setCheckDoneAccount] = useState(""); // 중복확인을 완료한 계정 이름
 
-  const doRegister = (e) => {
-    e.preventDefault();
-    if (!isPasswordValid()) {
-      checkPassword();
-    } else {
-      // dispatch(
-      //   registerUser({
-      //     creds: {
-      //       email: email,
-      //       password: password,
-      //     },
-      //     history: props.history,
-      //   })
-      // );
+  const [isShowSuccessAlert, setIsShowSuccessAlert] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+
+  const [isShowErrAlert, setIsShowErrAlert] = useState(false);
+  const [errMessage, setErrMessage] = useState("");
+
+  const dispatch = useDispatch();
+
+  // input 값 변경 시 user state 업데이트
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setUser({ ...user, [name]: value });
+  };
+
+  // password check input에서 엔터 클릭 시 회원가입 수행
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      doRegister(e);
     }
   };
 
-  const changeEmail = (e) => {
-    setEmail(e.target.value);
-  };
-  const changePassword = (e) => {
-    setPassword(e.target.value);
-  };
-  const changeConfirmPassword = (e) => {
-    setConfirmPassword(e.target.value);
-  };
+  // 계정 중복확인
+  const checkAccount = () => {
+    const account = user.account;
+    if (account !== "") {
+      dispatch(retrieveByAccount(account))
+        .then((res) => {
+          // 이미 존재하는 계정일 때
+          if (res !== "" && res !== undefined) {
+            setIsShowErrAlert(true);
+            setIsShowSuccessAlert(false);
+            setErrMessage("This account already exist.");
+          } else {
+            // 계정 중복 여부 확인 완료
+            setIsShowSuccessAlert(true);
+            setIsShowErrAlert(false);
+            setSuccessMessage("This account is available.");
 
-  const isPasswordValid = () => {
-    return password && password === confirmPassword;
+            setCheckDoneAccount(account);
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
   };
 
   const checkPassword = () => {
     if (!isPasswordValid()) {
-      if (!password) {
-        // this.props.dispatch(registerError("Password field is empty"));
+      setIsShowErrAlert(true);
+      setIsShowSuccessAlert(false);
+      if (!user.password) {
+        setErrMessage("Password field is empty.");
       } else {
-        // this.props.dispatch(registerError("Passwords are not equal"));
+        setErrMessage("Passwords are not equal.");
       }
-      // setTimeout(() => {
-      //   this.props.dispatch(registerError());
-      // }, 3 * 1000);
+    }
+  };
+
+  const isPasswordValid = () => {
+    return user.password && user.password === user.passwordCheck;
+  };
+
+  // 회원가입
+  const doRegister = (e) => {
+    e.preventDefault();
+    // 중복확인을 완료한 계정과 현재 input의 계정명이 같을 때
+    if (checkDoneAccount === user.account) {
+      dispatch(createUser(user))
+        .then(() => {
+          setIsShowSuccessAlert(true);
+          setIsShowErrAlert(false);
+          setSuccessMessage("Register successfully. Go to the login page.");
+
+          setTimeout(() => {
+            props.history.push("/login");
+          }, 3 * 1000);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    } else {
+      // 중복확인을 완료한 후 다른 계정명을 다시 작성했을 때, 중복확인을 재요청
+      setIsShowErrAlert(true);
+      setIsShowSuccessAlert(false);
+      setErrMessage("Please duplicate check an account.");
     }
   };
 
@@ -66,13 +116,19 @@ export default function Register(props) {
         <Widget className="widget-auth mx-auto" title={<h3 className="mt-0">Welcome</h3>}>
           <p className="widget-auth-info">Please fill all fields below.</p>
           <form onSubmit={doRegister}>
-            {errorMessage && (
+            {isShowErrAlert ? (
               <Alert className="alert-sm widget-middle-overflow rounded-0" color="danger">
-                {errorMessage}
+                {errMessage}
               </Alert>
-            )}
+            ) : null}
+            {isShowSuccessAlert ? (
+              <Alert className="alert-sm widget-middle-overflow rounded-0" color="success">
+                {successMessage}
+              </Alert>
+            ) : null}
+
             <FormGroup className="mt">
-              <Label for="email">Email</Label>
+              <Label for="account">Account</Label>
               <InputGroup className="input-group-no-border">
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>
@@ -82,8 +138,31 @@ export default function Register(props) {
                 <Input
                   id="email"
                   className="input-transparent pl-3"
-                  value={email}
-                  onChange={changeEmail}
+                  value={user.account}
+                  onChange={handleInputChange}
+                  type="text"
+                  required
+                  name="account"
+                  placeholder="Account"
+                />
+                <Button color="default" className="social-button" onClick={checkAccount}>
+                  Chk
+                </Button>
+              </InputGroup>
+            </FormGroup>
+            <FormGroup>
+              <Label for="email">Email</Label>
+              <InputGroup className="input-group-no-border">
+                <InputGroupAddon addonType="prepend">
+                  <InputGroupText>
+                    <i className="la la-table text-white" />
+                  </InputGroupText>
+                </InputGroupAddon>
+                <Input
+                  id="email"
+                  className="input-transparent pl-3"
+                  value={user.email}
+                  onChange={handleInputChange}
                   type="email"
                   required
                   name="email"
@@ -102,8 +181,8 @@ export default function Register(props) {
                 <Input
                   id="password"
                   className="input-transparent pl-3"
-                  value={password}
-                  onChange={changePassword}
+                  value={user.password}
+                  onChange={handleInputChange}
                   type="password"
                   required
                   name="password"
@@ -112,7 +191,7 @@ export default function Register(props) {
               </InputGroup>
             </FormGroup>
             <FormGroup>
-              <Label for="confirmPassword">Confirm</Label>
+              <Label for="passwordCheck">Confirm</Label>
               <InputGroup className="input-group-no-border">
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>
@@ -120,21 +199,22 @@ export default function Register(props) {
                   </InputGroupText>
                 </InputGroupAddon>
                 <Input
-                  id="confirmPassword"
+                  id="passwordCheck"
                   className="input-transparent pl-3"
-                  value={confirmPassword}
-                  onChange={changeConfirmPassword}
+                  value={user.passwordCheck}
+                  onChange={handleInputChange}
                   onBlur={checkPassword}
+                  onKeyPress={handleKeyPress}
                   type="password"
                   required
-                  name="confirmPassword"
+                  name="passwordCheck"
                   placeholder="Confirm"
                 />
               </InputGroup>
             </FormGroup>
             <div className="bg-widget-transparent auth-widget-footer">
               <Button type="submit" color="danger" className="auth-btn" size="sm" style={{ color: "#fff" }}>
-                {isFetching ? "Loading..." : "Register"}
+                Register
               </Button>
               <p className="widget-auth-info mt-4">Already have the account? Login now!</p>
               <Link className="d-block text-center mb-4" to="login">

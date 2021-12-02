@@ -2,44 +2,55 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { withRouter, Redirect, Link } from "react-router-dom";
 import { connect, useDispatch, useSelector } from "react-redux";
+import axios from "axios";
 import { Container, Alert, Button, FormGroup, Label, InputGroup, InputGroupAddon, Input, InputGroupText } from "reactstrap";
+
 import Widget from "../../components/Widget";
 import { loginUser } from "../../actions/user";
 import microsoft from "../../assets/microsoft.png";
 
+import { authLogin } from "../../actions/auth";
+
 export default function Login(props) {
-  const [email, setEmail] = useState("sykang@sy.com");
-  const [password, setPassword] = useState("password");
-
-  const dispatch = useDispatch();
-  const isFetching = useSelector((store) => store.auth.isFetching);
-  // const isAuthenticated = useSelector((store) => store.auth.isAuthenticated);
-  const errorMessage = useSelector((store) => store.auth.errorMessage);
-
-  useEffect(() => {
-    // sy-TODO: 로그인한 사용자 정보가 있으면 메인 화면으로 이동
-    // const { from } = props.location.state || { from: { pathname: "/app" } }; // eslint-disable-line
-    // // cant access login page while logged in
-    // if (isAuthenticated(JSON.parse(localStorage.getItem("authenticated")))) {
-    //   return <Redirect to={from} />;
-    // }
-  }, []);
-
-  const changeEmail = (e) => {
-    setEmail(e.target.value);
+  const initialUserState = {
+    id: null,
+    account: "",
+    password: "",
   };
 
-  const changePassword = (e) => {
-    setPassword(e.target.value);
+  const [user, setUser] = useState(initialUserState);
+  const [isLoginFailed, setIsLoginFailed] = useState(false);
+  const [errMessage, setErrMessage] = useState("");
+  const dispatch = useDispatch();
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setUser({ ...user, [name]: value });
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      doLogin(e);
+    }
   };
 
   const doLogin = (e) => {
     e.preventDefault();
-    props.history.push("/");
-    // dispatch(loginUser({ email: email, password: password }));
+    dispatch(authLogin(user))
+      .then((res) => {
+        if (res.message !== undefined) {
+          setIsLoginFailed(true);
+          setErrMessage(res.message);
+        } else {
+          axios.defaults.headers.common["Authorization"] = `Bearer ${res.user.token}`;
+          localStorage.setItem("user", JSON.stringify(res.user));
+          props.history.push("/");
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   };
-
-  const signUp = () => {};
 
   return (
     <div className="auth-page">
@@ -47,11 +58,11 @@ export default function Login(props) {
         <Widget className="widget-auth mx-auto" title={<h3 className="mt-0">Welcome</h3>}>
           <p className="widget-auth-info">Use your email to sign in.</p>
           <form onSubmit={doLogin}>
-            {errorMessage && (
+            {isLoginFailed ? (
               <Alert className="alert-sm widget-middle-overflow rounded-0" color="danger">
-                {errorMessage}
+                {errMessage}
               </Alert>
-            )}
+            ) : null}
             <FormGroup className="mt">
               <Label for="email">Email</Label>
               <InputGroup className="input-group-no-border">
@@ -61,14 +72,14 @@ export default function Login(props) {
                   </InputGroupText>
                 </InputGroupAddon>
                 <Input
-                  id="email"
+                  id="account"
                   className="input-transparent pl-3"
-                  value={email}
-                  onChange={changeEmail}
-                  type="email"
+                  value={user.account}
+                  onChange={handleInputChange}
+                  type="text"
                   required
-                  name="email"
-                  placeholder="Email"
+                  name="account"
+                  placeholder="Account"
                 />
               </InputGroup>
             </FormGroup>
@@ -83,8 +94,9 @@ export default function Login(props) {
                 <Input
                   id="password"
                   className="input-transparent pl-3"
-                  value={password}
-                  onChange={changePassword}
+                  value={user.password}
+                  onChange={handleInputChange}
+                  onKeyPress={handleKeyPress}
                   type="password"
                   required
                   name="password"
@@ -94,10 +106,10 @@ export default function Login(props) {
             </FormGroup>
             <div className="bg-widget auth-widget-footer">
               <Button type="submit" color="danger" className="auth-btn" size="sm" style={{ color: "#fff" }}>
+                Login
                 <span className="auth-btn-circle" style={{ marginRight: 8 }}>
                   <i className="la la-caret-right" />
                 </span>
-                {isFetching ? "Loading..." : "Login"}
               </Button>
               <p className="widget-auth-info mt-4">Don't have an account? Sign up now!</p>
               <Link className="d-block text-center mb-4" to="register">
