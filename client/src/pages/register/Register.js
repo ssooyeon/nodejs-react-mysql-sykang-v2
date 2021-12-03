@@ -1,16 +1,14 @@
-import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import { withRouter, Redirect, Link } from "react-router-dom";
-import { connect, useDispatch, useSelector } from "react-redux";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { Container, Alert, Button, FormGroup, InputGroup, InputGroupAddon, InputGroupText, Input, Label } from "reactstrap";
 import Widget from "../../components/Widget";
-import { registerUser, registerError } from "../../actions/register";
 import microsoft from "../../assets/microsoft.png";
-import Login from "../login";
 
 import { retrieveByAccount, createUser } from "../../actions/users";
 
 export default function Register(props) {
+  // 초기 user object
   const initialUserState = {
     account: "",
     email: "",
@@ -21,11 +19,11 @@ export default function Register(props) {
   const [user, setUser] = useState(initialUserState);
   const [checkDoneAccount, setCheckDoneAccount] = useState(""); // 중복확인을 완료한 계정 이름
 
-  const [isShowSuccessAlert, setIsShowSuccessAlert] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [isShowSuccessAlert, setIsShowSuccessAlert] = useState(false); // 사용자 등록에 성공했는지의 여부
+  const [successMessage, setSuccessMessage] = useState(""); // 사용자 등록에 성공했을 때의 메세지
 
-  const [isShowErrAlert, setIsShowErrAlert] = useState(false);
-  const [errMessage, setErrMessage] = useState("");
+  const [isShowErrAlert, setIsShowErrAlert] = useState(false); // 사용자 등록에 실패했는지의 여부
+  const [errMessage, setErrMessage] = useState(""); // 사용자 등록에 실패했을 때의 에러 메시지
 
   const dispatch = useDispatch();
 
@@ -68,6 +66,7 @@ export default function Register(props) {
     }
   };
 
+  // 비밀번호 및 비밀번호 확인란이 동일한지 검사한 후 메세지 표출
   const checkPassword = () => {
     if (!isPasswordValid()) {
       setIsShowErrAlert(true);
@@ -80,15 +79,16 @@ export default function Register(props) {
     }
   };
 
+  // 비밀번호 및 비밀번호 확인란이 동일한지의 여부
   const isPasswordValid = () => {
     return user.password && user.password === user.passwordCheck;
   };
 
-  // 회원가입
+  // 회원가입 수행
   const doRegister = (e) => {
     e.preventDefault();
     // 중복확인을 완료한 계정과 현재 input의 계정명이 같을 때
-    if (checkDoneAccount === user.account) {
+    if (checkDoneAccount === user.account && isPasswordValid()) {
       dispatch(createUser(user))
         .then(() => {
           setIsShowSuccessAlert(true);
@@ -97,7 +97,7 @@ export default function Register(props) {
 
           setTimeout(() => {
             props.history.push("/login");
-          }, 3 * 1000);
+          }, 500);
         })
         .catch((e) => {
           console.log(e);
@@ -214,7 +214,10 @@ export default function Register(props) {
             </FormGroup>
             <div className="bg-widget-transparent auth-widget-footer">
               <Button type="submit" color="danger" className="auth-btn" size="sm" style={{ color: "#fff" }}>
-                Register
+                Register&nbsp;
+                <span className="auth-btn-circle" style={{ marginRight: 8 }}>
+                  <i className="la la-caret-right" />
+                </span>
               </Button>
               <p className="widget-auth-info mt-4">Already have the account? Login now!</p>
               <Link className="d-block text-center mb-4" to="login">
@@ -237,11 +240,7 @@ export default function Register(props) {
         </Widget>
       </Container>
       <footer className="auth-footer">
-        {new Date().getFullYear()} &copy; Light Blue Template - React Admin Dashboard Template Made by{" "}
-        <a href="https://flatlogic.com" rel="noopener noreferrer" target="_blank">
-          Flatlogic LLC
-        </a>
-        .
+        React project made by <a href="/">sykang</a>, refer: <a href="https://flatlogic.com">Flatlogic</a>
       </footer>
     </div>
   );

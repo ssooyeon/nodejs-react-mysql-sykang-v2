@@ -1,5 +1,5 @@
 import React from "react";
-import { connect, useSelector } from "react-redux";
+import { connect } from "react-redux";
 import { Switch, Route, Redirect } from "react-router";
 import { HashRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
@@ -12,7 +12,6 @@ import "./styles/theme.scss";
 import LayoutComponent from "./components/Layout";
 import Login from "./pages/login";
 import Register from "./pages/register";
-import { logoutUser } from "./actions/user";
 
 const PrivateRoute = ({ dispatch, component, ...rest }) => {
   return <Route {...rest} render={(props) => React.createElement(component, props)} />;

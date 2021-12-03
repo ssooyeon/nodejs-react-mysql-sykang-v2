@@ -1,17 +1,16 @@
-import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import { withRouter, Redirect, Link } from "react-router-dom";
-import { connect, useDispatch, useSelector } from "react-redux";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import axios from "axios";
 import { Container, Alert, Button, FormGroup, Label, InputGroup, InputGroupAddon, Input, InputGroupText } from "reactstrap";
 
 import Widget from "../../components/Widget";
-import { loginUser } from "../../actions/user";
 import microsoft from "../../assets/microsoft.png";
 
 import { authLogin } from "../../actions/auth";
 
 export default function Login(props) {
+  // 초기 user object
   const initialUserState = {
     id: null,
     account: "",
@@ -19,29 +18,34 @@ export default function Login(props) {
   };
 
   const [user, setUser] = useState(initialUserState);
-  const [isLoginFailed, setIsLoginFailed] = useState(false);
-  const [errMessage, setErrMessage] = useState("");
+  const [isLoginFailed, setIsLoginFailed] = useState(false); // 로그인에 실패했는지의 여부
+  const [errMessage, setErrMessage] = useState(""); // 로그인에 실패했을 때의 에러 메세지
   const dispatch = useDispatch();
 
+  // input 값 변경 시 user state 업데이트
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setUser({ ...user, [name]: value });
   };
 
+  // 비밀번호란에서 엔터를 쳤을 때도 로그인을 수행
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
       doLogin(e);
     }
   };
 
+  // 로그인 수행
   const doLogin = (e) => {
     e.preventDefault();
     dispatch(authLogin(user))
       .then((res) => {
+        // 에러메세지가 존재하면
         if (res.message !== undefined) {
           setIsLoginFailed(true);
           setErrMessage(res.message);
         } else {
+          // 로그인에 성공했을 경우 local storage에 저장
           axios.defaults.headers.common["Authorization"] = `Bearer ${res.user.token}`;
           localStorage.setItem("user", JSON.stringify(res.user));
           props.history.push("/");
@@ -106,7 +110,7 @@ export default function Login(props) {
             </FormGroup>
             <div className="bg-widget auth-widget-footer">
               <Button type="submit" color="danger" className="auth-btn" size="sm" style={{ color: "#fff" }}>
-                Login
+                Login&nbsp;
                 <span className="auth-btn-circle" style={{ marginRight: 8 }}>
                   <i className="la la-caret-right" />
                 </span>
@@ -132,11 +136,7 @@ export default function Login(props) {
         </Widget>
       </Container>
       <footer className="auth-footer">
-        {new Date().getFullYear()} &copy; Light Blue Template - React Admin Dashboard Template Made by{" "}
-        <a href="https://flatlogic.com" rel="noopener noreferrer" target="_blank">
-          Flatlogic LLC
-        </a>
-        .
+        React project made by <a href="/">sykang</a>, refer: <a href="https://flatlogic.com">Flatlogic</a>
       </footer>
     </div>
   );
