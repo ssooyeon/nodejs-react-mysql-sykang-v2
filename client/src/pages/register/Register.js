@@ -88,20 +88,23 @@ export default function Register(props) {
   const doRegister = (e) => {
     e.preventDefault();
     // 중복확인을 완료한 계정과 현재 input의 계정명이 같을 때
-    if (checkDoneAccount === user.account && isPasswordValid()) {
-      dispatch(createUser(user))
-        .then(() => {
-          setIsShowSuccessAlert(true);
-          setIsShowErrAlert(false);
-          setSuccessMessage("Register successfully. Go to the login page.");
+    if (checkDoneAccount === user.account) {
+      // 비밀번호와 비밀번호 확인란이 일치할 때
+      if (isPasswordValid()) {
+        dispatch(createUser(user))
+          .then(() => {
+            setIsShowSuccessAlert(true);
+            setIsShowErrAlert(false);
+            setSuccessMessage("Register successfully. Go to the login page.");
 
-          setTimeout(() => {
-            props.history.push("/login");
-          }, 500);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
+            setTimeout(() => {
+              props.history.push("/login");
+            }, 500);
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      }
     } else {
       // 중복확인을 완료한 후 다른 계정명을 다시 작성했을 때, 중복확인을 재요청
       setIsShowErrAlert(true);

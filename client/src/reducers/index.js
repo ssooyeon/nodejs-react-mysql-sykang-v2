@@ -9,7 +9,6 @@ import schedules from "./schedules";
 
 import navigation from "./navigation";
 import alerts from "./alerts";
-import register from "./register";
 
 export default combineReducers({
   boards,
@@ -22,5 +21,4 @@ export default combineReducers({
 
   navigation,
   alerts,
-  register,
 });

@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Row, Col, Table, Button } from "reactstrap";
+import { css } from "glamor";
+import { confirmAlert } from "react-confirm-alert";
 
+import "react-confirm-alert/src/react-confirm-alert.css";
 import Widget from "../../components/Widget";
 import s from "./UserGroup.module.scss";
 
 import { retrieveUsers, deleteUser } from "../../actions/users";
+import AddUserModal from "./AddUserModal";
+import EditUserModal from "./EditUserModal";
 
 export default function Static() {
   const users = useSelector((state) => state.users || []);
-  const dispatch = useDispatch();
+  const groups = useSelector((state) => state.groups || []);
 
-  const [searchUserInput, setSearchUserInput] = useState(null);
-  const [searchGroupInput, setSearchGroupInput] = useState(null);
+  const dispatch = useDispatch();
 
   const [userAddModalOpen, setUserAddModalOpen] = useState(false);
   const [userEditModalOpen, setUserEditModalOpen] = useState(false);
@@ -26,6 +30,50 @@ export default function Static() {
     dispatch(retrieveUsers());
   }, [dispatch]);
 
+  // 사용자 등록 버튼 클릭 및 AddUserModal.js에서 닫기 버튼 클릭
+  const handleUserAddModalClick = (value, isDone) => {
+    setUserAddModalOpen(value);
+  };
+
+  // 사용자 수정 버튼 클릭 및 EditUserModal.js 닫기 버튼 클릭
+  const handleUserEditModalClick = (value, isDone) => {
+    setUserEditModalOpen(value);
+    // 사용자 수정이 완료되었으면 검색어 기반으로 사용자 목록 재조회
+    if (isDone) {
+      dispatch(retrieveUsers());
+    }
+  };
+
+  // 사용자 테이블의 Edit 버튼 클릭
+  const onUserEditClick = (row) => {
+    setUserEditModalOpen(true);
+    setEditUser(row);
+  };
+
+  // 사용자 테이블의 Delete 버튼 클릭
+  const onUserDeleteClick = (userId) => {
+    confirmAlert({
+      closeOnClickOutside: false,
+      title: "",
+      message: "Are you sure delete this user?",
+      buttons: [
+        {
+          label: "Yes",
+          onClick: () => {
+            dispatch(deleteUser(userId));
+          },
+        },
+        {
+          label: "No",
+          onClick: () => {},
+        },
+      ],
+      overlayClassName: css({
+        background: "transparent !important",
+      }),
+    });
+  };
+
   return (
     <div className={s.root}>
       <h2 className="page-title">
@@ -37,7 +85,7 @@ export default function Static() {
             <h3>
               <span className="fw-semi-bold">Users</span>
               <div className="float-right">
-                <Button color="default" className="mr-2" size="sm">
+                <Button color="default" className="mr-2" size="sm" onClick={() => handleUserAddModalClick(true)}>
                   Add
                 </Button>
               </div>
@@ -60,27 +108,28 @@ export default function Static() {
                 </thead>
                 {/* eslint-disable */}
                 <tbody>
-                  {users.map((user, key) => {
-                    return (
-                      <tr key={key}>
-                        <td>{user.id}</td>
-                        <td>{user.account}</td>
-                        <td>
-                          <a href="#">{user.email}</a>
-                        </td>
-                        <td>{user.groupId}</td>
-                        <td>{user.createdAt}</td>
-                        <td>
-                          <Button color="default" className="mr-2" size="xs">
-                            E
-                          </Button>
-                          <Button color="inverse" className="mr-2" size="xs">
-                            D
-                          </Button>
-                        </td>
-                      </tr>
-                    );
-                  })}
+                  {users &&
+                    users.map((user, key) => {
+                      return (
+                        <tr key={user.id}>
+                          <td>{user.id}</td>
+                          <td>{user.account}</td>
+                          <td>
+                            <a href="#">{user.email}</a>
+                          </td>
+                          <td>{user.group ? user.group.name : "-"}</td>
+                          <td>{user.createdAt}</td>
+                          <td>
+                            <Button color="default" className="mr-2" size="xs" onClick={(e) => onUserEditClick(user)}>
+                              E
+                            </Button>
+                            <Button color="inverse" className="mr-2" size="xs" onClick={(e) => onUserDeleteClick(user.id)}>
+                              D
+                            </Button>
+                          </td>
+                        </tr>
+                      );
+                    })}
                 </tbody>
                 {/* eslint-enable */}
               </Table>
@@ -133,6 +182,8 @@ export default function Static() {
           </Widget>
         </Col>
       </Row>
+      <AddUserModal open={userAddModalOpen} handleCloseClick={handleUserAddModalClick} />
+      <EditUserModal open={userEditModalOpen} handleCloseClick={handleUserEditModalClick} user={editUser} />
     </div>
   );
 }
