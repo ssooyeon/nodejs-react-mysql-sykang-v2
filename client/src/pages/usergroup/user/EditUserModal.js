@@ -2,22 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Alert, Button, FormGroup, InputGroup, InputGroupAddon, InputGroupText, Input, Label, Modal, ModalBody, ModalFooter } from "reactstrap";
 
-import { createUser } from "../../actions/users";
-import UserService from "../../services/UserService";
-import GroupService from "../../services/GroupService";
+import { updateUser } from "../../../actions/users";
+import UserService from "../../../services/UserService";
+import GroupService from "../../../services/GroupService";
 
-export default function AddUserModal({ open, handleCloseClick }) {
-  // 초기 user object
-  const initialUserState = {
-    account: "",
-    email: "",
-    password: "",
-    passwordCheck: "",
-  };
-
+export default function EditUserModal({ open, handleCloseClick, user }) {
   const [groups, setGroups] = useState([]); // select option에 표시 될 group list (fix)
-  const [userForm, setUserForm] = useState(initialUserState);
-  const [checkDoneAccount, setCheckDoneAccount] = useState(""); // 중복확인을 완료한 계정 이름
+  const [userForm, setUserForm] = useState([]);
+  const [isPasswordChange, setIsPasswordChange] = useState(false); // 비밀번호를 변경할지에 대한 여부
 
   const [isShowSuccessAlert, setIsShowSuccessAlert] = useState(false); // 사용자 등록에 성공했는지의 여부
   const [successMessage, setSuccessMessage] = useState(""); // 사용자 등록에 성공했을 때의 메세지
@@ -28,6 +20,7 @@ export default function AddUserModal({ open, handleCloseClick }) {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    setUserForm({ ...user, password: "", passwordCheck: "" });
     GroupService.getAll()
       .then((res) => {
         setGroups(res.data);
@@ -35,12 +28,27 @@ export default function AddUserModal({ open, handleCloseClick }) {
       .catch((e) => {
         console.log(e);
       });
-  }, []);
+  }, [user]);
 
   // 닫기 버튼 클릭
   const handleClose = () => {
-    // setIsValidAccount(false);
     handleCloseClick(false);
+    setIsShowSuccessAlert(false);
+    setIsShowErrAlert(false);
+  };
+
+  // 사용자 수정 완료
+  const handleDone = () => {
+    const isDone = true;
+    handleCloseClick(false, isDone);
+    setIsShowSuccessAlert(false);
+    setIsShowErrAlert(false);
+  };
+
+  // 비밀번호 변경 화면 표출
+  const handleIsPasswordChange = (e) => {
+    e.preventDefault();
+    setIsPasswordChange(!isPasswordChange);
   };
 
   // input 값 변경 시 user state 업데이트
@@ -56,33 +64,7 @@ export default function AddUserModal({ open, handleCloseClick }) {
   // password check input에서 엔터 클릭 시 사용자 생성 수행
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
-      doAddUser(e);
-    }
-  };
-
-  // 계정 중복확인
-  const checkAccount = () => {
-    const account = userForm.account;
-    if (account !== "") {
-      UserService.findByAccount(userForm.account)
-        .then((res) => {
-          // 이미 존재하는 계정일 때
-          if (res.data !== "" && res.data !== undefined) {
-            setIsShowErrAlert(true);
-            setIsShowSuccessAlert(false);
-            setErrMessage("This account already exist.");
-          } else {
-            // 계정 중복 여부 확인 완료
-            setIsShowSuccessAlert(true);
-            setIsShowErrAlert(false);
-            setSuccessMessage("This account is available.");
-
-            setCheckDoneAccount(account);
-          }
-        })
-        .catch((e) => {
-          console.log(e);
-        });
+      doEditUser(e);
     }
   };
 
@@ -104,43 +86,62 @@ export default function AddUserModal({ open, handleCloseClick }) {
     return userForm.password && userForm.password === userForm.passwordCheck;
   };
 
-  // 사용자 등록 수행
-  const doAddUser = (e) => {
+  // 사용자 수정 수행
+  const doEditUser = (e) => {
     e.preventDefault();
-    // 중복확인을 완료한 계정과 현재 input의 계정명이 같을 때
-    if (checkDoneAccount === userForm.account) {
-      // 비밀번호와 비밀번호 확인란이 일치할 때
+    let data = userForm;
+    if (data.groupId === "") {
+      data.groupId = null;
+    }
+    // 비밀번호 변경란이 열려있으면
+    if (isPasswordChange) {
+      // 비밀번호와 비밀번호 확인란이 일치하면 사용자 수정 진행
       if (isPasswordValid()) {
-        dispatch(createUser(userForm))
-          .then(() => {
-            setIsShowSuccessAlert(true);
-            setIsShowErrAlert(false);
-            setSuccessMessage("New user added successfully.");
-
-            setTimeout(() => {
-              handleClose();
-            }, 500);
-          })
-          .catch((e) => {
-            console.log(e);
-          });
+        doEdit(data);
+      } else {
+        // 비밀번호와 비밀번호 확인란이 일치하지 않으면 에러 메세지를 표출
+        setIsShowErrAlert(true);
+        setIsShowSuccessAlert(false);
+        if (!userForm.password) {
+          setErrMessage("Password field is empty.");
+        } else {
+          setErrMessage("Passwords are not equal.");
+        }
       }
     } else {
-      // 중복확인을 완료한 후 다른 계정명을 다시 작성했을 때, 중복확인을 재요청
-      setIsShowErrAlert(true);
-      setIsShowSuccessAlert(false);
-      setErrMessage("Please duplicate check an account.");
+      // 비밀번호 변경란이 열려있지 않으면 email과 group 정보만 업데이트
+      const paramsWithoutPassword = {
+        id: data.id,
+        account: data.account,
+        email: data.email,
+        groupId: data.groupId,
+      };
+      doEdit(paramsWithoutPassword);
     }
+  };
+
+  const doEdit = (user) => {
+    dispatch(updateUser(user.id, user))
+      .then(() => {
+        setIsShowSuccessAlert(true);
+        setIsShowErrAlert(false);
+        setSuccessMessage("User update successfully.");
+
+        setTimeout(() => {
+          handleDone();
+        }, 500);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   };
 
   return (
     <Modal isOpen={open} toggle={handleClose} backdrop={false} centered>
-      {/* <ModalHeader toggle={handleClose} charCode="<i className='fa fa-search' />">
-      </ModalHeader> */}
       <ModalBody>
-        <span className="fw-semi-bold">Add New User</span>
+        <span className="fw-semi-bold">Edit User</span>
         <h6 className="widget-auth-info">Please fill all fields below.</h6>
-        <form onSubmit={doAddUser}>
+        <form onSubmit={doEditUser}>
           {isShowErrAlert ? (
             <Alert className="alert-sm widget-middle-overflow rounded-0" color="danger" style={{ margin: 0 }}>
               {errMessage}
@@ -166,13 +167,10 @@ export default function AddUserModal({ open, handleCloseClick }) {
                 value={userForm.account}
                 onChange={handleInputChange}
                 type="text"
-                required
                 name="account"
                 placeholder="Account"
+                disabled
               />
-              <Button color="default" className="social-button" onClick={checkAccount}>
-                Chk
-              </Button>
             </InputGroup>
           </FormGroup>
           <FormGroup>
@@ -195,48 +193,57 @@ export default function AddUserModal({ open, handleCloseClick }) {
               />
             </InputGroup>
           </FormGroup>
-          <FormGroup>
-            <Label for="password">Password</Label>
-            <InputGroup className="input-group-no-border">
-              <InputGroupAddon addonType="prepend">
-                <InputGroupText>
-                  <i className="la la-lock text-white" />
-                </InputGroupText>
-              </InputGroupAddon>
-              <Input
-                id="password"
-                className="input-transparent pl-3"
-                value={userForm.password}
-                onChange={handleInputChange}
-                type="password"
-                required
-                name="password"
-                placeholder="Password"
-              />
-            </InputGroup>
-          </FormGroup>
-          <FormGroup>
-            <Label for="passwordCheck">Confirm</Label>
-            <InputGroup className="input-group-no-border">
-              <InputGroupAddon addonType="prepend">
-                <InputGroupText>
-                  <i className="la la-lock text-white" />
-                </InputGroupText>
-              </InputGroupAddon>
-              <Input
-                id="passwordCheck"
-                className="input-transparent pl-3"
-                value={userForm.passwordCheck}
-                onChange={handleInputChange}
-                onBlur={checkPassword}
-                onKeyPress={handleKeyPress}
-                type="password"
-                required
-                name="passwordCheck"
-                placeholder="Confirm"
-              />
-            </InputGroup>
-          </FormGroup>
+          <div style={{ marginBottom: "10px" }}>
+            <a href="#!" onClick={handleIsPasswordChange}>
+              password change&nbsp;
+              {isPasswordChange ? <i className="la la-arrow-circle-o-up" /> : <i className="la la-arrow-circle-o-down" />}
+            </a>
+          </div>
+          {isPasswordChange ? (
+            <>
+              <FormGroup>
+                <Label for="password">Password</Label>
+                <InputGroup className="input-group-no-border">
+                  <InputGroupAddon addonType="prepend">
+                    <InputGroupText>
+                      <i className="la la-lock text-white" />
+                    </InputGroupText>
+                  </InputGroupAddon>
+                  <Input
+                    id="password"
+                    className="input-transparent pl-3"
+                    value={userForm.password}
+                    onChange={handleInputChange}
+                    type="password"
+                    required
+                    name="password"
+                    placeholder="New Password"
+                  />
+                </InputGroup>
+              </FormGroup>
+              <FormGroup>
+                <Label for="passwordCheck">Confirm</Label>
+                <InputGroup className="input-group-no-border">
+                  <InputGroupAddon addonType="prepend">
+                    <InputGroupText>
+                      <i className="la la-lock text-white" />
+                    </InputGroupText>
+                  </InputGroupAddon>
+                  <Input
+                    id="passwordCheck"
+                    className="input-transparent pl-3"
+                    value={userForm.passwordCheck}
+                    onChange={handleInputChange}
+                    onKeyPress={handleKeyPress}
+                    type="password"
+                    required
+                    name="passwordCheck"
+                    placeholder="New Password Confirm"
+                  />
+                </InputGroup>
+              </FormGroup>
+            </>
+          ) : null}
           <FormGroup>
             <Label for="group">Group</Label>
             <InputGroup className="input-group-no-border">
@@ -253,6 +260,7 @@ export default function AddUserModal({ open, handleCloseClick }) {
                 value={userForm.groupId || ""}
                 onChange={handleGroupOption}
               >
+                <option value={""}>-</option>
                 {groups &&
                   groups.map((group, index) => {
                     return (
@@ -267,8 +275,8 @@ export default function AddUserModal({ open, handleCloseClick }) {
         </form>
       </ModalBody>
       <ModalFooter>
-        <Button color="danger" className="mr-2" size="sm" onClick={doAddUser}>
-          Add
+        <Button color="danger" className="mr-2" size="sm" onClick={doEditUser}>
+          Edit
         </Button>
         <Button color="inverse" className="mr-2" size="sm" onClick={handleClose}>
           Cancel

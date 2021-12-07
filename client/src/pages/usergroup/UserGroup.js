@@ -9,8 +9,11 @@ import Widget from "../../components/Widget";
 import s from "./UserGroup.module.scss";
 
 import { retrieveUsers, deleteUser } from "../../actions/users";
-import AddUserModal from "./AddUserModal";
-import EditUserModal from "./EditUserModal";
+import { retrieveGroups, deleteGroup } from "../../actions/groups";
+import AddUserModal from "./user/AddUserModal";
+import EditUserModal from "./user/EditUserModal";
+import AddGroupModal from "./group/AddGroupModal";
+import EditGroupModal from "./group/EditGroupModal";
 
 export default function Static() {
   const users = useSelector((state) => state.users || []);
@@ -28,6 +31,7 @@ export default function Static() {
 
   useEffect(() => {
     dispatch(retrieveUsers());
+    dispatch(retrieveGroups());
   }, [dispatch]);
 
   // 사용자 등록 버튼 클릭 및 AddUserModal.js에서 닫기 버튼 클릭
@@ -38,7 +42,7 @@ export default function Static() {
   // 사용자 수정 버튼 클릭 및 EditUserModal.js 닫기 버튼 클릭
   const handleUserEditModalClick = (value, isDone) => {
     setUserEditModalOpen(value);
-    // 사용자 수정이 완료되었으면 검색어 기반으로 사용자 목록 재조회
+    // 사용자 수정이 완료되었으면 사용자 목록 재조회
     if (isDone) {
       dispatch(retrieveUsers());
     }
@@ -61,6 +65,51 @@ export default function Static() {
           label: "Yes",
           onClick: () => {
             dispatch(deleteUser(userId));
+          },
+        },
+        {
+          label: "No",
+          onClick: () => {},
+        },
+      ],
+      overlayClassName: css({
+        background: "transparent !important",
+      }),
+    });
+  };
+
+  // 그룹 등록 버튼 클릭 및 AddGroupModal.js에서 닫기 버튼 클릭
+  const handleGroupAddModalClick = (value, isDone) => {
+    setGroupAddModalOpen(value);
+  };
+
+  // 그룹 수정 버튼 클릭 및 EditGroupModal.js 닫기 버튼 클릭
+  const handleGroupEditModalClick = (value, isDone) => {
+    setGroupEditModalOpen(value);
+    // 그룹 수정이 완료되었으면 그룹 목록 재조회
+    if (isDone) {
+      dispatch(retrieveUsers());
+      dispatch(retrieveGroups());
+    }
+  };
+
+  // 그룹 테이블의 Edit 버튼 클릭
+  const onGroupEditClick = (row) => {
+    setGroupEditModalOpen(true);
+    setEditGroup(row);
+  };
+
+  // 그룹 테이블의 Delete 버튼 클릭
+  const onGroupDeleteClick = (groupId) => {
+    confirmAlert({
+      closeOnClickOutside: false,
+      title: "",
+      message: "Are you sure delete this group with all members?",
+      buttons: [
+        {
+          label: "Yes",
+          onClick: () => {
+            dispatch(deleteGroup(groupId));
           },
         },
         {
@@ -141,7 +190,7 @@ export default function Static() {
             <h3>
               <span className="fw-semi-bold">Groups</span>
               <div className="float-right">
-                <Button color="default" className="mr-2" size="sm">
+                <Button color="default" className="mr-2" size="sm" onClick={() => handleGroupAddModalClick(true)}>
                   Add
                 </Button>
               </div>
@@ -162,19 +211,24 @@ export default function Static() {
                 </thead>
                 {/* eslint-disable */}
                 <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>administrators</td>
-                    <td>2021-07-01T04:53:48.000Z</td>
-                    <td>
-                      <Button color="default" className="mr-2" size="xs">
-                        E
-                      </Button>
-                      <Button color="inverse" className="mr-2" size="xs">
-                        D
-                      </Button>
-                    </td>
-                  </tr>
+                  {groups &&
+                    groups.map((group, key) => {
+                      return (
+                        <tr key={group.id}>
+                          <td>{group.id}</td>
+                          <td>{group.name}</td>
+                          <td>{group.createdAt}</td>
+                          <td>
+                            <Button color="default" className="mr-2" size="xs" onClick={(e) => onGroupEditClick(group)}>
+                              E
+                            </Button>
+                            <Button color="inverse" className="mr-2" size="xs" onClick={(e) => onGroupDeleteClick(group.id)}>
+                              D
+                            </Button>
+                          </td>
+                        </tr>
+                      );
+                    })}
                 </tbody>
                 {/* eslint-enable */}
               </Table>
@@ -182,8 +236,12 @@ export default function Static() {
           </Widget>
         </Col>
       </Row>
+
       <AddUserModal open={userAddModalOpen} handleCloseClick={handleUserAddModalClick} />
       <EditUserModal open={userEditModalOpen} handleCloseClick={handleUserEditModalClick} user={editUser} />
+
+      <AddGroupModal open={groupAddModalOpen} handleCloseClick={handleGroupAddModalClick} />
+      <EditGroupModal open={groupEditModalOpen} handleCloseClick={handleGroupEditModalClick} group={editGroup} />
     </div>
   );
 }
