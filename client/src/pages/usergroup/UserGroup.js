@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Row, Col, Table, Button } from "reactstrap";
+import { Row, Col, Table, Button, FormGroup, InputGroup, Input } from "reactstrap";
 import { css } from "glamor";
 import { confirmAlert } from "react-confirm-alert";
 import PaginationComponent from "react-reactstrap-pagination";
@@ -23,6 +23,9 @@ export default function Static() {
   const groups = useSelector((state) => state.groups || []);
 
   const dispatch = useDispatch();
+
+  const [searchUserInput, setSearchUserInput] = useState(null);
+  const [searchGroupInput, setSearchGroupInput] = useState(null);
 
   const [usersCurrentPage, setUsersCurrentPage] = useState(0);
   const [groupsCurrentPage, setGroupsCurrentPage] = useState(0);
@@ -89,6 +92,12 @@ export default function Static() {
     });
   };
 
+  // 사용자 검색
+  const searchUser = () => {
+    const params = { account: searchUserInput };
+    dispatch(retrieveUsers(params));
+  };
+
   // 그룹 테이블 페이징
   const handleGroupTablePaging = (selectedPage) => {
     setGroupsCurrentPage(selectedPage - 1);
@@ -139,6 +148,12 @@ export default function Static() {
     });
   };
 
+  // 그룹 검색
+  const searchGroup = () => {
+    const params = { name: searchGroupInput };
+    dispatch(retrieveGroups(params));
+  };
+
   return (
     <div className={s.root}>
       <h2 className="page-title">
@@ -159,6 +174,24 @@ export default function Static() {
               {"Indicates a list of "}
               <code>users</code> in the system.
             </p>
+            <FormGroup className="mt">
+              <InputGroup className="input-group-no-border">
+                <Input
+                  id="searchUserInput"
+                  className="input-transparent pl-3 form-control-sm"
+                  value={searchUserInput || ""}
+                  onChange={(e) => setSearchUserInput(e.target.value)}
+                  type="text"
+                  required
+                  name="searchUserInput"
+                  placeholder="Search (account)"
+                />
+                <Button color="inverse" className="social-button" size="xs" onClick={searchUser}>
+                  <i className="fa fa-search"></i>
+                </Button>
+              </InputGroup>
+            </FormGroup>
+            <br />
             <div className={s.overFlow}>
               <Table className="table-hover">
                 <thead>
@@ -228,6 +261,24 @@ export default function Static() {
               {"Indicates a list of "}
               <code>groups</code> in the system.
             </p>
+            <FormGroup className="mt">
+              <InputGroup className="input-group-no-border">
+                <Input
+                  id="searchGroupInput"
+                  className="input-transparent pl-3 form-control-sm"
+                  value={searchGroupInput || ""}
+                  onChange={(e) => setSearchGroupInput(e.target.value)}
+                  type="text"
+                  required
+                  name="searchGroupInput"
+                  placeholder="Search (name)"
+                />
+                <Button color="inverse" className="social-button" size="xs" onClick={searchGroup}>
+                  <i className="fa fa-search"></i>
+                </Button>
+              </InputGroup>
+            </FormGroup>
+            <br />
             <div className={s.overFlow}>
               <Table className="table-hover">
                 <thead>
