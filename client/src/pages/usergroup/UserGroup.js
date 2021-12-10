@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Row, Col, Table, Button } from "reactstrap";
 import { css } from "glamor";
 import { confirmAlert } from "react-confirm-alert";
+import PaginationComponent from "react-reactstrap-pagination";
 
 import "react-confirm-alert/src/react-confirm-alert.css";
 import Widget from "../../components/Widget";
@@ -15,11 +16,16 @@ import EditUserModal from "./user/EditUserModal";
 import AddGroupModal from "./group/AddGroupModal";
 import EditGroupModal from "./group/EditGroupModal";
 
+const pageSize = 5;
+
 export default function Static() {
   const users = useSelector((state) => state.users || []);
   const groups = useSelector((state) => state.groups || []);
 
   const dispatch = useDispatch();
+
+  const [usersCurrentPage, setUsersCurrentPage] = useState(0);
+  const [groupsCurrentPage, setGroupsCurrentPage] = useState(0);
 
   const [userAddModalOpen, setUserAddModalOpen] = useState(false);
   const [userEditModalOpen, setUserEditModalOpen] = useState(false);
@@ -33,6 +39,11 @@ export default function Static() {
     dispatch(retrieveUsers());
     dispatch(retrieveGroups());
   }, [dispatch]);
+
+  // 사용자 테이블 페이징
+  const handleUserTablePaging = (selectedPage) => {
+    setUsersCurrentPage(selectedPage - 1);
+  };
 
   // 사용자 등록 버튼 클릭 및 AddUserModal.js에서 닫기 버튼 클릭
   const handleUserAddModalClick = (value, isDone) => {
@@ -76,6 +87,11 @@ export default function Static() {
         background: "transparent !important",
       }),
     });
+  };
+
+  // 그룹 테이블 페이징
+  const handleGroupTablePaging = (selectedPage) => {
+    setGroupsCurrentPage(selectedPage - 1);
   };
 
   // 그룹 등록 버튼 클릭 및 AddGroupModal.js에서 닫기 버튼 클릭
@@ -156,9 +172,9 @@ export default function Static() {
                   </tr>
                 </thead>
                 {/* eslint-disable */}
-                <tbody>
+                <tbody style={{ minWidth: "" }}>
                   {users &&
-                    users.map((user, key) => {
+                    users.slice(usersCurrentPage * pageSize, (usersCurrentPage + 1) * pageSize).map((user) => {
                       return (
                         <tr key={user.id}>
                           <td>{user.id}</td>
@@ -182,6 +198,19 @@ export default function Static() {
                 </tbody>
                 {/* eslint-enable */}
               </Table>
+              <div className={s.userPaging}>
+                <PaginationComponent
+                  size="sm"
+                  totalItems={users.length}
+                  pageSize={pageSize}
+                  defaultActivePage={1}
+                  firstPageText="<<"
+                  previousPageText="<"
+                  nextPageText=">"
+                  lastPageText=">>"
+                  onSelect={handleUserTablePaging}
+                />
+              </div>
             </div>
           </Widget>
         </Col>
@@ -210,9 +239,9 @@ export default function Static() {
                   </tr>
                 </thead>
                 {/* eslint-disable */}
-                <tbody>
+                <tbody style={{ minWidth: "" }}>
                   {groups &&
-                    groups.map((group, key) => {
+                    groups.slice(groupsCurrentPage * pageSize, (groupsCurrentPage + 1) * pageSize).map((group) => {
                       return (
                         <tr key={group.id}>
                           <td>{group.id}</td>
@@ -232,6 +261,19 @@ export default function Static() {
                 </tbody>
                 {/* eslint-enable */}
               </Table>
+              <div className={s.groupPaging}>
+                <PaginationComponent
+                  size="sm"
+                  totalItems={groups.length}
+                  pageSize={pageSize}
+                  defaultActivePage={1}
+                  firstPageText="<<"
+                  previousPageText="<"
+                  nextPageText=">"
+                  lastPageText=">>"
+                  onSelect={handleGroupTablePaging}
+                />
+              </div>
             </div>
           </Widget>
         </Col>

@@ -88,6 +88,7 @@
     "react-dev-utils": "^6.0.5",
     "react-dom": "^16.13.1",
     "react-google-maps": "^9.4.5",
+    "react-reactstrap-pagination": "^2.0.3",
     "react-redux": "^7.2.6",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
