@@ -6,7 +6,7 @@ import { createGroup } from "../../../actions/groups";
 import UserService from "../../../services/UserService";
 import GroupService from "../../../services/GroupService";
 
-export default function AddGroupModal({ open, handleCloseClick }) {
+export default function AddGroupModal({ open, handleCloseClick, handleResetInput }) {
   // 초기 group object
   const initialGroupState = {
     name: "",
@@ -29,6 +29,10 @@ export default function AddGroupModal({ open, handleCloseClick }) {
     setGroupForm(initialGroupState);
     setIsShowSuccessAlert(false);
     setIsShowErrAlert(false);
+  };
+  // 그룹 추가를 수행하면 검색란을 초기화
+  const sendSearchReset = () => {
+    handleResetInput(true);
   };
 
   // input 값 변경 시 group state 업데이트
@@ -56,6 +60,7 @@ export default function AddGroupModal({ open, handleCloseClick }) {
           setIsShowSuccessAlert(false);
           setErrMessage("This name already exist.");
         } else {
+          sendSearchReset();
           dispatch(createGroup(groupForm))
             .then(() => {
               setIsShowSuccessAlert(true);

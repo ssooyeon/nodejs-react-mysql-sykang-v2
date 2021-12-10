@@ -6,7 +6,7 @@ import { createUser } from "../../../actions/users";
 import UserService from "../../../services/UserService";
 import GroupService from "../../../services/GroupService";
 
-export default function AddUserModal({ open, handleCloseClick }) {
+export default function AddUserModal({ open, handleCloseClick, handleResetInput }) {
   // 초기 user object
   const initialUserState = {
     account: "",
@@ -43,6 +43,11 @@ export default function AddUserModal({ open, handleCloseClick }) {
     setUserForm(initialUserState);
     setIsShowSuccessAlert(false);
     setIsShowErrAlert(false);
+  };
+
+  // 사용자 추가를 수행하면 검색란을 초기화
+  const sendSearchReset = () => {
+    handleResetInput(true);
   };
 
   // input 값 변경 시 user state 업데이트
@@ -113,6 +118,7 @@ export default function AddUserModal({ open, handleCloseClick }) {
     if (checkDoneAccount === userForm.account) {
       // 비밀번호와 비밀번호 확인란이 일치할 때
       if (isPasswordValid()) {
+        sendSearchReset();
         dispatch(createUser(userForm))
           .then(() => {
             setIsShowSuccessAlert(true);

@@ -52,13 +52,20 @@ export default function Static() {
   const handleUserAddModalClick = (value, isDone) => {
     setUserAddModalOpen(value);
   };
+  // 사용자 등록이 실제로 이루어지면 search input 초기화
+  const handleUserResetInput = (isReset) => {
+    if (isReset) {
+      resetInputAndRetrieve();
+    }
+  };
 
   // 사용자 수정 버튼 클릭 및 EditUserModal.js 닫기 버튼 클릭
   const handleUserEditModalClick = (value, isDone) => {
     setUserEditModalOpen(value);
     // 사용자 수정이 완료되었으면 사용자 목록 재조회
     if (isDone) {
-      dispatch(retrieveUsers());
+      searchUser();
+      searchGroup();
     }
   };
 
@@ -107,14 +114,20 @@ export default function Static() {
   const handleGroupAddModalClick = (value, isDone) => {
     setGroupAddModalOpen(value);
   };
+  // 그룹 등록이 실제로 이루어지면 search input 초기화
+  const handleGroupResetInput = (isReset) => {
+    if (isReset) {
+      resetInputAndRetrieve();
+    }
+  };
 
   // 그룹 수정 버튼 클릭 및 EditGroupModal.js 닫기 버튼 클릭
   const handleGroupEditModalClick = (value, isDone) => {
     setGroupEditModalOpen(value);
     // 그룹 수정이 완료되었으면 그룹 목록 재조회
     if (isDone) {
-      dispatch(retrieveUsers());
-      dispatch(retrieveGroups());
+      searchUser();
+      searchGroup();
     }
   };
 
@@ -152,6 +165,14 @@ export default function Static() {
   const searchGroup = () => {
     const params = { name: searchGroupInput };
     dispatch(retrieveGroups(params));
+  };
+
+  // 사용자 검색어, 그룹 검색어 초기화 및 전체 재조회
+  const resetInputAndRetrieve = () => {
+    setSearchUserInput(null);
+    setSearchGroupInput(null);
+    dispatch(retrieveUsers());
+    dispatch(retrieveGroups());
   };
 
   return (
@@ -330,10 +351,10 @@ export default function Static() {
         </Col>
       </Row>
 
-      <AddUserModal open={userAddModalOpen} handleCloseClick={handleUserAddModalClick} />
+      <AddUserModal open={userAddModalOpen} handleCloseClick={handleUserAddModalClick} handleResetInput={handleUserResetInput} />
       <EditUserModal open={userEditModalOpen} handleCloseClick={handleUserEditModalClick} user={editUser} />
 
-      <AddGroupModal open={groupAddModalOpen} handleCloseClick={handleGroupAddModalClick} />
+      <AddGroupModal open={groupAddModalOpen} handleCloseClick={handleGroupAddModalClick} handleResetInput={handleGroupResetInput} />
       <EditGroupModal open={groupEditModalOpen} handleCloseClick={handleGroupEditModalClick} group={editGroup} />
     </div>
   );
