@@ -7,6 +7,7 @@ import Hammer from "rc-hammerjs";
 
 import UserGroupTable from "../../pages/usergroup/UserGroup";
 import Board from "../../pages/board/Board";
+import AddBoard from "../../pages/board/AddBoard";
 import Profile from "../../pages/profile/Profile";
 import Charts from "../../pages/monitoring/charts/Charts";
 import Dashboard from "../../pages/dashboard";
@@ -69,6 +70,7 @@ class Layout extends React.Component {
                     <Route path="/app/monitoring/charts" exact component={Charts} />
                     <Route path="/app/tables" exact component={UserGroupTable} />
                     <Route path="/app/board" exact component={Board} />
+                    <Route path="/app/board/add" exact component={AddBoard} />
                     <Route path="/app/profile" exact component={Profile} />
                   </Switch>
                 </CSSTransition>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { Row, Col, Button, FormGroup, InputGroup, Input } from "reactstrap";
 import PaginationComponent from "react-reactstrap-pagination";
 
@@ -58,9 +59,11 @@ export default function Board() {
             <h3>
               <span className="fw-semi-bold">Board</span>
               <div className="float-right">
-                <Button color="default" className="mr-2" size="sm">
-                  Add
-                </Button>
+                <Link to={"/app/board/add"}>
+                  <Button color="default" className="mr-2" size="sm">
+                    Add
+                  </Button>
+                </Link>
               </div>
             </h3>
             <p>
