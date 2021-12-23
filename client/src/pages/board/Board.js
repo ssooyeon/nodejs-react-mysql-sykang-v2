@@ -96,9 +96,11 @@ export default function Board() {
                     return (
                       <Col lg={3} md={3} sm={12} key={board.id}>
                         <Widget>
-                          <h3>
-                            <span className="fw-semi-bold">{board.title}</span>
-                          </h3>
+                          <Link to={`/app/board/detail/${board.id}`}>
+                            <h3>
+                              <span className="fw-semi-bold">{board.title}</span>
+                            </h3>
+                          </Link>
                           <p>{board.content.length > 400 ? board.content.substr(0, 400) + "..." : board.content}</p>
                           <p style={{ fontSize: "12px" }}>
                             {board.user.account} / {board.createdAt}
