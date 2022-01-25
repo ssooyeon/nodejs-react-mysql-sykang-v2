@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 
@@ -14,13 +14,14 @@ export default function Profile(props) {
   const { user: currentUser } = useSelector((state) => state.auth);
 
   const initialUserState = {
-    id: currentUser.id,
-    account: currentUser.account,
-    email: currentUser.email,
+    id: null,
+    account: "",
+    email: "",
     currentPassword: "",
     password: "",
     passwordCheck: "",
   };
+
   const [user, setUser] = useState(initialUserState);
   const [isPasswordChange, setIsPasswordChange] = useState(false); // 비밀번호를 변경할지에 대한 여부
 
@@ -31,6 +32,19 @@ export default function Profile(props) {
   const [errMessage, setErrMessage] = useState(""); // 사용자 등록에 실패했을 때의 에러 메시지
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (currentUser !== null) {
+      setUser({
+        id: currentUser.id,
+        account: currentUser.account,
+        email: currentUser.email,
+        currentPassword: "",
+        password: "",
+        passwordCheck: "",
+      });
+    }
+  }, []);
 
   // 비밀번호 변경 화면 표출
   const handleIsPasswordChange = (e) => {
@@ -65,34 +79,41 @@ export default function Profile(props) {
     }
     // 비밀번호 변경란이 열려있으면
     if (isPasswordChange) {
-      const comparePassword = {
-        id: user.id,
-        password: user.currentPassword,
-      };
-      // 현재 비밀번호를 제대로 입력했는지 확인
-      dispatch(compareCurrentPassword(comparePassword)).then((compare) => {
-        // 현재 비밀번호를 제대로 입력했다면
-        if (compare) {
-          // 새 비밀번호와 비밀번호 확인란이 일치하는지 확인
-          if (isPasswordValid()) {
-            doEdit(data);
+      // 비밀번호를 입력하지 않았으면
+      if (user.currentPassword === "" && user.password === "" && user.passwordCheck === "") {
+        setIsShowErrAlert(true);
+        setIsShowSuccessAlert(false);
+        setErrMessage("All password field is empty.");
+      } else {
+        const comparePassword = {
+          id: user.id,
+          password: user.currentPassword,
+        };
+        // 현재 비밀번호를 제대로 입력했는지 확인
+        dispatch(compareCurrentPassword(comparePassword)).then((compare) => {
+          // 현재 비밀번호를 제대로 입력했다면
+          if (compare) {
+            // 새 비밀번호와 비밀번호 확인란이 일치하는지 확인
+            if (isPasswordValid()) {
+              doEdit(data);
+            } else {
+              // 새 비밀번호와 비밀번호 확인란이 일치하지 않으면 에러 메세지를 표출
+              setIsShowErrAlert(true);
+              setIsShowSuccessAlert(false);
+              if (!user.password) {
+                setErrMessage("Password field is empty.");
+              } else {
+                setErrMessage("Passwords are not equal.");
+              }
+            }
           } else {
-            // 새 비밀번호와 비밀번호 확인란이 일치하지 않으면 에러 메세지를 표출
+            // 현재 비밀번호가 틀리다면 에러 메세지를 표출
             setIsShowErrAlert(true);
             setIsShowSuccessAlert(false);
-            if (!user.password) {
-              setErrMessage("Password field is empty.");
-            } else {
-              setErrMessage("Passwords are not equal.");
-            }
+            setErrMessage("The current password dose not match.");
           }
-        } else {
-          // 현재 비밀번호가 틀리다면 에러 메세지를 표출
-          setIsShowErrAlert(true);
-          setIsShowSuccessAlert(false);
-          setErrMessage("The current password dose not match.");
-        }
-      });
+        });
+      }
     } else {
       // 비밀번호 변경란이 열려있지 않으면 email과 group 정보만 업데이트
       const paramsWithoutPassword = {
@@ -273,9 +294,6 @@ export default function Profile(props) {
             <br />
             <Button color="danger" className="mr-2" size="sm" onClick={doEditUser}>
               Edit
-            </Button>
-            <Button color="inverse" className="mr-2" size="sm">
-              Cancel
             </Button>
           </Widget>
         </Col>

@@ -127,15 +127,17 @@ class Sidebar extends React.Component {
               },
             ]}
           />
-          <LinksGroup
-            onActiveSidebarItemChange={(t) => this.props.dispatch(changeActiveSidebarItem(t))}
-            activeItem={this.props.activeItem}
-            header="Profile"
-            isHeader
-            iconName={<NotificationsIcon className={s.menuIcon} />}
-            link="/app/profile"
-            index="profile"
-          />
+          {this.props.currentUser ? (
+            <LinksGroup
+              onActiveSidebarItemChange={(t) => this.props.dispatch(changeActiveSidebarItem(t))}
+              activeItem={this.props.activeItem}
+              header="Profile"
+              isHeader
+              iconName={<NotificationsIcon className={s.menuIcon} />}
+              link="/app/profile"
+              index="profile"
+            />
+          ) : null}
         </ul>
         <h5 className={s.navTitle}>
           BOOKMARK
@@ -197,6 +199,7 @@ function mapStateToProps(store) {
     sidebarStatic: store.navigation.sidebarStatic,
     alertsList: store.alerts.alertsList,
     activeItem: store.navigation.activeItem,
+    currentUser: store.auth.user,
   };
 }
 
