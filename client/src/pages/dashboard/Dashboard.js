@@ -1,15 +1,124 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Progress, Table, Label, Input } from "reactstrap";
-
+import { Row, Col, Progress, Button } from "reactstrap";
+import Moment from "react-moment";
 import Widget from "../../components/Widget";
-
 import Calendar from "./components/calendar/Calendar";
-
 import AnimateNumber from "react-animated-number";
-
 import s from "./Dashboard.module.scss";
 
+import MonitoringService from "../../services/MonitoringService";
+import LogService from "../../services/LogService";
+
 export default function Dashboard() {
+  const [cpuPercent, setCpuPercent] = useState(0);
+  const [memoryPercent, setMemoryPercent] = useState(0);
+  const [diskPercent, setDiskPercent] = useState(0);
+  const [logList, setLogList] = useState([]);
+
+  useEffect(() => {
+    getSystemUsage();
+    console.log(1);
+
+    var listItem = [];
+    listItem["basic"] = 70.9457;
+    listItem["go"] = 27.56246;
+    listItem["???hee"] = 1.32304;
+    listItem["**young"] = 0.15877;
+    listItem["!!!!!!jun"] = 0.01003;
+
+    var pliromkey = [];
+    pliromkey["fail"] = 99;
+    pliromkey["success"] = 1;
+
+    var synthetic = [];
+    synthetic["fail"] = 86;
+    synthetic["success"] = 14;
+
+    for (var i = 0; i < 11; i++) {
+      const result = plzGiveJun(listItem);
+      if (result === "???hee" || result === "**young" || result === "!!!!!!jun") {
+        console.log(result);
+      }
+    }
+
+    // const pil = plzGiveJun(pliromkey);
+    // console.log(pil);
+
+    // const sy = plzGiveJun(synthetic);
+    // console.log(sy);
+  }, []);
+
+  const getSystemUsage = () => {
+    getCpuPercent();
+    getMemoryPercent();
+    getDiskPercent();
+    getLogList();
+  };
+
+  const plzGiveJun = (listItem) => {
+    var pickVal = Number.MAX_VALUE;
+    var pickItem = null;
+    for (var item in listItem) {
+      if (listItem.hasOwnProperty(item)) {
+        var tmpVal = -Math.log(Math.random()) / listItem[item];
+        if (tmpVal < pickVal) {
+          pickVal = tmpVal;
+          pickItem = item;
+        }
+      }
+    }
+    return pickItem;
+  };
+
+  const getCpuPercent = () => {
+    MonitoringService.getCPUUsage()
+      .then((res) => {
+        const cpu = res.data;
+        setCpuPercent(parseInt(cpu));
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  const getMemoryPercent = () => {
+    MonitoringService.getMemoryUsage()
+      .then((res) => {
+        const mem = res.data;
+        setMemoryPercent(parseInt(mem));
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  const getDiskPercent = () => {
+    MonitoringService.getDiskUsage()
+      .then((res) => {
+        const disk = res.data;
+        setDiskPercent(parseInt(disk));
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  const getLogList = () => {
+    LogService.getAll()
+      .then((res) => {
+        setLogList(res.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  const isSameDay = (date) => {
+    const day = new Date(date).getDay();
+    const today = new Date().getDay();
+    return day === today;
+  };
+
   return (
     <div className={s.root}>
       <h1 className="page-title">Dashboard &nbsp;</h1>
@@ -38,6 +147,10 @@ export default function Dashboard() {
                 {" "}
                 System
                 <span className="fw-semi-bold">&nbsp;Usage</span>
+                &nbsp;&nbsp;
+                <Button color="inverse" className="social-button" size="xs" onClick={getSystemUsage}>
+                  <i className="la la-refresh"></i>
+                </Button>
               </h5>
             }
             refresh
@@ -45,12 +158,12 @@ export default function Dashboard() {
             <div className="row progress-stats">
               <div className="col-md-11 col-12">
                 <p className="description deemphasize mb-xs text-white">CPU usage</p>
-                <Progress color="primary" value="60" className="bg-subtle-blue progress-xs" />
+                <Progress color="primary" value={cpuPercent} className="bg-subtle-blue progress-xs" />
               </div>
               <div className="col-md-1 col-12 text-center">
                 <span className="status rounded rounded-lg bg-default text-light">
                   <small>
-                    <AnimateNumber value={75} />%
+                    <AnimateNumber value={cpuPercent} />%
                   </small>
                 </span>
               </div>
@@ -59,12 +172,12 @@ export default function Dashboard() {
             <div className="row progress-stats">
               <div className="col-md-11 col-12">
                 <p className="description deemphasize mb-xs text-white">Memory usage</p>
-                <Progress color="danger" value="39" className="bg-subtle-blue progress-xs" />
+                <Progress color="danger" value={memoryPercent} className="bg-subtle-blue progress-xs" />
               </div>
               <div className="col-md-1 col-12 text-center">
                 <span className="status rounded rounded-lg bg-default text-light">
                   <small>
-                    <AnimateNumber value={84} />%
+                    <AnimateNumber value={memoryPercent} />%
                   </small>
                 </span>
               </div>
@@ -73,12 +186,12 @@ export default function Dashboard() {
             <div className="row progress-stats">
               <div className="col-md-11 col-12">
                 <p className="description deemphasize mb-xs text-white">Disk usage</p>
-                <Progress color="success" value="80" className="bg-subtle-blue progress-xs" />
+                <Progress color="success" value={diskPercent} className="bg-subtle-blue progress-xs" />
               </div>
               <div className="col-md-1 col-12 text-center">
                 <span className="status rounded rounded-lg bg-default text-light">
                   <small>
-                    <AnimateNumber value={92} />%
+                    <AnimateNumber value={diskPercent} />%
                   </small>
                 </span>
               </div>
@@ -88,7 +201,7 @@ export default function Dashboard() {
               <span className="circle bg-default text-white">
                 <i className="fa fa-cog" />
               </span>
-              &nbsp; It is not updated in real time, and the data is updated through the refresh icon at the top right.
+              &nbsp; It is not updated in real time, and the data is updated through the refresh icon at the top.
             </p>
           </Widget>
         </Col>
@@ -182,57 +295,59 @@ export default function Dashboard() {
           <Widget title={<h6> Logs</h6>} refresh>
             <div className="widget-body undo_padding">
               <div className="list-group list-group-lg">
-                <button className="list-group-item text-left">
-                  <span className="thumb-sm float-left mr">
-                    <span className={`${s.avatar} rounded-circle thumb-sm float-left`} style={{ background: "#b84a4a" }}>
-                      <p style={{ margin: "7px" }}>U</p>
-                    </span>
-                    <i className="status status-bottom bg-success" />
-                  </span>
-                  <div>
-                    <h6 className="m-0" style={{ color: "green" }}>
-                      INFO
-                    </h6>
-                    <p className="help-block text-ellipsis m-0 float-left">User create successfully. New user account is: tt4</p>
-                    <p className="help-block text-ellipsis float-right" style={{ margin: 0 }}>
-                      2021-07-20 08:23:59
-                    </p>
-                  </div>
-                </button>
-                <button className="list-group-item text-left">
-                  <span className="thumb-sm float-left mr">
-                    <span className={`${s.avatar} rounded-circle thumb-sm float-left`} style={{ background: "rgb(137 164 105)" }}>
-                      <p style={{ margin: "7px" }}>G</p>
-                    </span>
-                    <i className="status status-bottom bg-success" />
-                  </span>
-                  <div>
-                    <h6 className="m-0" style={{ color: "green" }}>
-                      INFO
-                    </h6>
-                    <p className="help-block text-ellipsis m-0 float-left">Group delete successfully. Group id is: 39</p>
-                    <p className="help-block text-ellipsis float-right" style={{ margin: 0 }}>
-                      2021-07-21 02:12:59
-                    </p>
-                  </div>
-                </button>
-                <button className="list-group-item text-left">
-                  <span className="thumb-sm float-left mr">
-                    <span className={`${s.avatar} rounded-circle thumb-sm float-left`} style={{ background: "rgb(152 84 62)" }}>
-                      <p style={{ margin: "7px" }}>T</p>
-                    </span>
-                    <i className="status status-bottom bg-primary" />
-                  </span>
-                  <div>
-                    <h6 className="m-0" style={{ color: "red" }}>
-                      ERROR
-                    </h6>
-                    <p className="help-block text-ellipsis m-0 float-left">Task create failed. Task title is: heroku cleardb</p>
-                    <p className="help-block text-ellipsis float-right" style={{ margin: 0 }}>
-                      2021-09-20 17:22:23
-                    </p>
-                  </div>
-                </button>
+                {logList.map((log) => {
+                  return (
+                    <button className="list-group-item text-left" key={log.id} style={{ padding: "0.75rem" }}>
+                      <span className="thumb-sm float-left mr">
+                        {log.status === "BASIC" ? (
+                          <>
+                            <span className={`${s.avatar} rounded-circle thumb-sm float-left`} style={{ background: "#374c37" }}>
+                              <p style={{ margin: "7px" }}>B</p>
+                            </span>
+                            <i className="status status-bottom bg-success" />
+                          </>
+                        ) : log.status === "SUCCESS" ? (
+                          <>
+                            <span className={`${s.avatar} rounded-circle thumb-sm float-left`} style={{ background: "#3e5984" }}>
+                              <p style={{ margin: "7px" }}>S</p>
+                            </span>
+                            <i className="status status-bottom bg-primary" />
+                          </>
+                        ) : (
+                          <>
+                            <span className={`${s.avatar} rounded-circle thumb-sm float-left`} style={{ background: "#b84a4a" }}>
+                              <p style={{ margin: "7px" }}>E</p>
+                            </span>
+                            <i className="status status-bottom bg-danger" />
+                          </>
+                        )}
+                      </span>
+                      <div>
+                        {log.status === "BASIC" ? (
+                          <h6 className="m-0" style={{ color: "green" }}>
+                            {log.status}
+                          </h6>
+                        ) : log.status === "SUCCESS" ? (
+                          <h6 className="m-0" style={{ color: "#2477ff" }}>
+                            {log.status}
+                          </h6>
+                        ) : (
+                          <h6 className="m-0" style={{ color: "red" }}>
+                            {log.status}
+                          </h6>
+                        )}
+                        <p className="help-block text-ellipsis m-0 float-left">{log.message}</p>
+                        <p className="help-block text-ellipsis float-right" style={{ margin: 0 }}>
+                          {isSameDay(log.createdAt) ? (
+                            <span style={{ fontStyle: "italic" }}>Just Today &nbsp;</span>
+                          ) : (
+                            <Moment format="YYYY-MM-DD HH:mm:ss">{log.createdAt}</Moment>
+                          )}
+                        </p>
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
             </div>
             <footer className="bg-widget-transparent mt">
