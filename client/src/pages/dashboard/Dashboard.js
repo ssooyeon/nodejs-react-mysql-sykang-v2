@@ -8,44 +8,41 @@ import s from "./Dashboard.module.scss";
 
 import MonitoringService from "../../services/MonitoringService";
 import LogService from "../../services/LogService";
+import WeatherService from "../../services/WeatherService";
+
+const precipitations = ["N/A", "Rain", "Rain/Snow", "Snow", "Shower"];
+const skys = ["", "Sunny", "", "A lot of Clouds", "Cloudy"];
 
 export default function Dashboard() {
+  const initialWeather = {
+    baseDateTime: "",
+    fcstDateTime: "",
+    precipitationStatus: "", // 강수형태
+    precipitation: "", // 강수량
+    skyStatus: "", // 하늘상태
+    temp: "", // 기온
+    humidity: "", // 습도
+    windDirection: "", // 풍향
+    windSpeed: "", // 풍속
+  };
+  const initialPastWeather = {
+    temp: "", // 기온
+    humidity: "", // 습도
+    windSpeed: "", // 풍속
+  };
+
   const [cpuPercent, setCpuPercent] = useState(0);
   const [memoryPercent, setMemoryPercent] = useState(0);
   const [diskPercent, setDiskPercent] = useState(0);
+
+  const [weatherData, setWeatherData] = useState(initialWeather);
+  const [pastWeatherData, setPastWeatherData] = useState(initialPastWeather);
+
   const [logList, setLogList] = useState([]);
 
   useEffect(() => {
     getSystemUsage();
-    console.log(1);
-
-    var listItem = [];
-    listItem["basic"] = 70.9457;
-    listItem["go"] = 27.56246;
-    listItem["???hee"] = 1.32304;
-    listItem["**young"] = 0.15877;
-    listItem["!!!!!!jun"] = 0.01003;
-
-    var pliromkey = [];
-    pliromkey["fail"] = 99;
-    pliromkey["success"] = 1;
-
-    var synthetic = [];
-    synthetic["fail"] = 86;
-    synthetic["success"] = 14;
-
-    for (var i = 0; i < 11; i++) {
-      const result = plzGiveJun(listItem);
-      if (result === "???hee" || result === "**young" || result === "!!!!!!jun") {
-        console.log(result);
-      }
-    }
-
-    // const pil = plzGiveJun(pliromkey);
-    // console.log(pil);
-
-    // const sy = plzGiveJun(synthetic);
-    // console.log(sy);
+    getWeather();
   }, []);
 
   const getSystemUsage = () => {
@@ -53,21 +50,6 @@ export default function Dashboard() {
     getMemoryPercent();
     getDiskPercent();
     getLogList();
-  };
-
-  const plzGiveJun = (listItem) => {
-    var pickVal = Number.MAX_VALUE;
-    var pickItem = null;
-    for (var item in listItem) {
-      if (listItem.hasOwnProperty(item)) {
-        var tmpVal = -Math.log(Math.random()) / listItem[item];
-        if (tmpVal < pickVal) {
-          pickVal = tmpVal;
-          pickItem = item;
-        }
-      }
-    }
-    return pickItem;
   };
 
   const getCpuPercent = () => {
@@ -97,6 +79,45 @@ export default function Dashboard() {
       .then((res) => {
         const disk = res.data;
         setDiskPercent(parseInt(disk));
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  const getWeather = () => {
+    WeatherService.getWeathers()
+      .then((res) => {
+        if (res !== null) {
+          const weather = {
+            baseDateTime: res.baseDate + " " + res.baseTime,
+            fcstDateTime: res.fcstDate + " " + res.fcstTime,
+            precipitationStatus: precipitations[res.pty], // 강수형태1-4
+            precipitation: res.rn1, // 강수량mm
+            skyStatus: skys[res.sky], // 하늘상태1-4
+            temp: res.t1h, // 기온c
+            humidity: res.reh, // 습도%
+            windDirection: res.vec, // 풍향deg
+            windSpeed: res.wsd, // 풍속m/s
+          };
+          setWeatherData(weather);
+          getPastWeather();
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  const getPastWeather = () => {
+    WeatherService.getPastWeathers()
+      .then((res) => {
+        const pastWeather = {
+          temp: res.t1h, // 기온c
+          humidity: res.reh, // 습도%
+          windSpeed: res.wsd,
+        };
+        setPastWeatherData(pastWeather);
       })
       .catch((e) => {
         console.log(e);
@@ -209,82 +230,127 @@ export default function Dashboard() {
 
       <Row>
         <Col lg={6} xl={4} xs={12}>
-          <Widget title={<h6> Weather </h6>}>
+          <Widget title={<h6> Location </h6>}>
             <div className="stats-row">
+              <div className="stat-item">
+                <h6 className="name">Location</h6>
+                <p className="value">Korea / Daejeon</p>
+              </div>
               <div className="stat-item">
                 <h6 className="name">Temperature</h6>
-                <p className="value">9&deg; / A lot of clouds</p>
-              </div>
-              <div className="stat-item">
-                <h6 className="name">Date</h6>
-                <p className="value">2021-11-29 11:47</p>
+                <p className="value">
+                  {weatherData.temp} ℃ / {weatherData.skyStatus}
+                </p>
               </div>
             </div>
-            <Progress color="danger" value="60" className="bg-subtle-blue progress-xs" />
+            <Progress color="danger" value={40 / Math.abs(weatherData.temp)} className="bg-subtle-blue progress-xs" />
             <p>
-              <small>
-                <span className="circle bg-default text-white mr-2">
-                  <i className="fa fa-chevron-down" />
-                </span>
-              </small>
-              <span className="fw-semi-bold">1&deg; lower</span>
-              &nbsp;than yesterday
+              {weatherData.temp - pastWeatherData.temp > 0 ? (
+                <>
+                  <small>
+                    <span className="circle bg-default text-white mr-2">
+                      <i className="fa fa-chevron-up" />
+                    </span>
+                  </small>
+                  Temperature<span className="fw-semi-bold">&nbsp;{weatherData.temp - pastWeatherData.temp}℃ higher</span>
+                  &nbsp;than yesterday
+                </>
+              ) : (
+                <>
+                  <small>
+                    <span className="circle bg-default text-white mr-2">
+                      <i className="fa fa-chevron-down" />
+                    </span>
+                  </small>
+                  Temperature<span className="fw-semi-bold">&nbsp;{Math.abs(weatherData.temp - pastWeatherData.temp)}℃ lower</span>
+                  &nbsp;than yesterday
+                </>
+              )}
             </p>
+            {/* <p>
+              <span className="fw-semi-bold">
+                lasted updated: <Moment format="YYYY-MM-DD HH:mm">{weatherData.baseDateTime}</Moment>
+              </span>
+            </p> */}
           </Widget>
         </Col>
         <Col lg={6} xl={4} xs={12}>
-          <Widget title={<h6> Weather </h6>}>
+          <Widget title={<h6> Humidity & Precipitation </h6>}>
             <div className="stats-row">
-              <div className="stat-item">
-                <h6 className="name">Probability of precipitation</h6>
-                <p className="value">30%</p>
-              </div>
               <div className="stat-item">
                 <h6 className="name">Humidity</h6>
-                <p className="value">58%</p>
+                <p className="value">{weatherData.humidity} %</p>
               </div>
               <div className="stat-item">
-                <h6 className="name">wind</h6>
-                <p className="value">0m/h</p>
+                <h6 className="name">Precipitation Status</h6>
+                <p className="value">{weatherData.precipitationStatus}</p>
+              </div>
+              <div className="stat-item">
+                <h6 className="name">Precipitation Volumn</h6>
+                <p className="value">{weatherData.precipitation === "강수없음" ? "N/A" : <>{weatherData.precipitation} mm</>}</p>
               </div>
             </div>
-            <Progress color="success" value="60" className="bg-subtle-blue progress-xs" />
+            <Progress color="success" value={weatherData.humidity} className="bg-subtle-blue progress-xs" />
             <p>
-              <small>
-                <span className="circle bg-default text-white mr-2">
-                  <i className="fa fa-chevron-up" />
-                </span>
-              </small>
-              humidity<span className="fw-semi-bold">&nbsp;17% higher</span>
-              &nbsp;than yesterday
+              {weatherData.humidity - pastWeatherData.humidity > 0 ? (
+                <>
+                  <small>
+                    <span className="circle bg-default text-white mr-2">
+                      <i className="fa fa-chevron-up" />
+                    </span>
+                  </small>
+                  Humidity<span className="fw-semi-bold">&nbsp;{weatherData.humidity - pastWeatherData.humidity}% higher</span>
+                  &nbsp;than yesterday
+                </>
+              ) : (
+                <>
+                  <small>
+                    <span className="circle bg-default text-white mr-2">
+                      <i className="fa fa-chevron-down" />
+                    </span>
+                  </small>
+                  Humidity<span className="fw-semi-bold">&nbsp;{Math.abs(weatherData.humidity - pastWeatherData.humidity)}% lower</span>
+                  &nbsp;than yesterday
+                </>
+              )}
             </p>
           </Widget>
         </Col>
         <Col lg={6} xl={4} xs={12}>
-          <Widget title={<h6> Etc </h6>}>
+          <Widget title={<h6> Wind </h6>}>
             <div className="stats-row">
               <div className="stat-item">
-                <h6 className="name fs-sm">temp#1</h6>
-                <p className="value">value#1</p>
+                <h6 className="name">Wind Direction</h6>
+                <p className="value">{weatherData.windDirection} deg</p>
               </div>
               <div className="stat-item">
-                <h6 className="name fs-sm">temp#2</h6>
-                <p className="value">value#2</p>
-              </div>
-              <div className="stat-item">
-                <h6 className="name fs-sm">temp#2</h6>
-                <p className="value">value#3</p>
+                <h6 className="name">Wind Speed</h6>
+                <p className="value">{weatherData.windSpeed} m/s</p>
               </div>
             </div>
-            <Progress color="bg-primary" value="60" className="bg-subtle-blue progress-xs" />
+            <Progress color="primary" value={weatherData.windSpeed * 2} className="bg-subtle-blue progress-xs" />
             <p>
-              <small>
-                <span className="circle bg-default text-white mr-2">
-                  <i className="fa fa-plus" />
-                </span>
-              </small>
-              <span className="fw-semi-bold">41 higher</span>
-              &nbsp;than yesterday
+              {weatherData.windSpeed - pastWeatherData.windSpeed > 0 ? (
+                <>
+                  <small>
+                    <span className="circle bg-default text-white mr-2">
+                      <i className="fa fa-chevron-up" />
+                    </span>
+                  </small>
+                  Wind Speed<span className="fw-semi-bold">&nbsp;{weatherData.windSpeed - pastWeatherData.windSpeed}m/s faster</span>
+                  &nbsp;than yesterday
+                </>
+              ) : (
+                <>
+                  <small>
+                    <span className="circle bg-default text-white mr-2">
+                      <i className="fa fa-chevron-down" />
+                    </span>
+                  </small>
+                  Wind Speed<span className="fw-semi-bold">&nbsp;{Math.abs(weatherData.windSpeed - pastWeatherData.windSpeed)}m/s slower</span>
+                  &nbsp;than yesterday
+                </>
+              )}
             </p>
           </Widget>
         </Col>

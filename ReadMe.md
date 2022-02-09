@@ -46,12 +46,14 @@ DEPLOY_SERVER_URL=#server url
 
 ```
 REACT_APP_API_HOST=http://localhost:8081/api
+REACT_APP_WEATHER_API_KEY=#your open api key (using http://apis.data.go.kr)
 ```
 
 3. in <mark>.env.production</mark>, enter the following below.
 
 ```
 REACT_APP_API_HOST=/api
+REACT_APP_WEATHER_API_KEY=#your open api key (using http://apis.data.go.kr)
 ```
 
 # start project
