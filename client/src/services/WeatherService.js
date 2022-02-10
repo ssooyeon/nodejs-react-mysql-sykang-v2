@@ -59,8 +59,6 @@ class WeatherService {
     const API_URL = `weather/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst?serviceKey=${process.env.REACT_APP_WEATHER_API_KEY}&numOfRows=100&pageNo=1&base_date=${base_date}&base_time=${base_time}&nx=67&ny=101&dataType=JSON`;
 
     return axios.get(API_URL).then((data) => {
-      console.log("calling..");
-      console.log(API_URL);
       if (data.data.response.body !== undefined) {
         const apiData = data.data.response.body.items;
 

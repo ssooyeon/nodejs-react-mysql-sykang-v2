@@ -115,7 +115,7 @@ export default function Dashboard() {
         const pastWeather = {
           temp: res.t1h, // 기온c
           humidity: res.reh, // 습도%
-          windSpeed: res.wsd,
+          windSpeed: res.wsd, // 풍속m/s
         };
         setPastWeatherData(pastWeather);
       })
