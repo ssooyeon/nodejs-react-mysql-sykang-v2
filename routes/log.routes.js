@@ -4,6 +4,7 @@ module.exports = (app) => {
 
   router.post("/", logs.create);
   router.get("/", logs.findAll);
+  router.get("/message/:message", logs.findAllByMessage);
   router.get("/:id", logs.findOne);
 
   app.use("/api/logs", router);

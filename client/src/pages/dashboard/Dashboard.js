@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Progress, Button } from "reactstrap";
+import { Row, Col, Progress, Button, FormGroup, InputGroup, Input } from "reactstrap";
 import Moment from "react-moment";
 import Widget from "../../components/Widget";
 import Calendar from "./components/calendar/Calendar";
 import AnimateNumber from "react-animated-number";
+import dateTime from "date-and-time";
 import s from "./Dashboard.module.scss";
 
 import MonitoringService from "../../services/MonitoringService";
@@ -15,8 +16,8 @@ const skys = ["", "Sunny", "", "A lot of Clouds", "Cloudy"];
 
 export default function Dashboard() {
   const initialWeather = {
-    baseDateTime: "",
-    fcstDateTime: "",
+    baseDateTime: "", // 발표날짜
+    fcstDateTime: "", // 측정날짜
     precipitationStatus: "", // 강수형태
     precipitation: "", // 강수량
     skyStatus: "", // 하늘상태
@@ -39,6 +40,7 @@ export default function Dashboard() {
   const [pastWeatherData, setPastWeatherData] = useState(initialPastWeather);
 
   const [logList, setLogList] = useState([]);
+  const [searchLogMsg, setSearchLogMsg] = useState("");
 
   useEffect(() => {
     getSystemUsage();
@@ -90,8 +92,8 @@ export default function Dashboard() {
       .then((res) => {
         if (res !== null) {
           const weather = {
-            baseDateTime: res.baseDate + " " + res.baseTime,
-            fcstDateTime: res.fcstDate + " " + res.fcstTime,
+            baseDateTime: res.baseDate + " " + res.baseTime, // 발표날짜
+            fcstDateTime: res.fcstDate + " " + res.fcstTime, // 측정날짜
             precipitationStatus: precipitations[res.pty], // 강수형태1-4
             precipitation: res.rn1, // 강수량mm
             skyStatus: skys[res.sky], // 하늘상태1-4
@@ -135,9 +137,23 @@ export default function Dashboard() {
   };
 
   const isSameDay = (date) => {
-    const day = new Date(date).getDay();
-    const today = new Date().getDay();
+    const day = dateTime.format(new Date(date), "YYYYMMDD");
+    const today = dateTime.format(new Date(), "YYYYMMDD");
     return day === today;
+  };
+
+  const searchLog = () => {
+    if (searchLogMsg === "" || searchLogMsg === undefined || searchLogMsg === null) {
+      getLogList();
+    } else {
+      LogService.findByMessage(searchLogMsg)
+        .then((res) => {
+          setLogList(res.data);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
   };
 
   return (
@@ -417,7 +433,21 @@ export default function Dashboard() {
               </div>
             </div>
             <footer className="bg-widget-transparent mt">
-              <input type="search" className="form-control form-control-sm bg-custom-dark border-0" placeholder="Search" />
+              <FormGroup className="mt">
+                <InputGroup className="input-group-no-border">
+                  <Input
+                    id="searchLogMsg"
+                    className="input-transparent pl-3 form-control-sm"
+                    value={searchLogMsg}
+                    onChange={(e) => setSearchLogMsg(e.target.value)}
+                    type="text"
+                    placeholder="Search (log message)"
+                  />
+                  <Button color="inverse" className="social-button" size="xs" onClick={searchLog}>
+                    <i className="fa fa-search"></i>
+                  </Button>
+                </InputGroup>
+              </FormGroup>
             </footer>
           </Widget>
         </Col>

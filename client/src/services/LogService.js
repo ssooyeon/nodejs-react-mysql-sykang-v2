@@ -11,6 +11,11 @@ class LogService {
     return http.get(`/logs/${id}`);
   }
 
+  // 로그 내용 조회
+  findByMessage(message) {
+    return http.get(`/logs/message/${message}`);
+  }
+
   // 로그 생성
   create(data) {
     return http.post("/logs", data);

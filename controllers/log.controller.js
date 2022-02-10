@@ -1,5 +1,6 @@
 const db = require("../models");
 const Log = db.logs;
+const Op = db.Sequelize.Op;
 
 /**
  * 로그 생성
@@ -47,6 +48,27 @@ exports.findOne = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({ message: err.message || `Error retrieving Log with id=${id}` });
+    });
+};
+
+/**
+ * 로그 내용으로 조회
+ */
+exports.findAllByMessage = (req, res) => {
+  console.log(req.params);
+  const message = req.params.message;
+  const condition = message ? { message: { [Op.like]: `%${message}%` } } : null;
+  Log.findAll({
+    where: condition,
+    order: [["createdAt", "DESC"]],
+    offset: 0,
+    limit: 10,
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({ message: err.message || "Some error occurred while retrieving logs using message." });
     });
 };
 
