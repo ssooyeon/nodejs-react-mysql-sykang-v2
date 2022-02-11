@@ -40,6 +40,7 @@ export default function Dashboard() {
   const [cpuPercent, setCpuPercent] = useState(0);
   const [memoryPercent, setMemoryPercent] = useState(0);
   const [diskPercent, setDiskPercent] = useState(0);
+  const [systemUpdateDate, setSystemUpdateDate] = useState(new Date());
 
   const [firstWeatherData, setFirstWeatherData] = useState(initial1stWeather);
   const [secondWeatherData, setSecondWeatherData] = useState(initial2ndWeather);
@@ -51,6 +52,7 @@ export default function Dashboard() {
 
   const [logList, setLogList] = useState([]);
   const [searchLogMsg, setSearchLogMsg] = useState("");
+  const [logUpdateDate, setLogUpdateDate] = useState(new Date());
 
   useEffect(() => {
     getSystemUsage();
@@ -63,6 +65,7 @@ export default function Dashboard() {
     getCpuPercent();
     getMemoryPercent();
     getDiskPercent();
+    setSystemUpdateDate(new Date());
   };
 
   // cpu usage
@@ -125,6 +128,8 @@ export default function Dashboard() {
           WeatherService.getPastWeather("temp").then((res) => {
             setPastTemp(res);
           });
+        } else {
+          console.log("1st weather is null");
         }
       })
       .catch((e) => {
@@ -150,6 +155,8 @@ export default function Dashboard() {
           WeatherService.getPastWeather("humidity").then((res) => {
             setPastHumidity(res);
           });
+        } else {
+          console.log("2nd weather is null");
         }
       })
       .catch((e) => {
@@ -174,6 +181,8 @@ export default function Dashboard() {
           WeatherService.getPastWeather("wind").then((res) => {
             setPastWindSpeed(res);
           });
+        } else {
+          console.log("3rd weather is null");
         }
       })
       .catch((e) => {
@@ -184,6 +193,7 @@ export default function Dashboard() {
   // 로그 리스트 중 최신 10개 조회
   const getLogList = () => {
     setSearchLogMsg("");
+    setLogUpdateDate(new Date());
     LogService.getAll()
       .then((res) => {
         setLogList(res.data);
@@ -244,7 +254,7 @@ export default function Dashboard() {
                 System
                 <span className="fw-semi-bold">&nbsp;Usage</span>&nbsp;
                 <span style={{ fontSize: "10px", fontStyle: "italic" }}>
-                  lasted updated: <Moment format="YYYY-MM-DD HH:mm">{new Date()}</Moment>
+                  lasted updated: <Moment format="YYYY-MM-DD HH:mm">{systemUpdateDate}</Moment>
                 </span>
               </h5>
             }
@@ -475,7 +485,7 @@ export default function Dashboard() {
                 {" "}
                 Logs{" "}
                 <span style={{ fontSize: "10px", fontStyle: "italic" }}>
-                  lasted updated: <Moment format="YYYY-MM-DD HH:mm">{new Date()}</Moment>
+                  lasted updated: <Moment format="YYYY-MM-DD HH:mm">{logUpdateDate}</Moment>
                 </span>
               </h6>
             }

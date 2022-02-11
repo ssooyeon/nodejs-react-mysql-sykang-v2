@@ -55,7 +55,6 @@ exports.findOne = (req, res) => {
  * 로그 내용으로 조회
  */
 exports.findAllByMessage = (req, res) => {
-  console.log(req.params);
   const message = req.params.message;
   const condition = message ? { message: { [Op.like]: `%${message}%` } } : null;
   Log.findAll({
