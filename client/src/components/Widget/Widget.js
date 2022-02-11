@@ -66,6 +66,8 @@ class Widget extends React.Component {
       reloading: false,
       modal: false,
       apiData: "",
+      dataType: props.dataType,
+      refreshFun: props.refreshFun,
     };
   }
 
@@ -99,6 +101,8 @@ class Widget extends React.Component {
   };
 
   handleReload = () => {
+    this.state.refreshFun(); // custom
+
     const { widgetType, updateWidgetData } = this.props;
     const type = widgetType;
     if (type) {
@@ -149,6 +153,8 @@ class Widget extends React.Component {
       widgetType,
       updateWidgetData,
       options, //eslint-disable-line
+      dataType,
+      refreshFun,
       ...attributes
     } = this.props;
     const mainControls = !!(close || fullscreen || collapse || refresh || settings || settingsInverse);

@@ -15,20 +15,25 @@ const precipitations = ["N/A", "Rain", "Rain/Snow", "Snow", "Shower"];
 const skys = ["", "Sunny", "", "A lot of Clouds", "Cloudy"];
 
 export default function Dashboard() {
-  const initialWeather = {
+  const initial1stWeather = {
     baseDateTime: "", // 발표날짜
     fcstDateTime: "", // 측정날짜
-    precipitationStatus: "", // 강수형태
-    precipitation: "", // 강수량
     skyStatus: "", // 하늘상태
     temp: "", // 기온
-    humidity: "", // 습도
-    windDirection: "", // 풍향
-    windSpeed: "", // 풍속
   };
-  const initialPastWeather = {
-    temp: "", // 기온
+
+  const initial2ndWeather = {
+    baseDateTime: "", // 발표날짜
+    fcstDateTime: "", // 측정날짜
     humidity: "", // 습도
+    precipitationStatus: "", // 강수형태
+    precipitation: "", // 강수량
+  };
+
+  const initial3rdWeather = {
+    baseDateTime: "", // 발표날짜
+    fcstDateTime: "", // 측정날짜
+    windDirection: "", // 풍향
     windSpeed: "", // 풍속
   };
 
@@ -36,24 +41,31 @@ export default function Dashboard() {
   const [memoryPercent, setMemoryPercent] = useState(0);
   const [diskPercent, setDiskPercent] = useState(0);
 
-  const [weatherData, setWeatherData] = useState(initialWeather);
-  const [pastWeatherData, setPastWeatherData] = useState(initialPastWeather);
+  const [firstWeatherData, setFirstWeatherData] = useState(initial1stWeather);
+  const [secondWeatherData, setSecondWeatherData] = useState(initial2ndWeather);
+  const [thirdWeatherData, setThirdWeatherData] = useState(initial3rdWeather);
+
+  const [pastTemp, setPastTemp] = useState("");
+  const [pastHumidity, setPastHumidity] = useState("");
+  const [pastWindSpeed, setPastWindSpeed] = useState("");
 
   const [logList, setLogList] = useState([]);
   const [searchLogMsg, setSearchLogMsg] = useState("");
 
   useEffect(() => {
     getSystemUsage();
-    getWeather();
+    getAllWeather();
+    getLogList();
   }, []);
 
+  // 시스템 사용량
   const getSystemUsage = () => {
     getCpuPercent();
     getMemoryPercent();
     getDiskPercent();
-    getLogList();
   };
 
+  // cpu usage
   const getCpuPercent = () => {
     MonitoringService.getCPUUsage()
       .then((res) => {
@@ -65,6 +77,7 @@ export default function Dashboard() {
       });
   };
 
+  // memory usage
   const getMemoryPercent = () => {
     MonitoringService.getMemoryUsage()
       .then((res) => {
@@ -76,6 +89,7 @@ export default function Dashboard() {
       });
   };
 
+  // disk usage
   const getDiskPercent = () => {
     MonitoringService.getDiskUsage()
       .then((res) => {
@@ -87,23 +101,30 @@ export default function Dashboard() {
       });
   };
 
-  const getWeather = () => {
-    WeatherService.getWeathers()
+  // 모든 날씨 정보 조회
+  const getAllWeather = () => {
+    get1stWeather();
+    get2ndWeather();
+    get3rdWeather();
+  };
+
+  // 첫번째 블록 날씨 정보 조회 (지역, 하늘상태, 기온)
+  const get1stWeather = () => {
+    WeatherService.getWeathers("first")
       .then((res) => {
         if (res !== null) {
           const weather = {
             baseDateTime: res.baseDate + " " + res.baseTime, // 발표날짜
             fcstDateTime: res.fcstDate + " " + res.fcstTime, // 측정날짜
-            precipitationStatus: precipitations[res.pty], // 강수형태1-4
-            precipitation: res.rn1, // 강수량mm
             skyStatus: skys[res.sky], // 하늘상태1-4
             temp: res.t1h, // 기온c
-            humidity: res.reh, // 습도%
-            windDirection: res.vec, // 풍향deg
-            windSpeed: res.wsd, // 풍속m/s
           };
-          setWeatherData(weather);
-          getPastWeather();
+          setFirstWeatherData(weather);
+
+          // 하루 전 온도 조회
+          WeatherService.getPastWeather("temp").then((res) => {
+            setPastTemp(res);
+          });
         }
       })
       .catch((e) => {
@@ -111,22 +132,58 @@ export default function Dashboard() {
       });
   };
 
-  const getPastWeather = () => {
-    WeatherService.getPastWeathers()
+  // 두번째 블록 날씨 정보 조회 (습도, 강수형태, 강수량)
+  const get2ndWeather = () => {
+    WeatherService.getWeathers("second")
       .then((res) => {
-        const pastWeather = {
-          temp: res.t1h, // 기온c
-          humidity: res.reh, // 습도%
-          windSpeed: res.wsd, // 풍속m/s
-        };
-        setPastWeatherData(pastWeather);
+        if (res !== null) {
+          const weather = {
+            baseDateTime: res.baseDate + " " + res.baseTime, // 발표날짜
+            fcstDateTime: res.fcstDate + " " + res.fcstTime, // 측정날짜
+            humidity: res.reh, // 습도%
+            precipitationStatus: precipitations[res.pty], // 강수형태1-4
+            precipitation: res.rn1, // 강수량mm
+          };
+          setSecondWeatherData(weather);
+
+          // 하루 전 습도 조회
+          WeatherService.getPastWeather("humidity").then((res) => {
+            setPastHumidity(res);
+          });
+        }
       })
       .catch((e) => {
         console.log(e);
       });
   };
 
+  // 세번째 블록 날씨 정보 조회 (풍향, 풍속)
+  const get3rdWeather = () => {
+    WeatherService.getWeathers("third")
+      .then((res) => {
+        if (res !== null) {
+          const weather = {
+            baseDateTime: res.baseDate + " " + res.baseTime, // 발표날짜
+            fcstDateTime: res.fcstDate + " " + res.fcstTime, // 측정날짜
+            windDirection: res.vec, // 풍향deg
+            windSpeed: res.wsd, // 풍속m/s
+          };
+          setThirdWeatherData(weather);
+
+          // 하루 전 풍속 조회
+          WeatherService.getPastWeather("wind").then((res) => {
+            setPastWindSpeed(res);
+          });
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  // 로그 리스트 중 최신 10개 조회
   const getLogList = () => {
+    setSearchLogMsg("");
     LogService.getAll()
       .then((res) => {
         setLogList(res.data);
@@ -136,12 +193,14 @@ export default function Dashboard() {
       });
   };
 
+  // 로그 생성 날짜가 오늘 날짜인지 확인 (Just Today 문구를 위함)
   const isSameDay = (date) => {
     const day = dateTime.format(new Date(date), "YYYYMMDD");
     const today = dateTime.format(new Date(), "YYYYMMDD");
     return day === today;
   };
 
+  // 로그 리스트 하단 검색 함수
   const searchLog = () => {
     if (searchLogMsg === "" || searchLogMsg === undefined || searchLogMsg === null) {
       getLogList();
@@ -183,13 +242,14 @@ export default function Dashboard() {
               <h5>
                 {" "}
                 System
-                <span className="fw-semi-bold">&nbsp;Usage</span>
-                &nbsp;&nbsp;
-                <Button color="inverse" className="social-button" size="xs" onClick={getSystemUsage}>
-                  <i className="la la-refresh"></i>
-                </Button>
+                <span className="fw-semi-bold">&nbsp;Usage</span>&nbsp;
+                <span style={{ fontSize: "10px", fontStyle: "italic" }}>
+                  lasted updated: <Moment format="YYYY-MM-DD HH:mm">{new Date()}</Moment>
+                </span>
               </h5>
             }
+            dataType="system-usage"
+            refreshFun={getSystemUsage}
             refresh
           >
             <div className="row progress-stats">
@@ -200,7 +260,7 @@ export default function Dashboard() {
               <div className="col-md-1 col-12 text-center">
                 <span className="status rounded rounded-lg bg-default text-light">
                   <small>
-                    <AnimateNumber value={cpuPercent} />%
+                    <AnimateNumber value={cpuPercent} stepPrecision={0} />%
                   </small>
                 </span>
               </div>
@@ -214,7 +274,7 @@ export default function Dashboard() {
               <div className="col-md-1 col-12 text-center">
                 <span className="status rounded rounded-lg bg-default text-light">
                   <small>
-                    <AnimateNumber value={memoryPercent} />%
+                    <AnimateNumber value={memoryPercent} stepPrecision={0} />%
                   </small>
                 </span>
               </div>
@@ -228,7 +288,7 @@ export default function Dashboard() {
               <div className="col-md-1 col-12 text-center">
                 <span className="status rounded rounded-lg bg-default text-light">
                   <small>
-                    <AnimateNumber value={diskPercent} />%
+                    <AnimateNumber value={diskPercent} stepPrecision={0} />%
                   </small>
                 </span>
               </div>
@@ -246,7 +306,20 @@ export default function Dashboard() {
 
       <Row>
         <Col lg={6} xl={4} xs={12}>
-          <Widget title={<h6> Location </h6>}>
+          <Widget
+            title={
+              <h6>
+                {" "}
+                Location{" "}
+                <span style={{ fontSize: "10px", fontStyle: "italic" }}>
+                  lasted updated: <Moment format="YYYY-MM-DD HH:mm">{firstWeatherData.baseDateTime}</Moment>
+                </span>
+              </h6>
+            }
+            dataType="weather-temp"
+            refreshFun={get1stWeather}
+            refresh
+          >
             <div className="stats-row">
               <div className="stat-item">
                 <h6 className="name">Location</h6>
@@ -255,20 +328,20 @@ export default function Dashboard() {
               <div className="stat-item">
                 <h6 className="name">Temperature</h6>
                 <p className="value">
-                  {weatherData.temp} ℃ / {weatherData.skyStatus}
+                  {firstWeatherData.temp} ℃ / {firstWeatherData.skyStatus}
                 </p>
               </div>
             </div>
-            <Progress color="danger" value={40 / Math.abs(weatherData.temp)} className="bg-subtle-blue progress-xs" />
+            <Progress color="danger" value={(Math.abs(firstWeatherData.temp) / 40) * 100} className="bg-subtle-blue progress-xs" />
             <p>
-              {weatherData.temp - pastWeatherData.temp > 0 ? (
+              {firstWeatherData.temp - pastTemp > 0 ? (
                 <>
                   <small>
                     <span className="circle bg-default text-white mr-2">
                       <i className="fa fa-chevron-up" />
                     </span>
                   </small>
-                  Temperature<span className="fw-semi-bold">&nbsp;{weatherData.temp - pastWeatherData.temp}℃ higher</span>
+                  Temperature<span className="fw-semi-bold">&nbsp;{firstWeatherData.temp - pastTemp}℃ higher</span>
                   &nbsp;than yesterday
                 </>
               ) : (
@@ -278,44 +351,52 @@ export default function Dashboard() {
                       <i className="fa fa-chevron-down" />
                     </span>
                   </small>
-                  Temperature<span className="fw-semi-bold">&nbsp;{Math.abs(weatherData.temp - pastWeatherData.temp)}℃ lower</span>
+                  Temperature<span className="fw-semi-bold">&nbsp;{Math.abs(firstWeatherData.temp - pastTemp)}℃ lower</span>
                   &nbsp;than yesterday
                 </>
               )}
             </p>
-            {/* <p>
-              <span className="fw-semi-bold">
-                lasted updated: <Moment format="YYYY-MM-DD HH:mm">{weatherData.baseDateTime}</Moment>
-              </span>
-            </p> */}
           </Widget>
         </Col>
         <Col lg={6} xl={4} xs={12}>
-          <Widget title={<h6> Humidity & Precipitation </h6>}>
+          <Widget
+            title={
+              <h6>
+                {" "}
+                Humidity & Precipitation{" "}
+                <span style={{ fontSize: "10px", fontStyle: "italic" }}>
+                  lasted updated: <Moment format="YYYY-MM-DD HH:mm">{secondWeatherData.baseDateTime}</Moment>
+                </span>
+              </h6>
+            }
+            dataType="weather-humidity"
+            refreshFun={get2ndWeather}
+            refresh
+          >
             <div className="stats-row">
               <div className="stat-item">
                 <h6 className="name">Humidity</h6>
-                <p className="value">{weatherData.humidity} %</p>
+                <p className="value">{secondWeatherData.humidity} %</p>
               </div>
               <div className="stat-item">
                 <h6 className="name">Precipitation Status</h6>
-                <p className="value">{weatherData.precipitationStatus}</p>
+                <p className="value">{secondWeatherData.precipitationStatus}</p>
               </div>
               <div className="stat-item">
                 <h6 className="name">Precipitation Volumn</h6>
-                <p className="value">{weatherData.precipitation === "강수없음" ? "N/A" : <>{weatherData.precipitation} mm</>}</p>
+                <p className="value">{secondWeatherData.precipitation === "강수없음" ? "N/A" : <>{secondWeatherData.precipitation} mm</>}</p>
               </div>
             </div>
-            <Progress color="success" value={weatherData.humidity} className="bg-subtle-blue progress-xs" />
+            <Progress color="success" value={(secondWeatherData.humidity / 90) * 100} className="bg-subtle-blue progress-xs" />
             <p>
-              {weatherData.humidity - pastWeatherData.humidity > 0 ? (
+              {secondWeatherData.humidity - pastHumidity > 0 ? (
                 <>
                   <small>
                     <span className="circle bg-default text-white mr-2">
                       <i className="fa fa-chevron-up" />
                     </span>
                   </small>
-                  Humidity<span className="fw-semi-bold">&nbsp;{weatherData.humidity - pastWeatherData.humidity}% higher</span>
+                  Humidity<span className="fw-semi-bold">&nbsp;{secondWeatherData.humidity - pastHumidity}% higher</span>
                   &nbsp;than yesterday
                 </>
               ) : (
@@ -325,7 +406,7 @@ export default function Dashboard() {
                       <i className="fa fa-chevron-down" />
                     </span>
                   </small>
-                  Humidity<span className="fw-semi-bold">&nbsp;{Math.abs(weatherData.humidity - pastWeatherData.humidity)}% lower</span>
+                  Humidity<span className="fw-semi-bold">&nbsp;{Math.abs(secondWeatherData.humidity - pastHumidity)}% lower</span>
                   &nbsp;than yesterday
                 </>
               )}
@@ -333,27 +414,40 @@ export default function Dashboard() {
           </Widget>
         </Col>
         <Col lg={6} xl={4} xs={12}>
-          <Widget title={<h6> Wind </h6>}>
+          <Widget
+            title={
+              <h6>
+                {" "}
+                Wind{" "}
+                <span style={{ fontSize: "10px", fontStyle: "italic" }}>
+                  lasted updated: <Moment format="YYYY-MM-DD HH:mm">{thirdWeatherData.baseDateTime}</Moment>
+                </span>
+              </h6>
+            }
+            dataType="weather-wind"
+            refreshFun={get3rdWeather}
+            refresh
+          >
             <div className="stats-row">
               <div className="stat-item">
                 <h6 className="name">Wind Direction</h6>
-                <p className="value">{weatherData.windDirection} deg</p>
+                <p className="value">{thirdWeatherData.windDirection} deg</p>
               </div>
               <div className="stat-item">
                 <h6 className="name">Wind Speed</h6>
-                <p className="value">{weatherData.windSpeed} m/s</p>
+                <p className="value">{thirdWeatherData.windSpeed} m/s</p>
               </div>
             </div>
-            <Progress color="primary" value={weatherData.windSpeed * 2} className="bg-subtle-blue progress-xs" />
+            <Progress color="primary" value={(thirdWeatherData.windSpeed / 60) * 100} className="bg-subtle-blue progress-xs" />
             <p>
-              {weatherData.windSpeed - pastWeatherData.windSpeed > 0 ? (
+              {thirdWeatherData.windSpeed - pastWindSpeed > 0 ? (
                 <>
                   <small>
                     <span className="circle bg-default text-white mr-2">
                       <i className="fa fa-chevron-up" />
                     </span>
                   </small>
-                  Wind Speed<span className="fw-semi-bold">&nbsp;{weatherData.windSpeed - pastWeatherData.windSpeed}m/s faster</span>
+                  Wind Speed<span className="fw-semi-bold">&nbsp;{thirdWeatherData.windSpeed - pastWindSpeed}m/s faster</span>
                   &nbsp;than yesterday
                 </>
               ) : (
@@ -363,7 +457,8 @@ export default function Dashboard() {
                       <i className="fa fa-chevron-down" />
                     </span>
                   </small>
-                  Wind Speed<span className="fw-semi-bold">&nbsp;{Math.abs(weatherData.windSpeed - pastWeatherData.windSpeed)}m/s slower</span>
+                  Wind Speed
+                  <span className="fw-semi-bold">&nbsp;{Math.abs(thirdWeatherData.windSpeed - pastWindSpeed)}m/s slower</span>
                   &nbsp;than yesterday
                 </>
               )}
@@ -374,7 +469,20 @@ export default function Dashboard() {
 
       <Row>
         <Col lg={12} xs={12}>
-          <Widget title={<h6> Logs</h6>} refresh>
+          <Widget
+            title={
+              <h6>
+                {" "}
+                Logs{" "}
+                <span style={{ fontSize: "10px", fontStyle: "italic" }}>
+                  lasted updated: <Moment format="YYYY-MM-DD HH:mm">{new Date()}</Moment>
+                </span>
+              </h6>
+            }
+            dataType="lastest-logs"
+            refreshFun={getLogList}
+            refresh
+          >
             <div className="widget-body undo_padding">
               <div className="list-group list-group-lg">
                 {logList.map((log) => {
