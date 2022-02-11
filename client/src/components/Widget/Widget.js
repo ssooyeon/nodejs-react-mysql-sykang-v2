@@ -220,7 +220,7 @@ class Widget extends React.Component {
                   </button>
                 </span>
               )}
-              {!fullscreened &&
+              {/* {!fullscreened &&
                 (close && !prompt ? (
                   <button onClick={this.handleClose} id={`closeId-${randomId}`}>
                     {typeof close === "string" ? <strong className="text-gray-light">{close}</strong> : <i className="la la-remove" />}
@@ -239,7 +239,7 @@ class Widget extends React.Component {
                       </UncontrolledTooltip>
                     )}
                   </button>
-                ))}
+                ))} */}
             </div>
           )}
           {customDropDown && (

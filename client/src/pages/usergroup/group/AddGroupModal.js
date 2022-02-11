@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Alert, Button, FormGroup, InputGroup, InputGroupAddon, InputGroupText, Input, Label, Modal, ModalBody, ModalFooter } from "reactstrap";
 
 import { createGroup } from "../../../actions/groups";
-import UserService from "../../../services/UserService";
 import GroupService from "../../../services/GroupService";
 
 export default function AddGroupModal({ open, handleCloseClick, handleResetInput }) {

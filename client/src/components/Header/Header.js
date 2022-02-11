@@ -31,10 +31,11 @@ import "animate.css";
 
 import { logout } from "../../actions/auth";
 
+const searchOpen = false;
+
 export default function Header(props) {
   const [supportOpen, setSupportOpen] = useState(false);
   const [searchFocused, setSearchFocused] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
 
   const dispatch = useDispatch();
