@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Popover, PopoverHeader, PopoverBody, Tooltip } from "reactstrap";
 import s from "./Calendar.module.scss";
 
@@ -22,7 +22,7 @@ export default function Day(props) {
         `${s.day}` +
         (day.isToday ? ` ${s.today}` : "") +
         (day.isCurrentMonth ? "" : ` ${s.differentMonth}`) +
-        (day.date.isSame(selected) ? ` ${s.selected}` : "") +
+        (day.start.isSame(selected) ? ` ${s.selected}` : "") +
         (day.hasEvents ? ` ${s.hasEvents}` : "")
       }
     >
@@ -41,7 +41,7 @@ export default function Day(props) {
           >
             {" "}
             {day.number}
-            {day.itemStyle ? <span style={{ backgroundColor: `${day.itemStyle}` }} className={s.calendarDot}></span> : ""}
+            {day.backgroundColor ? <span style={{ backgroundColor: `${day.backgroundColor}` }} className={s.calendarDot}></span> : ""}
           </a>
           <Tooltip placement="top" isOpen={tooltipShow} toggle={toggleTooltip} target={`Tooltip${day.number}`}>
             {day.title}
@@ -52,11 +52,11 @@ export default function Day(props) {
           <div onClick={togglePopover} id={`Popover${day.number}`} className={s.dayNumber}>
             {" "}
             {day.number}
-            {day.itemStyle ? <span style={{ backgroundColor: `${day.itemStyle}` }} className={s.calendarDot}></span> : ""}
+            {day.backgroundColor ? <span style={{ backgroundColor: `${day.backgroundColor}` }} className={s.calendarDot}></span> : ""}
           </div>
           <Popover placement="top" isOpen={popoverShow} target={`Popover${day.number}`} toggle={togglePopover}>
             <PopoverHeader>{day.title}</PopoverHeader>
-            <PopoverBody>{day.info}</PopoverBody>
+            <PopoverBody>{day.description}</PopoverBody>
           </Popover>
         </React.Fragment>
       ) : (

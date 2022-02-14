@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Day from "./Day";
 import uuid from "uuid/v4";
+import moment from "moment/moment";
 import s from "./Calendar.module.scss";
 
 export default function Week(props) {
@@ -11,17 +12,19 @@ export default function Week(props) {
   for (var i = 0; i < 7; i++) {
     let dayHasEvents = false,
       title = "",
-      info = "",
-      itemStyle = "",
+      description = "",
+      backgroundColor = "",
       link = "";
 
     for (var j = 0; j < selectedMonthEvents.length; j++) {
-      if (selectedMonthEvents[j].date.isSame(date, "day")) {
+      const sdt = moment(selectedMonthEvents[j].start, "YYYY-MM-DD");
+      if (sdt.isSame(date, "day")) {
         dayHasEvents = true;
         title = selectedMonthEvents[j].title ? selectedMonthEvents[j].title : "";
-        info = selectedMonthEvents[j].info ? selectedMonthEvents[j].info : "";
-        itemStyle = selectedMonthEvents[j].itemStyle ? selectedMonthEvents[j].itemStyle : "";
+        description = selectedMonthEvents[j].description ? selectedMonthEvents[j].description : "";
+        backgroundColor = selectedMonthEvents[j].backgroundColor ? selectedMonthEvents[j].backgroundColor : "";
         link = selectedMonthEvents[j].link ? selectedMonthEvents[j].link : "";
+        // link = "/";
       }
     }
 
@@ -30,11 +33,11 @@ export default function Week(props) {
       number: date.date(),
       isCurrentMonth: date.month() === currentMonthView.month(),
       isToday: date.isSame(new Date(), "day"),
-      date: date,
+      start: date,
       hasEvents: dayHasEvents,
       title: title,
-      info: info,
-      itemStyle: itemStyle,
+      description: description,
+      backgroundColor: backgroundColor,
       link: link,
     };
 
