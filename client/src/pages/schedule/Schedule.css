@@ -1,0 +1,9 @@
+.fc-direction-ltr .fc-daygrid-event.fc-event-end,
+.fc-direction-rtl .fc-daygrid-event.fc-event-start,
+.fc-v-event,
+.fc-h-event {
+  border: none !important;
+}
+.fc-popover {
+  background: #000 !important;
+}

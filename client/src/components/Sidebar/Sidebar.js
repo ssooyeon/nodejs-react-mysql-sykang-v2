@@ -128,15 +128,26 @@ class Sidebar extends React.Component {
             ]}
           />
           {this.props.currentUser ? (
-            <LinksGroup
-              onActiveSidebarItemChange={(t) => this.props.dispatch(changeActiveSidebarItem(t))}
-              activeItem={this.props.activeItem}
-              header="Profile"
-              isHeader
-              iconName={<NotificationsIcon className={s.menuIcon} />}
-              link="/app/profile"
-              index="profile"
-            />
+            <>
+              <LinksGroup
+                onActiveSidebarItemChange={(t) => this.props.dispatch(changeActiveSidebarItem(t))}
+                activeItem={this.props.activeItem}
+                header="Profile"
+                isHeader
+                iconName={<NotificationsIcon className={s.menuIcon} />}
+                link="/app/profile"
+                index="profile"
+              />
+              <LinksGroup
+                onActiveSidebarItemChange={(t) => this.props.dispatch(changeActiveSidebarItem(t))}
+                activeItem={this.props.activeItem}
+                header="Schedule"
+                isHeader
+                iconName={<NotificationsIcon className={s.menuIcon} />}
+                link="/app/schedule"
+                index="Schedule"
+              />
+            </>
           ) : null}
         </ul>
         <h5 className={s.navTitle}>

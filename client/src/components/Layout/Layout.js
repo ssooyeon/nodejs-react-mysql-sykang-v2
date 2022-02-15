@@ -11,6 +11,7 @@ import AddBoard from "../../pages/board/AddBoard";
 import BoardDetail from "../../pages/board/BoardDetail";
 import EditBoard from "../../pages/board/EditBoard";
 import Profile from "../../pages/profile/Profile";
+import Schedule from "../../pages/schedule/Schedule";
 import Charts from "../../pages/monitoring/charts/Charts";
 import Dashboard from "../../pages/dashboard";
 
@@ -76,6 +77,7 @@ class Layout extends React.Component {
                     <Route path="/app/board/detail/:id" exact component={BoardDetail} />
                     <Route path="/app/board/edit/:id" exact component={EditBoard} />
                     <Route path="/app/profile" exact component={Profile} />
+                    <Route path="/app/schedule" exact component={Schedule} />
                   </Switch>
                 </CSSTransition>
               </TransitionGroup>
