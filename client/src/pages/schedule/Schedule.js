@@ -11,12 +11,21 @@ import rrulePlugin from "@fullcalendar/rrule";
 import { Row, Col, Alert, Button, FormGroup, InputGroup, InputGroupAddon, InputGroupText, Input, Label } from "reactstrap";
 
 import Widget from "../../components/Widget";
+import Toggle from "./components/Toggle";
 import s from "./Schedule.module.scss";
 import "./Schedule.css";
 
 import { retrieveSchedules, updateSchedule } from "../../actions/schedules";
 import { retrieveGroups } from "../../actions/groups";
 import ScheduleService from "../../services/ScheduleService";
+
+const weekAbbr = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
+const groupInitState = {
+  id: "",
+  name: "",
+  description: "",
+  users: [],
+};
 
 export default function Schedule(props) {
   const { user: currentUser } = useSelector((state) => state.auth);
@@ -30,9 +39,184 @@ export default function Schedule(props) {
   const [editScheduleModalOpen, setEditScheduleModalOpen] = useState(false); // schedule update modal open
   const [editSchedule, setEditSchedule] = useState([]); // update 할 schedule object
 
+  const [selectedGroup, setSelectedGroup] = useState(groupInitState); // 선택된 그룹 object
+  const [selectedUserIds, setSelectedUserIds] = useState([]); // 선택된 그룹에서 선택된 사용자 ID list(viewMode: users)
+  const [selectedGroupIds, setSelectedGroupIds] = useState([]); // 선택된 그룹 ID list (viewMode: groups)
+
+  const [isUserView, setIsUserView] = useState(true); // 모드 설정: 사용자 별 검색이 기본
+
   useEffect(() => {
-    dispatch(retrieveSchedules());
+    dispatch(retrieveGroups());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (groups.length > 0) {
+      console.log(groups);
+      loadCurrentUserSchedule(isUserView);
+    }
+  }, [groups]);
+
+  // isUserView===users일 때, currentUser의 group의 schedule을 모두 표출(기본)
+  const loadCurrentUserSchedule = (isUser) => {
+    const currentGroupId = currentUser.groupId;
+    if (!isUser) {
+      setSelectedGroupIds([currentUser.groupId]);
+    }
+    const currentGroup = groups.find((x) => x.id === currentGroupId);
+    console.log(currentGroupId);
+    setSelectedGroup(currentGroup);
+
+    const selectUserIds = currentGroup.users.map((obj) => obj.id);
+    setSelectedUserIds(selectUserIds);
+
+    searchSchedule(selectUserIds, currentGroup);
+  };
+
+  /************************************** search ************************************** */
+
+  // toggle button click
+  const handleToggle = (e) => {
+    const isUser = e.target.checked;
+    setIsUserView(isUser);
+    setSelectedGroupIds([]);
+    setSelectedUserIds([]);
+    loadCurrentUserSchedule(isUser);
+  };
+
+  // viewMode===users에서 group select option 변경
+  const handleGroupSelectChange = (e) => {
+    const selectId = e.target.value;
+    // if All group
+    if (selectId === "") {
+      setSelectedGroup(groupInitState); // groupInitState의 id는 ""이므로 searchSchedule에서 전체 조회가 가능
+      setSelectedUserIds([]);
+    } else {
+      // 선택한 그룹 setSeletedGroup에 저장
+      const selectGroup = groups.find((x) => x.id === parseInt(selectId));
+      setSelectedGroup(selectGroup);
+      // 그룹 변경 시 기본적으로 해당 그룹 멤버 전체 선택
+      const selectUserIds = selectGroup.users && selectGroup.users.map((obj) => obj.id);
+      setSelectedUserIds(selectUserIds);
+    }
+  };
+
+  // viewMode===users에서 사용자 전체 체크박스 클릭
+  const handleUserAllCheckbox = (e) => {
+    const checked = e.target.checked;
+    if (checked) {
+      const selectUserIds = selectedGroup.users && selectedGroup.users.map((obj) => obj.id);
+      setSelectedUserIds(selectUserIds);
+    } else {
+      setSelectedUserIds([]);
+    }
+  };
+
+  //viewMode===groups에서 그룹 전체 체크박스 클릭
+  const handleGroupAllCheckbox = (e) => {
+    const checked = e.target.checked;
+    if (checked) {
+      // group all이 체크되어 있으면 모든 그룹의 모든 유저들을 setSelectedUserIds에 삽입
+      const selectedGroupIds = groups.map((obj) => obj.id);
+      setSelectedGroupIds(selectedGroupIds);
+      let userIdArr = [];
+      for (let idx in groups) {
+        const users = groups[idx].users;
+        const userIds = users.map((obj) => obj.id);
+        userIdArr = [...userIdArr, ...userIds];
+      }
+      setSelectedUserIds(userIdArr);
+    } else {
+      setSelectedGroupIds([]);
+      setSelectedUserIds([]);
+    }
+  };
+
+  // viewMode===users에서 사용자 체크박스 클릭
+  const handleUserCheckbox = (e) => {
+    const checkedId = parseInt(e.target.value);
+    const checked = e.target.checked;
+    if (checked) {
+      // checkbox가 체크되었으면 userIds에 추가
+      setSelectedUserIds([...selectedUserIds, checkedId]);
+    } else {
+      // checkbox가 해제되었으면 userIds에서 삭제
+      setSelectedUserIds(selectedUserIds.filter((id) => id !== checkedId));
+    }
+  };
+
+  // viewMode===groups에서 그룹 체크박스 클릭
+  const handleGroupCheckbox = (e) => {
+    const checkedId = parseInt(e.target.value);
+    const checked = e.target.checked;
+
+    const checkedGroup = groups.find((x) => x.id === checkedId);
+    const users = checkedGroup.users;
+    const userIds = users.map((obj) => obj.id);
+    if (checked) {
+      setSelectedGroupIds([...selectedGroupIds, checkedId]);
+      // checkbox가 체크되었으면 체크된 그룹의 user들을 selectedUserIds에 추가
+      setSelectedUserIds([...selectedUserIds, ...userIds]);
+    } else {
+      setSelectedGroupIds(selectedGroupIds.filter((id) => id !== checkedId));
+      // checkbox가 해제되었으면 해제된 그룹의 user들을 selectedUserIds에서 찾아서 삭제
+      setSelectedUserIds(selectedUserIds.filter((x) => userIds.indexOf(x) < 0));
+    }
+  };
+
+  // viewMode===users에서 선택한 사용자에 따른 스케줄 목록 재 조회
+  const searchSchedule = (users, groups) => {
+    let idParam = users.join(",");
+    // All group이 선택되어 있는 경우 모든 스케줄을 표출
+    if (isUserView && groups.id === "") {
+      dispatch(retrieveSchedules());
+    } else {
+      // 선택된 사용자가 없는 경우
+      if (idParam === "") {
+        idParam = "[]";
+      }
+      const params = {
+        userIdsStr: idParam,
+      };
+      dispatch(retrieveSchedules(params));
+    }
+  };
+
+  /********************************** calendar inner ********************************** */
+
+  // 날짜 클릭: 신규 스케줄 추가 팝업 오픈
+  const handleDateSelect = (e) => {};
+
+  // 기존 스케줄 클릭: 스케줄 수정 팝업 오픈
+  const handleEventClick = (e) => {};
+
+  // 신규 스케줄 추가 후 콜백 함수
+  const handleEventAdd = (e) => {};
+
+  // 스케줄 드래그/리사이즈 후 콜백 함수
+  const handleEventChange = (e) => {};
+
+  // 스케줄 삭제 후 콜백 함수
+  const handleEventRemove = (e) => {};
+
+  // 스케줄 렌더링 전 호출 함수
+  const handleEventContent = (e) => {};
+
+  // 드래그/리사이즈 실행 직전
+  const handleEventAllow = (e) => {};
+
+  // 스케줄 등록 버튼 클릭 및 AddScheduleForm.js 에서 닫기 버튼 클릭
+  const handleAddScheduleModalClick = (value, isDone) => {
+    setAddScheduleModalOpen(value);
+    // 스케줄 신규 등록이 완료되었고, 표출된 스케줄에 current user가 없으면 강제로 current user의 group의 스케줄을 표출
+    // if (isDone && selectedUserIds.find((x) => x !== currentUser.id)) {
+    //   loadCurrentUserSchedule(viewMode);
+    // }
+  };
+
+  // 스케줄 수정 버튼 클릭 및 EditScheduleForm.js 에서 닫기 버튼 클릭
+  const handleEditScheduleModalClick = (value) => {
+    setEditScheduleModalOpen(value);
+  };
 
   return (
     <div className={s.root}>
@@ -44,11 +228,105 @@ export default function Schedule(props) {
           <Widget>
             <h3>
               <span className="fw-semi-bold">My Schedule</span>
+              <div className={s.toggleLabel}>
+                <Toggle
+                  checked={isUserView}
+                  text={isUserView ? "users" : "groups"}
+                  size="default"
+                  disabled={false}
+                  onChange={handleToggle}
+                  offstyle="btn-danger"
+                  onstyle="btn-success"
+                />
+              </div>
             </h3>
             <p>
               {"Indicates a To-Do of "}
               <code>my schedule</code> with title, description, date.
             </p>
+            <div style={{ display: "flex" }}>
+              {isUserView ? (
+                <>
+                  <InputGroup className="input-group-no-border" style={{ width: "250px" }}>
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="la la-group text-white" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input
+                      id="group"
+                      className="input-transparent pl-3"
+                      type="select"
+                      name="group"
+                      value={selectedGroup.id || ""}
+                      onChange={handleGroupSelectChange}
+                    >
+                      {groups &&
+                        groups.map((group, index) => {
+                          return (
+                            <option value={group.id} key={group.id}>
+                              {group.name}
+                            </option>
+                          );
+                        })}
+                    </Input>
+                  </InputGroup>
+                  <div style={{ marginTop: "7px", marginLeft: "10px" }}>
+                    <input
+                      type="checkbox"
+                      checked={selectedUserIds.length === selectedGroup.users.length}
+                      onChange={(e) => handleUserAllCheckbox(e)}
+                    />
+                    <label>&nbsp; ALL &nbsp;</label>
+                    {selectedGroup.users &&
+                      selectedGroup.users.map((item, index) => {
+                        return (
+                          <>
+                            <input
+                              type="checkbox"
+                              key={item.id}
+                              value={item.id}
+                              checked={selectedUserIds.includes(item.id)}
+                              onChange={(e) => handleUserCheckbox(e)}
+                            />
+                            <label>&nbsp; {item.account} &nbsp;</label>
+                          </>
+                        );
+                      })}
+                  </div>
+
+                  <Button color="inverse" className="mr-2" size="xs" onClick={() => searchSchedule(selectedUserIds, selectedGroup)}>
+                    load
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <div style={{ marginTop: "7px", marginLeft: "10px" }}>
+                    <input type="checkbox" checked={selectedGroupIds.length === groups.length} onChange={(e) => handleGroupAllCheckbox(e)} />
+                    <label>&nbsp; ALL &nbsp;</label>
+                    {groups &&
+                      groups.map((item, index) => {
+                        return (
+                          <>
+                            <input
+                              type="checkbox"
+                              key={item.id}
+                              value={item.id}
+                              checked={selectedGroupIds.includes(item.id)}
+                              onChange={(e) => handleGroupCheckbox(e)}
+                            />
+                            <label>&nbsp; {item.name} &nbsp;</label>
+                          </>
+                        );
+                      })}
+                  </div>
+                  <Button color="inverse" className="mr-2" size="xs" onClick={() => searchSchedule(selectedUserIds, selectedGroup)}>
+                    load
+                  </Button>
+                </>
+              )}
+            </div>
+            <br />
             <div className={s.overFlow}>
               <FullCalendar
                 plugins={[dayGridPlugin, rrulePlugin, timeGridPlugin, interactionPlugin]}
@@ -63,14 +341,14 @@ export default function Schedule(props) {
                 selectMirror={true}
                 dayMaxEvents={true}
                 fixedWeekCount={false}
-                select={() => {}}
+                select={handleDateSelect}
                 events={schedules}
-                eventClick={() => {}}
-                eventAdd={() => {}}
-                eventChange={() => {}}
-                eventRemove={() => {}}
-                eventContent={() => {}}
-                eventAllow={() => {}}
+                eventClick={handleEventClick}
+                eventAdd={handleEventAdd}
+                eventChange={handleEventChange}
+                eventRemove={handleEventRemove}
+                eventContent={handleEventContent}
+                eventAllow={handleEventAllow}
                 contentHeight={600}
               />
             </div>

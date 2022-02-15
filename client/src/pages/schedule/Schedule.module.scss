@@ -1,0 +1,9 @@
+@import "../../styles/app";
+
+.toggleLabel {
+  float: right;
+  font-size: 13px;
+  label {
+    display: block;
+  }
+}

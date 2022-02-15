@@ -7,3 +7,7 @@
 .fc-popover {
   background: #000 !important;
 }
+
+span.switch-wrapper {
+  margin-top: 6px;
+}
