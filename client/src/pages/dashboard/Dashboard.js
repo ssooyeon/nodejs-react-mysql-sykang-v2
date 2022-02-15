@@ -233,16 +233,6 @@ export default function Dashboard() {
         <Col lg={7}>
           <Widget title={""} bodyClass={"pt-2 px-0 py-0"}>
             <Calendar />
-            <div className="list-group fs-mini">
-              <button className="list-group-item text-ellipsis">
-                <span className="badge badge-pill badge-primary float-right">13:30</span>
-                Today's to do #1
-              </button>
-              <button className="list-group-item text-ellipsis">
-                <span className="badge badge-pill badge-success float-right">17:00</span>
-                Today's to do #2
-              </button>
-            </div>
           </Widget>
         </Col>
         <Col lg={5}>

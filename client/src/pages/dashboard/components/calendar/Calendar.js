@@ -7,7 +7,7 @@ import moment from "moment/moment";
 import s from "./Calendar.module.scss";
 
 import { retrieveSchedules } from "../../../../actions/schedules";
-import ScheduleService from "../../../../services/ScheduleService";
+// import ScheduleService from "../../../../services/ScheduleService";
 
 const selectedDay = moment().startOf("day");
 
@@ -61,20 +61,45 @@ export default function Calendar() {
   };
 
   return (
-    <div className={`${s.calendarRectangle}`}>
-      <div>
-        <section className={`${s.mainCalendar}`}>
-          <header className={`${s.calendarHeader}`}>
-            <div className={`${s.calendarRow} ${s.titleHeader}`}>
-              <i className={`${s.calendarItemContainer} ${s.arrow} la la-arrow-left`} onClick={previous} />
-              <div className={`${s.calendarItemContainer} ${s.headerText}`}>{renderMonthLabel()}</div>
-              <i className={`${s.calendarItemContainer} ${s.arrow} la la-arrow-right`} onClick={next} />
-            </div>
-            <DayNames />
-          </header>
-          <div className={`${s.daysContainer}`}>{renderWeeks()}</div>
-        </section>
+    <>
+      <div className={`${s.calendarRectangle}`}>
+        <div>
+          <section className={`${s.mainCalendar}`}>
+            <header className={`${s.calendarHeader}`}>
+              <div className={`${s.calendarRow} ${s.titleHeader}`}>
+                <i className={`${s.calendarItemContainer} ${s.arrow} la la-arrow-left`} onClick={previous} />
+                <div className={`${s.calendarItemContainer} ${s.headerText}`}>{renderMonthLabel()}</div>
+                <i className={`${s.calendarItemContainer} ${s.arrow} la la-arrow-right`} onClick={next} />
+              </div>
+              <DayNames />
+            </header>
+            <div className={`${s.daysContainer}`}>{renderWeeks()}</div>
+          </section>
+        </div>
       </div>
-    </div>
+
+      <div className="list-group fs-mini">
+        {schedules &&
+          schedules
+            .filter((x) => x.start.split(" ")[0] === moment().format("YYYY-MM-DD"))
+            .map((schedule, key) => {
+              const dt = schedule.start.split(" ");
+              let time = dt[1];
+              if (time !== undefined) {
+                time = time.substr(0, 5);
+              }
+              return (
+                <button className="list-group-item text-ellipsis" key={key}>
+                  {time && time !== undefined ? (
+                    <span className="badge badge-pill badge-warning float-right">{time}</span>
+                  ) : (
+                    <span className="badge badge-pill badge-primary float-right">all day</span>
+                  )}
+                  {schedule.title}
+                </button>
+              );
+            })}
+      </div>
+    </>
   );
 }
