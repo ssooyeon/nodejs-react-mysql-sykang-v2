@@ -7,3 +7,30 @@
     display: block;
   }
 }
+
+.colorPicker {
+  width: 100% !important;
+}
+
+.labelDiv {
+  width: 10px;
+  height: 10px;
+  margin-top: 2px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dateWrapper {
+  width: 47%;
+  display: inline-block;
+}
+
+.labelText {
+  display: flex;
+  font-size: 14px;
+  padding-bottom: 10px;
+}
+
+.scheduleDatePicker {
+  width: 100% !important;
+}
