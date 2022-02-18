@@ -149,7 +149,6 @@ export default function AddScheduleModal({ open, handleCloseClick, date }) {
 
     // 날짜 범위 유효성 확인
     if (start > end) {
-      //"The end time must be later than the start time."
       setIsShowErrAlert(true);
       setErrMessage("The end time must be later than the start time.");
     } else {
@@ -195,7 +194,7 @@ export default function AddScheduleModal({ open, handleCloseClick, date }) {
   return (
     <Modal isOpen={open} toggle={handleClose} backdrop={false} centered>
       <ModalBody>
-        <span className="fw-semi-bold">Add New User</span>
+        <span className="fw-semi-bold">Add New Schedule</span>
         <h6 className="widget-auth-info">Please fill all fields below.</h6>
         <form onSubmit={addSchedule}>
           {isShowErrAlert ? (

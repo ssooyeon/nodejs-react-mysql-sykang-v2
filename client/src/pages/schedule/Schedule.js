@@ -19,6 +19,7 @@ import { retrieveSchedules, updateSchedule } from "../../actions/schedules";
 import { retrieveGroups } from "../../actions/groups";
 import ScheduleService from "../../services/ScheduleService";
 import AddScheduleModal from "./AddScheduleModal";
+import EditScheduleModal from "./EditScheduleModal";
 
 const weekAbbr = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
 const groupInitState = {
@@ -52,7 +53,6 @@ export default function Schedule(props) {
 
   useEffect(() => {
     if (groups.length > 0) {
-      console.log(groups);
       loadCurrentUserSchedule(isUserView);
     }
   }, [groups]);
@@ -64,7 +64,6 @@ export default function Schedule(props) {
       setSelectedGroupIds([currentUser.groupId]);
     }
     const currentGroup = groups.find((x) => x.id === currentGroupId);
-    console.log(currentGroupId);
     setSelectedGroup(currentGroup);
 
     const selectUserIds = currentGroup.users.map((obj) => obj.id);
@@ -191,18 +190,33 @@ export default function Schedule(props) {
   };
 
   // 기존 스케줄 클릭: 스케줄 수정 팝업 오픈
-  const handleEventClick = (e) => {};
+  const handleEventClick = (e) => {
+    const createrId = e.event.extendedProps.createrId;
+    // 클릭한 스케줄의 user와 current user가 일치할 경우에만 수정 팝업 오픈
+    if (createrId === currentUser.id) {
+      ScheduleService.get(e.event.id)
+        .then((res) => {
+          setEditSchedule(res.data);
+          setEditScheduleModalOpen(true);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
+  };
 
   // 신규 스케줄 추가 후 콜백 함수
   const handleEventAdd = (e) => {
-    console.log("add");
+    console.log("add schedule");
   };
 
   // 스케줄 드래그/리사이즈 후 콜백 함수
   const handleEventChange = (e) => {};
 
   // 스케줄 삭제 후 콜백 함수
-  const handleEventRemove = (e) => {};
+  const handleEventRemove = (e) => {
+    console.log("remove schedule");
+  };
 
   // 스케줄 렌더링 전 호출 함수
   const handleEventContent = (e) => {
@@ -429,6 +443,7 @@ export default function Schedule(props) {
         </Row>
       </div>
       <AddScheduleModal open={addScheduleModalOpen} handleCloseClick={handleAddScheduleModalClick} date={clickedDate} />
+      <EditScheduleModal open={editScheduleModalOpen} handleCloseClick={handleEditScheduleModalClick} schedule={editSchedule} />
     </>
   );
 }

@@ -11,3 +11,8 @@
 span.switch-wrapper {
   margin-top: 6px;
 }
+
+.react-date-picker__inputGroup__input,
+.react-datetime-picker__inputGroup__input {
+  color: rgba(244, 244, 245, 0.6);
+}
