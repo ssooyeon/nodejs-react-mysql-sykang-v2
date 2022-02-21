@@ -8,7 +8,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClick
 import rrulePlugin from "@fullcalendar/rrule";
 
-import { Row, Col, Button, InputGroup, InputGroupAddon, InputGroupText, Input, Label } from "reactstrap";
+import { Row, Col, Button, InputGroup, InputGroupAddon, InputGroupText, Input } from "reactstrap";
 
 import Widget from "../../components/Widget";
 import Toggle from "./components/Toggle";

@@ -3,7 +3,6 @@ import { useDispatch } from "react-redux";
 import { Alert, Button, FormGroup, InputGroup, InputGroupAddon, InputGroupText, Input, Label, Modal, ModalBody, ModalFooter } from "reactstrap";
 
 import { updateUser } from "../../../actions/users";
-import UserService from "../../../services/UserService";
 import GroupService from "../../../services/GroupService";
 
 export default function EditUserModal({ open, handleCloseClick, user }) {
@@ -65,19 +64,6 @@ export default function EditUserModal({ open, handleCloseClick, user }) {
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
       doEditUser(e);
-    }
-  };
-
-  // 비밀번호 및 비밀번호 확인란이 동일한지 검사한 후 메세지 표출
-  const checkPassword = () => {
-    if (!isPasswordValid()) {
-      setIsShowErrAlert(true);
-      setIsShowSuccessAlert(false);
-      if (!userForm.password) {
-        setErrMessage("Password field is empty.");
-      } else {
-        setErrMessage("Passwords are not equal.");
-      }
     }
   };
 
