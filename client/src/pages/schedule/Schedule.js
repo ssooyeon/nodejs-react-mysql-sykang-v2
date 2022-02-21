@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
+import moment from "moment";
 
 import FullCalendar from "@fullcalendar/react"; // must go before plugins
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -8,7 +8,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClick
 import rrulePlugin from "@fullcalendar/rrule";
 
-import { Row, Col, Alert, Button, FormGroup, InputGroup, InputGroupAddon, InputGroupText, Input, Label } from "reactstrap";
+import { Row, Col, Button, InputGroup, InputGroupAddon, InputGroupText, Input, Label } from "reactstrap";
 
 import Widget from "../../components/Widget";
 import Toggle from "./components/Toggle";
@@ -211,7 +211,86 @@ export default function Schedule(props) {
   };
 
   // 스케줄 드래그/리사이즈 후 콜백 함수
-  const handleEventChange = (e) => {};
+  const handleEventChange = (e) => {
+    let data = {};
+    let rrule = null;
+    let duration = null;
+
+    const id = e.event.id;
+    const allDay = e.event.allDay;
+    let eStart = e.event.start;
+    let eEnd = e.event.end;
+    // 1개의 칸에서 최초로 다른 칸으로 움직이면 end가 null이 되므로 end를 start와 똑같이 설정
+    if (eEnd === null) {
+      eEnd = eStart;
+    }
+    let dtStart = eStart; // rrule에 삽입할 dtStart
+
+    if (allDay) {
+      data.start = moment(eStart).format("YYYY-MM-DD");
+      data.end = moment(eEnd).format("YYYY-MM-DD");
+      dtStart = moment(eStart).format("YYYYMMDD");
+    } else {
+      data.start = moment(eStart).format("YYYY-MM-DD HH:mm:ss");
+      data.end = moment(eEnd).format("YYYY-MM-DD HH:mm:ss");
+      dtStart = moment(eStart).format("YYYYMMDDTHHmmss");
+    }
+
+    // recurring event이면
+    if (e.event._def.recurringDef !== null) {
+      const eRrule = e.event._def.recurringDef.typeData.rruleSet.toString(); // 기존 rrule
+
+      if (eRrule !== null) {
+        const day = eStart.getDate();
+        const week = eStart.getDay(); // MO, TU, WE, ...
+        let weekNum = Math.ceil((day + 6 - week) / 7); // -1(last), 1, 2, ...
+
+        // 마지막 주이면 weekNum을 -1로 설정
+        let diffDay = new Date(eStart);
+        diffDay.setDate(day + 7);
+        if (new Date(diffDay).getMonth() !== eStart.getMonth()) {
+          weekNum = -1;
+        }
+
+        // duration 설정
+        const diffMillisec = Math.abs(eEnd - eStart);
+        const diffHours = diffMillisec / 36e5;
+        // 24시간 이상일 경우만 설정 (days:1이 default)
+        if (diffHours > 24) {
+          duration = diffHours + ":00";
+        }
+
+        const eRruleArr = eRrule.split("\n");
+        const freq = eRruleArr[1];
+
+        // 매달 O번째 O요일
+        if (freq.includes("MONTHLY") && freq.includes("BYDAY")) {
+          let byday = "+" + weekNum;
+          if (weekNum === -1) {
+            byday = weekNum;
+          }
+          rrule = `DTSTART:${dtStart}\nRRULE:FREQ=MONTHLY;BYDAY=${byday}${weekAbbr[week]}`;
+        }
+        // 매주 O요일
+        else if (freq.includes("WEEKLY")) {
+          rrule = `DTSTART:${dtStart}\nRRULE:FREQ=WEEKLY;BYDAY=${weekAbbr[week]}`;
+        }
+        // 매달 O일
+        else {
+          rrule = `DTSTART:${dtStart}\nRRULE:FREQ=MONTHLY`;
+        }
+      }
+    }
+
+    data = { ...data, id: id, allDay: allDay, rrule: rrule, duration: duration };
+    dispatch(updateSchedule(data.id, data))
+      .then(() => {
+        searchSchedule(selectedUserIds, selectedGroup);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
 
   // 스케줄 삭제 후 콜백 함수
   const handleEventRemove = (e) => {
@@ -286,7 +365,14 @@ export default function Schedule(props) {
   };
 
   // 드래그/리사이즈 실행 직전
-  const handleEventAllow = (e) => {};
+  const handleEventAllow = (dropInfo, draggedEvent) => {
+    const createrId = draggedEvent.extendedProps.createrId;
+    if (createrId !== currentUser.id) {
+      return false;
+    } else {
+      return true;
+    }
+  };
 
   // 스케줄 등록 버튼 클릭 및 AddScheduleForm.js 에서 닫기 버튼 클릭
   const handleAddScheduleModalClick = (value, isDone) => {
