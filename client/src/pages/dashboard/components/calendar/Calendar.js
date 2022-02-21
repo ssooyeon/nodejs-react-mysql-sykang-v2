@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import DayNames from "./DayNames";
-import uuid from "uuid/v4";
+import { v4 as uuidv4 } from "uuid";
 import Week from "./Week";
 import moment from "moment/moment";
 import s from "./Calendar.module.scss";
@@ -46,7 +46,7 @@ export default function Calendar() {
     while (!done) {
       weeks.push(
         <Week
-          key={uuid()}
+          key={uuidv4()}
           selectedMonthEvents={schedules}
           previousCurrentNextView={previousCurrentNextView.clone()}
           currentMonthView={currentMonthView}

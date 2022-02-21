@@ -91,6 +91,7 @@
     "react-animate-height": "^2.0.21",
     "react-animated-number": "^0.4.4",
     "react-apexcharts": "^1.3.7",
+    "react-beautiful-dnd": "^13.1.0",
     "react-color": "^2.19.3",
     "react-confirm-alert": "^2.7.0",
     "react-date-picker": "^8.4.0",
@@ -114,7 +115,8 @@
     "redux-thunk": "^2.3.0",
     "rickshaw": "1.7.1",
     "rrule": "^2.6.8",
-    "tabler-icons": "^1.10.0"
+    "tabler-icons": "^1.10.0",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@babel/core": "7.10.4",

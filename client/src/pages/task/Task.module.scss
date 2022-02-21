@@ -1,0 +1,131 @@
+@import "../../styles/app";
+
+.themeColorPicker {
+  float: right;
+  // margin-top: 15px;
+}
+.selectBox {
+  width: 100px;
+}
+.addButton {
+  margin-left: 10px;
+}
+.addNewParentFolderButton {
+  color: darkgray;
+}
+.wrapper {
+  display: flex;
+  height: 100%;
+  overflow-x: auto;
+}
+.circleLabel {
+  width: 40px;
+  height: 10px;
+  margin-bottom: 2px;
+  border-radius: 5px;
+}
+.columns {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 8px;
+}
+.droppableZone {
+  padding: 4;
+  width: 250;
+  min-height: 100;
+}
+.droppableItem {
+  user-select: none;
+  padding: 12px 12px 12px 12px;
+  margin: 0 5px 8px 0;
+  min-height: 30px;
+  border-radius: 10px;
+}
+.plusIconButton {
+  background: none !important;
+  box-shadow: none !important;
+  width: 20px !important;
+  min-width: 20px !important;
+  height: 20px !important;
+  float: left;
+}
+.plusIcon {
+  width: 20px !important;
+  height: 20px !important;
+  margin-bottom: 10px !important;
+  color: #263b4a;
+}
+.iconButtonLarge {
+  background: none !important;
+  box-shadow: none !important;
+  width: 100px;
+  font-size: 15px;
+  margin-top: 12px;
+  margin-left: 5px;
+  color: darkgray;
+  text-transform: none;
+  &:hover,
+  &:focus {
+    // color: #263b4a;
+    color: #fff;
+  }
+}
+.colorIcon {
+  color: #263b4a;
+  margin-top: -2px;
+}
+.iconButton {
+  background: none !important;
+  box-shadow: none !important;
+  width: 20px !important;
+  min-width: 20px !important;
+  height: 20px !important;
+}
+.icon {
+  width: 20px !important;
+  height: 20px !important;
+  margin-bottom: 10px !important;
+  color: lightgray;
+}
+.arrowIcon {
+  width: 20px !important;
+  height: 20px !important;
+  margin-bottom: 10px !important;
+  color: lightgray;
+}
+.droppableWrapper {
+  margin: 8;
+  min-height: 100px;
+  max-height: 525px;
+  width: 280px;
+  overflow-y: auto;
+}
+.right {
+  float: right;
+}
+.titleSpan {
+  &:hover,
+  &:focus {
+    // color: #263b4a;
+    color: #fff;
+  }
+}
+.mt20 {
+  margin-top: 20px;
+}
+.dueDateStr {
+  font-size: 11px;
+}
+.cardNoMargin {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.transparentButton {
+  color: rgba(244, 244, 245, 0.6);
+  &:hover,
+  &:focus {
+    color: #fff;
+  }
+}

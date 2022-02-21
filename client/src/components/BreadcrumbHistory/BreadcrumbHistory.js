@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Breadcrumb, BreadcrumbItem } from "reactstrap";
-import uuid from "uuid/v4";
+// import uuid from "uuid/v4";
+import { v4 as uuidv4 } from "uuid";
 
 class BreadcrumbHistory extends Component {
   renderBreadCrumbs = () => {
@@ -16,11 +17,11 @@ class BreadcrumbHistory extends Component {
     const length = route.length;
     return route.map((item, index) =>
       length === index + 1 ? (
-        <BreadcrumbItem key={uuid()} className="active">
+        <BreadcrumbItem key={uuidv4()} className="active">
           <strong>{item}</strong>
         </BreadcrumbItem>
       ) : (
-        <BreadcrumbItem key={uuid()}>{item}</BreadcrumbItem>
+        <BreadcrumbItem key={uuidv4()}>{item}</BreadcrumbItem>
       )
     );
   };

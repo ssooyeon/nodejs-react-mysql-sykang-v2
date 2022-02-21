@@ -108,7 +108,7 @@ class Sidebar extends React.Component {
             activeItem={this.props.activeItem}
             header="Board"
             isHeader
-            iconName={<TablesIcon className={s.menuIcon} />}
+            iconName={<NotificationsIcon className={s.menuIcon} />}
             link="/app/board"
             index="board"
           />
@@ -134,7 +134,7 @@ class Sidebar extends React.Component {
                 activeItem={this.props.activeItem}
                 header="Profile"
                 isHeader
-                iconName={<NotificationsIcon className={s.menuIcon} />}
+                iconName={<TablesIcon className={s.menuIcon} />}
                 link="/app/profile"
                 index="profile"
               />
@@ -143,9 +143,18 @@ class Sidebar extends React.Component {
                 activeItem={this.props.activeItem}
                 header="Schedule"
                 isHeader
-                iconName={<NotificationsIcon className={s.menuIcon} />}
+                iconName={<TablesIcon className={s.menuIcon} />}
                 link="/app/schedule"
                 index="Schedule"
+              />
+              <LinksGroup
+                onActiveSidebarItemChange={(t) => this.props.dispatch(changeActiveSidebarItem(t))}
+                activeItem={this.props.activeItem}
+                header="Task"
+                isHeader
+                iconName={<TablesIcon className={s.menuIcon} />}
+                link="/app/task"
+                index="Task"
               />
             </>
           ) : null}

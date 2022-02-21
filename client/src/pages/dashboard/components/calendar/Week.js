@@ -1,6 +1,6 @@
 import React from "react";
 import Day from "./Day";
-import uuid from "uuid/v4";
+import { v4 as uuidv4 } from "uuid";
 import moment from "moment/moment";
 import s from "./Calendar.module.scss";
 
@@ -41,7 +41,7 @@ export default function Week(props) {
       link: link,
     };
 
-    days.push(<Day key={uuid()} day={day} selected={selected} />);
+    days.push(<Day key={uuidv4()} day={day} selected={selected} />);
     date = date.clone();
     date.add(1, "d");
   }
