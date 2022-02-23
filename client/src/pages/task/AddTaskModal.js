@@ -116,7 +116,9 @@ export default function AddTaskModal({ open, handleCloseClick, column }) {
   return (
     <Modal size="lg" isOpen={open} toggle={handleClose} backdrop={false} centered>
       <ModalBody>
-        <span className="fw-semi-bold">Add New Task</span>
+        <span className="fw-semi-bold">
+          Add New Task in <span style={{ fontStyle: "italic" }}>{column.name}</span>
+        </span>
         <h6 className="widget-auth-info">Please fill all fields below.</h6>
         <form onSubmit={addTask}>
           {isShowErrAlert ? (
@@ -204,7 +206,22 @@ export default function AddTaskModal({ open, handleCloseClick, column }) {
           <FormGroup>
             <Label for="labelColor">
               Label Color: &nbsp;
-              <div className={s.labelDiv} style={{ background: taskForm.labelColor ? taskForm.labelColor : "" }}></div>
+              {taskForm.labelColor ? (
+                <>
+                  <div className={s.labelDiv} style={{ background: taskForm.labelColor }}></div>
+                  <Button
+                    color=""
+                    className={s.transparentButton}
+                    style={{ color: "rgba(244, 244, 245, 0.6)" }}
+                    size="xs"
+                    onClick={() => onColorStateChange(null)}
+                  >
+                    <i className="fa fa-remove"></i>
+                  </Button>
+                </>
+              ) : (
+                <div className={s.labelDiv} style={{ background: "" }}></div>
+              )}
             </Label>
             <InputGroup className="input-group-no-border">
               <CirclePicker

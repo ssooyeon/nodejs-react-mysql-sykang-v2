@@ -11,6 +11,7 @@ import Widget from "../../components/Widget";
 import s from "./Task.module.scss";
 
 import AddTaskModal from "./AddTaskModal";
+import EditTaskModal from "./EditTaskModal";
 
 import useLocalStorage from "../../utils/useLocalStorage";
 import {
@@ -24,7 +25,7 @@ import {
 } from "../../actions/folders";
 import { updateTask, deleteTask } from "../../actions/tasks";
 
-const themeColorList = ["#705B16", "#B8405E", "#546B68", "#2EB086", "#9145B6", "#5AA897", "#FB743E"];
+const themeColorList = ["rgb(91 71 92)", "#B8405E", "#546B68", "#2EB086", "#9145B6", "#5AA897", "#FB743E"];
 const spanColorList = ["#D4B957", "#546B59", "#B8A4A3", "#6B546B", "#40857D", "#495D6B", "#6B623E"];
 const today = new Date().toISOString().slice(0, 10);
 
@@ -125,7 +126,10 @@ export default function Task(props) {
   };
 
   // 테스크 수정 버튼 클릭 및 EditTaskForm.js 에서 닫기 버튼 클릭
-  const handleEditTaskModalClick = (value) => {};
+  const handleEditTaskModalClick = (value) => {
+    setEditTaskModalOpen(value);
+    getFolder(currentFolder);
+  };
 
   // 폴더/컬럼 이름 수정 버튼 클릭 및 EditFolderForm.js 에서 닫기 버튼 클릭
   const handleEditFolderModalClick = (value) => {};
@@ -134,7 +138,10 @@ export default function Task(props) {
   const handleEditSharedUserModalClick = (value) => {};
 
   // 셀렉트 박스 변경 이벤트
-  const handleSelectChange = (id) => {};
+  const handleSelectChange = (id) => {
+    setCurrentFolder(id);
+    getFolder(id);
+  };
 
   // 최상위 폴더 추가
   const addParentFolder = () => {};
@@ -176,7 +183,10 @@ export default function Task(props) {
   };
 
   // 테스크 제목 클릭 시 editTaskForm 설정 및 상세보기 모달 표출
-  const taskTitleClick = (task) => {};
+  const taskTitleClick = (task) => {
+    setEditTaskForm(task);
+    handleEditTaskModalClick(true);
+  };
 
   // 테스크 수정 버튼 클릭
   const editTask = () => {};
@@ -335,7 +345,7 @@ export default function Task(props) {
                                                       >
                                                         {item.title}
                                                       </span>
-                                                      <br />
+                                                      <div style={{ height: "5px" }}></div>
                                                       <span style={{ fontSize: "10px" }}>
                                                         {item.dueDate ? (
                                                           <>
@@ -383,6 +393,7 @@ export default function Task(props) {
           </Col>
         </Row>
         <AddTaskModal open={addTaskModalOpen} handleCloseClick={handleAddTaskModalClick} column={addColumnForm} />
+        <EditTaskModal open={editTaskModalOpen} handleCloseClick={handleEditTaskModalClick} task={editTaskForm} />
       </div>
     </>
   );
