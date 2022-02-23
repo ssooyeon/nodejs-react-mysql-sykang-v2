@@ -9,7 +9,8 @@ import { Row, Col, Button, InputGroup, Input } from "reactstrap";
 
 import Widget from "../../components/Widget";
 import s from "./Task.module.scss";
-import "./Task.css";
+
+import AddTaskModal from "./AddTaskModal";
 
 import useLocalStorage from "../../utils/useLocalStorage";
 import {
@@ -118,7 +119,10 @@ export default function Task(props) {
   };
 
   // 테스크 등록 버튼 클릭 및 AddTaskForm.js 에서 닫기 버튼 클릭
-  const handleAddTaskModalClick = (value) => {};
+  const handleAddTaskModalClick = (value) => {
+    setAddTaskModalOpen(value);
+    getFolder(currentFolder);
+  };
 
   // 테스크 수정 버튼 클릭 및 EditTaskForm.js 에서 닫기 버튼 클릭
   const handleEditTaskModalClick = (value) => {};
@@ -166,7 +170,10 @@ export default function Task(props) {
   const columnOrderingForward = (column) => {};
 
   // 테스크 추가 버튼 클릭
-  const addTask = (column) => {};
+  const addTask = (column) => {
+    setAddColumnForm(column);
+    handleAddTaskModalClick(true);
+  };
 
   // 테스크 제목 클릭 시 editTaskForm 설정 및 상세보기 모달 표출
   const taskTitleClick = (task) => {};
@@ -375,6 +382,7 @@ export default function Task(props) {
             </Widget>
           </Col>
         </Row>
+        <AddTaskModal open={addTaskModalOpen} handleCloseClick={handleAddTaskModalClick} column={addColumnForm} />
       </div>
     </>
   );
