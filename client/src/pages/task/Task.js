@@ -4,9 +4,12 @@ import Moment from "react-moment";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { v4 as uuidv4 } from "uuid";
 import { CirclePicker } from "react-color";
+import { css } from "glamor";
+import { confirmAlert } from "react-confirm-alert";
 
 import { Row, Col, Button, InputGroup, Input } from "reactstrap";
 
+import "react-confirm-alert/src/react-confirm-alert.css";
 import Widget from "../../components/Widget";
 import s from "./Task.module.scss";
 
@@ -188,14 +191,36 @@ export default function Task(props) {
     handleEditTaskModalClick(true);
   };
 
-  // 테스크 수정 버튼 클릭
-  const editTask = () => {};
-
   // 테스크 삭제 버튼 클릭
-  const confirmRemoveTask = () => {};
-
-  // 테스크 삭제
-  const removeTask = (id) => {};
+  const confirmRemoveTask = (id) => {
+    confirmAlert({
+      closeOnClickOutside: false,
+      title: "",
+      message: "Are you sure delete this task?",
+      buttons: [
+        {
+          label: "Yes",
+          onClick: () => {
+            id = id.replace("task", "");
+            dispatch(deleteTask(id))
+              .then(() => {
+                getFolder(currentFolder);
+              })
+              .catch((e) => {
+                console.log(e);
+              });
+          },
+        },
+        {
+          label: "No",
+          onClick: () => {},
+        },
+      ],
+      overlayClassName: css({
+        background: "transparent !important",
+      }),
+    });
+  };
 
   // 테스크 체크박스 클릭
   const handleCheckbox = (e, task) => {};
@@ -333,7 +358,12 @@ export default function Task(props) {
                                                         <div className={s.circleLabel} style={{ background: item.labelColor }}></div>
                                                       ) : null}
                                                       <div className={s.right}>
-                                                        <Button color="" className={s.transparentButton} size="xs" onClick={confirmRemoveTask}>
+                                                        <Button
+                                                          color=""
+                                                          className={s.transparentButton}
+                                                          size="xs"
+                                                          onClick={() => confirmRemoveTask(item.id)}
+                                                        >
                                                           <i className="fa fa-remove"></i>
                                                         </Button>
                                                       </div>
