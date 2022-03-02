@@ -32,7 +32,7 @@ const themeColorList = ["rgb(91 71 92)", "#B8405E", "#546B68", "#2EB086", "#9145
 const spanColorList = ["#D4B957", "#546B59", "#B8A4A3", "#6B546B", "#40857D", "#495D6B", "#6B623E"];
 const today = new Date().toISOString().slice(0, 10);
 
-export default function Task(props) {
+export default function Task() {
   const { user: currentUser } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
@@ -227,10 +227,16 @@ export default function Task(props) {
   };
 
   // 폴더/컬럼 이름 수정 버튼 클릭 및 EditFolderForm.js 에서 닫기 버튼 클릭
-  const handleEditFolderModalClick = (value) => {};
+  const handleEditFolderModalClick = (value) => {
+    setEditColumnModalOpen(value);
+    getParentFolders();
+  };
 
   // 최상위 폴더 공유 사용자 설정 버튼 클릭 및 SharedusersForm.js 에서 닫기 버튼 클릭
-  const handleEditSharedUserModalClick = (value) => {};
+  const handleEditSharedUserModalClick = (value) => {
+    setEditSharedUserModalOpen(value);
+    getParentFolders();
+  };
 
   // 셀렉트 박스 변경 이벤트
   const handleSelectChange = (id) => {
@@ -239,37 +245,191 @@ export default function Task(props) {
   };
 
   // 최상위 폴더 추가
-  const addParentFolder = () => {};
+  const addParentFolder = () => {
+    const folder = { ...defaultCreatedColumn, ordering: 0, parentId: null };
+    const user = currentUser;
+    const data = { folder, user };
+    dispatch(createFolder(data))
+      .then((createdFolder) => {
+        // 생성한 folder 보여주기
+        dispatch(retrieveParentFolders(currentUser.id))
+          .then((res) => {
+            setFolders(res);
+            setCurrentFolder(createdFolder.id);
+            getFolder(createdFolder.id);
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
 
   // 최상위 폴더의 공유 유저 설정
   const editSharedUser = (currentFolderId) => {};
 
   // 최상위 폴더 수정
-  const editParentFolder = (id) => {};
+  const editParentFolder = (id) => {
+    dispatch(retrieveFolder(id))
+      .then((res) => {
+        setEditColumnForm(res);
+        handleEditFolderModalClick(true);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
 
   // 최상위 폴더 삭제 버튼 클릭
-  const confirmRemoveFolder = (id) => {};
+  const confirmRemoveFolder = (id) => {
+    confirmAlert({
+      closeOnClickOutside: false,
+      title: "",
+      message: "Are you sure delete this folder with all column?",
+      buttons: [
+        {
+          label: "Yes",
+          onClick: () => {
+            removeFolder(id);
+          },
+        },
+        {
+          label: "No",
+          onClick: () => {},
+        },
+      ],
+      overlayClassName: css({
+        background: "transparent !important",
+      }),
+    });
+  };
 
   // 최상위 폴더 삭제
-  const removeFolder = (id) => {};
+  const removeFolder = (id) => {
+    dispatch(deleteFolder(id))
+      .then(() => {
+        // 처음 folder 보여주기
+        dispatch(retrieveParentFolders(currentUser.id))
+          .then((res) => {
+            setFolders(res);
+            setCurrentFolder(res[0].id);
+            getFolder(res[0].id);
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
 
   // 컬럼 추가
-  const addColumn = () => {};
+  const addColumn = () => {
+    const folder = { ...defaultCreatedColumn, ordering: columnLastOrderNum + 1 };
+    const data = { folder };
+    dispatch(createFolder(data))
+      .then(() => {
+        getFolder(currentFolder);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
 
   // 컬럼 이름 수정 버튼 클릭
   const editColumn = (column) => {};
 
   // 컬럼 삭제 버튼 클릭
-  const confirmRemoveColumn = (id) => {};
+  const confirmRemoveColumn = (id) => {
+    confirmAlert({
+      closeOnClickOutside: false,
+      title: "",
+      message: "Are you sure delete this column with all task?",
+      buttons: [
+        {
+          label: "Yes",
+          onClick: () => {
+            removeColumn(id);
+          },
+        },
+        {
+          label: "No",
+          onClick: () => {},
+        },
+      ],
+      overlayClassName: css({
+        background: "transparent !important",
+      }),
+    });
+  };
 
   // 테스크 포함 컬럼 삭제
-  const removeColumn = (id) => {};
+  const removeColumn = (id) => {
+    dispatch(deleteFolder(id))
+      .then(() => {
+        getFolder(currentFolder);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
 
   // 컬럼 ordering 변경 (back)
-  const columnOrderingBack = (column) => {};
+  const columnOrderingBack = (column) => {
+    let data = {};
+    // 첫 번째 컬럼이 아니면
+    if (column.ordering > 0) {
+      // 클릭한 컬럼의 ordering에 1을 뺌
+      data = { ...column, ordering: column.ordering - 1 };
+      dispatch(updateFolder(data.id, data))
+        .then(() => {
+          // 수정된 클릭한 컬럼의 ordering이 같은 컬럼을 조회
+          const updateAwaitColumn = Object.values(columns).find((x) => x.ordering === data.ordering && x.id !== data.id);
+          // 조회한 컬럼의 ordering에 1을 더함 (위치 변경)
+          const d = { ...updateAwaitColumn, ordering: updateAwaitColumn.ordering + 1 };
+          dispatch(updateFolder(d.id, d))
+            .then(() => {
+              getFolder(currentFolder);
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
+  };
 
   // 컬럼 ordering 변경 (forward))
-  const columnOrderingForward = (column) => {};
+  const columnOrderingForward = (column) => {
+    let data = {};
+    // 마지막 컬럼이 아니면
+    // if (column.ordering > 0) {
+    // 클릭한 컬럼의 ordering에 1을 더함
+    data = { ...column, ordering: column.ordering + 1 };
+    dispatch(updateFolder(data.id, data))
+      .then(() => {
+        console.log(12);
+        // 수정된 클릭한 컬럼의 ordering이 같은 컬럼을 조회
+        const updateAwaitColumn = Object.values(columns).find((x) => x.ordering === data.ordering && x.id !== data.id);
+        // 조회한 컬럼의 ordering에 1을 뺌 (위치 변경)
+        const d = { ...updateAwaitColumn, ordering: updateAwaitColumn.ordering - 1 };
+        dispatch(updateFolder(d.id, d))
+          .then(() => {
+            getFolder(currentFolder);
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
 
   // 테스크 추가 버튼 클릭
   const addTask = (column) => {
