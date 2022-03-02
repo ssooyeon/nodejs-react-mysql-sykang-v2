@@ -15,6 +15,7 @@ import s from "./Task.module.scss";
 
 import AddTaskModal from "./AddTaskModal";
 import EditTaskModal from "./EditTaskModal";
+import EditFolderModal from "./EditFolderModal";
 
 import useLocalStorage from "../../utils/useLocalStorage";
 import {
@@ -51,8 +52,8 @@ export default function Task() {
   const [editTaskModalOpen, setEditTaskModalOpen] = useState(false); // 테스크 수정 모달 오픈
   const [editTaskForm, setEditTaskForm] = useState([]); // 수정할 테스크 정보
 
-  const [editColumnModalOpen, setEditColumnModalOpen] = useState(false); // 컬럼 수정 모달 오픈
-  const [editColumnForm, setEditColumnForm] = useState([]); // 수정할 컬럼 정보
+  const [editFolderModalOpen, setEditFolderModalOpen] = useState(false); // 컬럼 수정 모달 오픈
+  const [editFolderForm, setEditFolderForm] = useState([]); // 수정할 폴더(컬럼) 정보
 
   const [editSharedUserModalOpen, setEditSharedUserModalOpen] = useState(false); // 최상위 폴더의 공유 사용자 설정 모달 오픈
   const [editUserFolder, setEditUserFolder] = useState([]); // 수정할 최상위 폴더와 공유 사용자 목록 정보
@@ -228,7 +229,7 @@ export default function Task() {
 
   // 폴더/컬럼 이름 수정 버튼 클릭 및 EditFolderForm.js 에서 닫기 버튼 클릭
   const handleEditFolderModalClick = (value) => {
-    setEditColumnModalOpen(value);
+    setEditFolderModalOpen(value);
     getParentFolders();
   };
 
@@ -274,7 +275,7 @@ export default function Task() {
   const editParentFolder = (id) => {
     dispatch(retrieveFolder(id))
       .then((res) => {
-        setEditColumnForm(res);
+        setEditFolderForm(res);
         handleEditFolderModalClick(true);
       })
       .catch((e) => {
@@ -340,7 +341,10 @@ export default function Task() {
   };
 
   // 컬럼 이름 수정 버튼 클릭
-  const editColumn = (column) => {};
+  const editColumn = (column) => {
+    setEditFolderForm(column);
+    handleEditFolderModalClick(true);
+  };
 
   // 컬럼 삭제 버튼 클릭
   const confirmRemoveColumn = (id) => {
@@ -676,6 +680,7 @@ export default function Task() {
         </Row>
         <AddTaskModal open={addTaskModalOpen} handleCloseClick={handleAddTaskModalClick} column={addColumnForm} />
         <EditTaskModal open={editTaskModalOpen} handleCloseClick={handleEditTaskModalClick} task={editTaskForm} />
+        <EditFolderModal open={editFolderModalOpen} handleCloseClick={handleEditFolderModalClick} folder={editFolderForm} />
       </div>
     </>
   );
