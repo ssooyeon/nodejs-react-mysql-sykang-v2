@@ -78,7 +78,99 @@ export default function Task(props) {
   };
 
   // 드래그 이벤트
-  const onDragEnd = (result, columns, setColumns) => {};
+  const onDragEnd = (result, columns, setColumns) => {
+    if (!result.destination) {
+      return;
+    }
+    const { source, destination } = result;
+    // 컬럼이 변경되는 경우: folderId 및 ordering 변경
+    if (source.droppableId !== destination.droppableId) {
+      const sourceColumn = columns[source.droppableId];
+      const destColumn = columns[destination.droppableId];
+      const sourceItems = [...sourceColumn.tasks];
+      const destItems = [...destColumn.tasks];
+      const [removed] = sourceItems.splice(source.index, 1);
+      destItems.splice(destination.index, 0, removed);
+      const destColumnId = destColumn.id;
+
+      setColumns({
+        ...columns,
+        [source.droppableId]: {
+          ...sourceColumn,
+          tasks: sourceItems,
+        },
+        [destination.droppableId]: {
+          ...destColumn,
+          tasks: destItems,
+        },
+      });
+
+      const destLength = destItems.length;
+      let mapLength = 0;
+
+      // 다른 column의 첫 번째에 옮기면
+      if (destItems[0] === removed) {
+        const task = destItems[0];
+        const id = task.id.replace("task", "");
+        let data = {};
+        // 옮긴 column에 다른 task가 이미 존재하면 맨 마지막 task의 ordering+1을 삽입
+        if (destItems[1] !== undefined) {
+          data = { ...task, id: id, folderId: destColumnId, ordering: destItems[1].ordering + 1 };
+        } else {
+          data = { ...task, id: id, folderId: destColumnId, ordering: 0 };
+        }
+        dispatch(updateTask(data.id, data))
+          .then(() => {
+            // ordering 업데이트가 모두 끝나면 전체 task를 다시 불러오기
+            getFolder(currentFolder);
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      } else {
+        // 다른 column의 첫 번째가 아닌 다른 위치로 옮기면 해당 column의 tasks들의 ordering을 전부 업데이트
+        destItems.forEach((task, i) => {
+          const id = task.id.replace("task", "");
+          const order = destLength - (i + 1);
+          const data = { ...task, id: id, folderId: destColumnId, ordering: order };
+          dispatch(updateTask(data.id, data))
+            .then(() => {
+              mapLength++;
+              // ordering 업데이트가 모두 끝나면 전체 task를 다시 불러오기
+              if (mapLength === destLength) {
+                getFolder(currentFolder);
+              }
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+        });
+      }
+    } else {
+      // 같은 컬럼에서 움직이는 경우: ordering 변경
+      const column = columns[source.droppableId];
+      const copiedItems = [...column.tasks];
+      const [removed] = copiedItems.splice(source.index, 1);
+      copiedItems.splice(destination.index, 0, removed);
+      const copiedLength = copiedItems.length;
+
+      setColumns({
+        ...columns,
+        [source.droppableId]: {
+          ...column,
+          tasks: copiedItems,
+        },
+      });
+
+      // 컬럼의 모든 task들의 ordering을 역순으로 업데이트
+      copiedItems.forEach((task, i) => {
+        const id = task.id.replace("task", "");
+        const order = copiedLength - (i + 1);
+        const data = { ...task, id: id, ordering: order };
+        dispatch(updateTask(data.id, data));
+      });
+    }
+  };
 
   // parent가 null인 폴더 조회 (셀렉트박스에 표출)
   const getParentFolders = () => {
