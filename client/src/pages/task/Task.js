@@ -13,9 +13,10 @@ import "react-confirm-alert/src/react-confirm-alert.css";
 import Widget from "../../components/Widget";
 import s from "./Task.module.scss";
 
-import AddTaskModal from "./AddTaskModal";
-import EditTaskModal from "./EditTaskModal";
-import EditFolderModal from "./EditFolderModal";
+import AddTaskModal from "./task/AddTaskModal";
+import EditTaskModal from "./task/EditTaskModal";
+import EditFolderModal from "./folder/EditFolderModal";
+import MemberModal from "./member/MemberModal";
 
 import useLocalStorage from "../../utils/useLocalStorage";
 import {
@@ -29,7 +30,7 @@ import {
 } from "../../actions/folders";
 import { updateTask, deleteTask } from "../../actions/tasks";
 
-const themeColorList = ["rgb(91 71 92)", "#B8405E", "#546B68", "#2EB086", "#9145B6", "#5AA897", "#FB743E"];
+const themeColorList = ["#5B475C", "#B8405E", "#546B68", "#2EB086", "#9145B6", "#5AA897", "#FB743E"];
 const spanColorList = ["#D4B957", "#546B59", "#B8A4A3", "#6B546B", "#40857D", "#495D6B", "#6B623E"];
 const today = new Date().toISOString().slice(0, 10);
 
@@ -57,8 +58,6 @@ export default function Task() {
 
   const [editSharedUserModalOpen, setEditSharedUserModalOpen] = useState(false); // 최상위 폴더의 공유 사용자 설정 모달 오픈
   const [editUserFolder, setEditUserFolder] = useState([]); // 수정할 최상위 폴더와 공유 사용자 목록 정보
-
-  const [anchorEl, setAnchorEl] = React.useState(null);
 
   // 컬럼 추가 시 기본 컬럼
   const defaultCreatedColumn = {
@@ -269,7 +268,16 @@ export default function Task() {
   };
 
   // 최상위 폴더의 공유 유저 설정
-  const editSharedUser = (currentFolderId) => {};
+  const editSharedUser = (currentFolderId) => {
+    dispatch(retrieveAllWithSharedUsers(currentFolderId))
+      .then((res) => {
+        setEditUserFolder(res);
+        setEditSharedUserModalOpen(true);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
 
   // 최상위 폴더 수정
   const editParentFolder = (id) => {
@@ -417,7 +425,6 @@ export default function Task() {
     data = { ...column, ordering: column.ordering + 1 };
     dispatch(updateFolder(data.id, data))
       .then(() => {
-        console.log(12);
         // 수정된 클릭한 컬럼의 ordering이 같은 컬럼을 조회
         const updateAwaitColumn = Object.values(columns).find((x) => x.ordering === data.ordering && x.id !== data.id);
         // 조회한 컬럼의 ordering에 1을 뺌 (위치 변경)
@@ -479,7 +486,17 @@ export default function Task() {
   };
 
   // 테스크 체크박스 클릭
-  const handleCheckbox = (e, task) => {};
+  const handleCheckbox = (e, task) => {
+    const id = task.id.replace("task", "");
+    const data = { ...task, id: id, isDone: e.target.checked };
+    dispatch(updateTask(data.id, data))
+      .then(() => {
+        getFolder(currentFolder);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
 
   return (
     <>
@@ -606,7 +623,6 @@ export default function Task() {
                                                       {...provided.dragHandleProps}
                                                       style={{
                                                         backgroundColor: snapshot.isDragging ? "#263B4A" : themeColor,
-                                                        // backgroundColor: snapshot.isDragging ? "#263B4A" : "#706D22",
                                                         ...provided.draggableProps.style,
                                                       }}
                                                     >
@@ -635,7 +651,7 @@ export default function Task() {
                                                       <span style={{ fontSize: "10px" }}>
                                                         {item.dueDate ? (
                                                           <>
-                                                            <input type="checkbox" checked={item.isDone} onChange={(e) => handleCheckbox(e)} />
+                                                            <input type="checkbox" checked={item.isDone} onChange={(e) => handleCheckbox(e, item)} />
                                                             <label>
                                                               &nbsp;
                                                               <Moment
@@ -681,6 +697,7 @@ export default function Task() {
         <AddTaskModal open={addTaskModalOpen} handleCloseClick={handleAddTaskModalClick} column={addColumnForm} />
         <EditTaskModal open={editTaskModalOpen} handleCloseClick={handleEditTaskModalClick} task={editTaskForm} />
         <EditFolderModal open={editFolderModalOpen} handleCloseClick={handleEditFolderModalClick} folder={editFolderForm} />
+        <MemberModal open={editSharedUserModalOpen} handleCloseClick={handleEditSharedUserModalClick} userFolder={editUserFolder} />
       </div>
     </>
   );

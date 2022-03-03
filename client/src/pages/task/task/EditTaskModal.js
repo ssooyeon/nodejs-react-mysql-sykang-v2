@@ -12,7 +12,7 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import "./Editor.css";
 import s from "./TaskForm.module.scss";
 
-import { updateTask } from "../../actions/tasks";
+import { updateTask } from "../../../actions/tasks";
 
 export default function EditTaskModal({ open, handleCloseClick, task }) {
   const [editorState, setEditorState] = useState(EditorState.createEmpty()); // description editor
@@ -42,6 +42,8 @@ export default function EditTaskModal({ open, handleCloseClick, task }) {
   const handleClose = () => {
     handleCloseClick(false);
     setTaskForm({ ...taskForm, labelColor: null });
+    setIsShowSuccessAlert(false);
+    setIsShowErrAlert(false);
   };
 
   // input 값 변경 시 taskForm state 업데이트
@@ -140,7 +142,7 @@ export default function EditTaskModal({ open, handleCloseClick, task }) {
                   height: "350px",
                   padding: "5px",
                   fontSize: "14px",
-                  minWidth: "770px",
+                  width: "770px",
                 }}
                 id="description"
                 name="description"

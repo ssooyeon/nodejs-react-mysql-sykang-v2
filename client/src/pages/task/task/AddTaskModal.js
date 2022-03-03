@@ -11,8 +11,8 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import "./Editor.css";
 import s from "./TaskForm.module.scss";
 
-import { retrieveFolder } from "../../actions/folders";
-import { createTask } from "../../actions/tasks";
+import { retrieveFolder } from "../../../actions/folders";
+import { createTask } from "../../../actions/tasks";
 
 export default function AddTaskModal({ open, handleCloseClick, column }) {
   const { user: currentUser } = useSelector((state) => state.auth);
@@ -57,6 +57,8 @@ export default function AddTaskModal({ open, handleCloseClick, column }) {
     handleCloseClick(false);
     setTaskForm(initialTaskstate);
     setEditorState(EditorState.createEmpty());
+    setIsShowSuccessAlert(false);
+    setIsShowErrAlert(false);
   };
 
   // input 값 변경 시 taskForm state 업데이트
@@ -156,7 +158,7 @@ export default function AddTaskModal({ open, handleCloseClick, column }) {
                   height: "350px",
                   padding: "5px",
                   fontSize: "14px",
-                  minWidth: "770px",
+                  width: "770px",
                 }}
                 id="description"
                 name="description"

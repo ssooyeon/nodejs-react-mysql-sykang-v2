@@ -1,14 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 import { Alert, Button, FormGroup, InputGroup, Input, Label, Modal, ModalBody, ModalFooter } from "reactstrap";
-import { CirclePicker } from "react-color";
-import DateTimePicker from "react-datetime-picker";
-import { Editor } from "react-draft-wysiwyg";
-import { EditorState, ContentState, convertToRaw } from "draft-js";
-import draftToHtml from "draftjs-to-html";
-import htmlToDraft from "html-to-draftjs";
 
-import FolderService from "../../services/FolderService";
+import FolderService from "../../../services/FolderService";
 
 export default function EditFolderModal({ open, handleCloseClick, folder }) {
   const [folderForm, setFolderForm] = useState([]);
@@ -19,8 +12,6 @@ export default function EditFolderModal({ open, handleCloseClick, folder }) {
   const [isShowErrAlert, setIsShowErrAlert] = useState(false); // 게시글 등록에 실패했는지의 여부
   const [errMessage, setErrMessage] = useState(""); // 게시글 등록에 실패했을 때의 에러 메시지
 
-  const dispatch = useDispatch();
-
   useEffect(() => {
     setFolderForm({ ...folder });
   }, [folder]);
@@ -28,6 +19,8 @@ export default function EditFolderModal({ open, handleCloseClick, folder }) {
   // 부모에게 완료사항 전달
   const handleClose = () => {
     handleCloseClick(false);
+    setIsShowSuccessAlert(false);
+    setIsShowErrAlert(false);
   };
 
   // input 값 변경 시 taskForm state 업데이트
@@ -71,7 +64,7 @@ export default function EditFolderModal({ open, handleCloseClick, folder }) {
   return (
     <Modal isOpen={open} toggle={handleClose} backdrop={false} centered>
       <ModalBody>
-        <span className="fw-semi-bold">Edit Folder Name</span>
+        <span className="fw-semi-bold">Edit Folder(Column) Name</span>
         <h6 className="widget-auth-info">Please fill all fields below.</h6>
         <form onSubmit={editFolder}>
           {isShowErrAlert ? (
