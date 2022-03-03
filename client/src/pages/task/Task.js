@@ -30,8 +30,7 @@ import {
 } from "../../actions/folders";
 import { updateTask, deleteTask } from "../../actions/tasks";
 
-const themeColorList = ["#5B475C", "#B8405E", "#546B68", "#2EB086", "#9145B6", "#5AA897", "#FB743E"];
-const spanColorList = ["#D4B957", "#546B59", "#B8A4A3", "#6B546B", "#40857D", "#495D6B", "#6B623E"];
+const themeColorList = ["#5B475C", "#122833", "#201233", "#2D3040", "#735A37", "#7C728C", "#15111D"];
 const today = new Date().toISOString().slice(0, 10);
 
 export default function Task() {
@@ -39,7 +38,6 @@ export default function Task() {
   const dispatch = useDispatch();
 
   const [themeColor, setThemeColor] = useLocalStorage("themeColor", themeColorList[0]);
-  const [spanColor, setSpanColor] = useLocalStorage("spanColor", spanColorList[0]);
 
   const [folders, setFolders] = useState([]); // 최상위 폴더 리스트
   const [columns, setColumns] = useState([]); // 현재 선택된 폴더의 컬럼 리스트
@@ -74,7 +72,6 @@ export default function Task() {
   const onColorStateChange = (colorState) => {
     const index = themeColorList.findIndex((x) => x.toLowerCase() === colorState.toLowerCase());
     setThemeColor(colorState);
-    setSpanColor(spanColorList[index]);
   };
 
   // 드래그 이벤트
@@ -659,7 +656,7 @@ export default function Task() {
                                                                 style={{
                                                                   color:
                                                                     item.dueDate && today === new Date(item.dueDate).toISOString().slice(0, 10)
-                                                                      ? spanColor
+                                                                      ? "#D4B957"
                                                                       : null,
                                                                 }}
                                                               >
