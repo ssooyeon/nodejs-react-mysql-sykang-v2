@@ -442,7 +442,7 @@ export default function Schedule(props) {
                           })}
                       </Input>
                     </InputGroup>
-                    <div style={{ marginTop: "7px", marginLeft: "10px" }}>
+                    <div style={{ marginTop: "7px", marginLeft: "10px", display: "-webkit-box" }}>
                       <input
                         type="checkbox"
                         checked={selectedUserIds.length === selectedGroup.users.length}
@@ -452,7 +452,7 @@ export default function Schedule(props) {
                       {selectedGroup.users &&
                         selectedGroup.users.map((item, index) => {
                           return (
-                            <>
+                            <div key={item.id}>
                               <input
                                 type="checkbox"
                                 key={item.id}
@@ -461,7 +461,7 @@ export default function Schedule(props) {
                                 onChange={(e) => handleUserCheckbox(e)}
                               />
                               <label>&nbsp; {item.account} &nbsp;</label>
-                            </>
+                            </div>
                           );
                         })}
                     </div>
@@ -472,13 +472,13 @@ export default function Schedule(props) {
                   </>
                 ) : (
                   <>
-                    <div style={{ marginTop: "7px", marginLeft: "10px" }}>
+                    <div style={{ marginTop: "7px", marginLeft: "10px", display: "-webkit-box" }}>
                       <input type="checkbox" checked={selectedGroupIds.length === groups.length} onChange={(e) => handleGroupAllCheckbox(e)} />
                       <label>&nbsp; ALL &nbsp;</label>
                       {groups &&
                         groups.map((item, index) => {
                           return (
-                            <>
+                            <div key={item.id}>
                               <input
                                 type="checkbox"
                                 key={item.id}
@@ -487,7 +487,7 @@ export default function Schedule(props) {
                                 onChange={(e) => handleGroupCheckbox(e)}
                               />
                               <label>&nbsp; {item.name} &nbsp;</label>
-                            </>
+                            </div>
                           );
                         })}
                     </div>

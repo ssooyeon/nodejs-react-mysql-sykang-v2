@@ -70,7 +70,6 @@ export default function Task() {
 
   // 테스크 테마 색상 변경
   const onColorStateChange = (colorState) => {
-    const index = themeColorList.findIndex((x) => x.toLowerCase() === colorState.toLowerCase());
     setThemeColor(colorState);
   };
 
@@ -496,206 +495,202 @@ export default function Task() {
   };
 
   return (
-    <>
-      <div className={s.root}>
-        <h2 className="page-title">
-          Drag & Drop - <span className="fw-semi-bold">Task</span>
-        </h2>
-        <Row>
-          <Col lg={12} md={12} sm={12}>
-            <Widget>
-              <h3>
-                <span className="fw-semi-bold">My Task</span>
-              </h3>
-              <p>
-                {"Indicates a To-Do of "}
-                <code>my task</code> with title, description, date.
-              </p>
-              <div>
-                <InputGroup className="input-group-no-border" style={{ width: "250px", display: "inline-flex" }}>
-                  {folders.length > 0 && folders.find((x) => x.id === parseInt(currentFolder)) ? (
-                    <Input
-                      id="column"
-                      className="input-transparent pl-3"
-                      type="select"
-                      name="column"
-                      value={currentFolder}
-                      onChange={(e) => handleSelectChange(e.target.value)}
-                    >
-                      {folders &&
-                        folders.map((folder, index) => {
-                          return (
-                            <option value={folder.id} key={folder.id}>
-                              {folder.name}
-                            </option>
-                          );
-                        })}
-                    </Input>
-                  ) : null}
-                </InputGroup>
-                &nbsp;&nbsp;
-                <Button color="default" className={s.transparentButton} size="xs" onClick={() => editSharedUser(currentFolder)}>
-                  <i className="fa fa-users"></i> Shared
-                </Button>
-                &nbsp;&nbsp;
-                <Button color="inverse" className={s.transparentButton} size="xs" onClick={() => editParentFolder(currentFolder)}>
-                  <i className="fa fa-pencil"></i> Edit
-                </Button>
-                &nbsp;&nbsp;
-                <Button color="inverse" className={s.transparentButton} size="xs" onClick={() => confirmRemoveFolder(currentFolder)}>
-                  <i className="fa fa-remove"></i> Delete
-                </Button>
-                <div className={s.themeColorPicker}>
-                  <CirclePicker colors={themeColorList} circleSize={20} onChangeComplete={(colore) => onColorStateChange(colore.hex)} />
-                </div>
+    <div className={s.root}>
+      <h2 className="page-title">
+        Drag & Drop - <span className="fw-semi-bold">Task</span>
+      </h2>
+      <Row>
+        <Col lg={12} md={12} sm={12}>
+          <Widget>
+            <h3>
+              <span className="fw-semi-bold">My Task</span>
+            </h3>
+            <p>
+              {"Indicates a To-Do of "}
+              <code>my task</code> with title, description, date.
+            </p>
+            <div>
+              <InputGroup className="input-group-no-border" style={{ width: "250px", display: "inline-flex" }}>
+                {folders.length > 0 && folders.find((x) => x.id === parseInt(currentFolder)) ? (
+                  <Input
+                    id="column"
+                    className="input-transparent pl-3"
+                    type="select"
+                    name="column"
+                    value={currentFolder}
+                    onChange={(e) => handleSelectChange(e.target.value)}
+                  >
+                    {folders &&
+                      folders.map((folder, index) => {
+                        return (
+                          <option value={folder.id} key={folder.id}>
+                            {folder.name}
+                          </option>
+                        );
+                      })}
+                  </Input>
+                ) : null}
+              </InputGroup>
+              &nbsp;&nbsp;
+              <Button color="default" className={s.transparentButton} size="xs" onClick={() => editSharedUser(currentFolder)}>
+                <i className="fa fa-users"></i> Shared
+              </Button>
+              &nbsp;&nbsp;
+              <Button color="inverse" className={s.transparentButton} size="xs" onClick={() => editParentFolder(currentFolder)}>
+                <i className="fa fa-pencil"></i> Edit
+              </Button>
+              &nbsp;&nbsp;
+              <Button color="inverse" className={s.transparentButton} size="xs" onClick={() => confirmRemoveFolder(currentFolder)}>
+                <i className="fa fa-remove"></i> Delete
+              </Button>
+              <div className={s.themeColorPicker}>
+                <CirclePicker colors={themeColorList} circleSize={20} onChangeComplete={(colore) => onColorStateChange(colore.hex)} />
               </div>
-              <div style={{ marginTop: "10px", marginBottom: "10px" }}>
-                <Button color="inverse" className={s.transparentButton} size="xs" onClick={addParentFolder}>
-                  <i className="fa fa-plus"></i> Folder
-                </Button>
-                &nbsp;&nbsp;
-                <Button color="inverse" className={s.transparentButton} size="xs" onClick={addColumn}>
-                  <i className="fa fa-plus"></i> Column
-                </Button>
-              </div>
+            </div>
+            <div style={{ marginTop: "10px", marginBottom: "10px" }}>
+              <Button color="inverse" className={s.transparentButton} size="xs" onClick={addParentFolder}>
+                <i className="fa fa-plus"></i> Folder
+              </Button>
+              &nbsp;&nbsp;
+              <Button color="inverse" className={s.transparentButton} size="xs" onClick={addColumn}>
+                <i className="fa fa-plus"></i> Column
+              </Button>
+            </div>
 
-              <div className={s.wrapper}>
-                <DragDropContext onDragEnd={(result) => onDragEnd(result, columns, setColumns)}>
-                  {columns &&
-                    Object.entries(columns).map(([columnId, column], index, { length }) => {
-                      return (
-                        <>
-                          <div className={s.columns} key={columnId}>
-                            <Widget>
-                              <Button
-                                color=""
-                                className={s.transparentButton}
-                                size="xs"
-                                style={{ color: "rgba(244, 244, 245, 0.6)" }}
-                                onClick={() => addTask(column)}
-                              >
-                                <i className="fa fa-plus"></i>
+            <div className={s.wrapper}>
+              <DragDropContext onDragEnd={(result) => onDragEnd(result, columns, setColumns)}>
+                {columns &&
+                  Object.entries(columns).map(([columnId, column], index, { length }) => {
+                    return (
+                      <div className={s.columns} key={columnId}>
+                        <Widget>
+                          <Button
+                            color=""
+                            className={s.transparentButton}
+                            size="xs"
+                            style={{ color: "rgba(244, 244, 245, 0.6)" }}
+                            onClick={() => addTask(column)}
+                          >
+                            <i className="fa fa-plus"></i>
+                          </Button>
+                          <div style={{ float: "right" }}>
+                            {index > 0 ? (
+                              <Button color="" className={s.transparentButton} size="xs" onClick={() => columnOrderingBack(column)}>
+                                <i className="fa fa-arrow-left"></i>
                               </Button>
-                              <div style={{ float: "right" }}>
-                                {index > 0 ? (
-                                  <Button color="" className={s.transparentButton} size="xs" onClick={() => columnOrderingBack(column)}>
-                                    <i className="fa fa-arrow-left"></i>
-                                  </Button>
-                                ) : null}
-                                {column.name}
-                                <Button color="" className={s.transparentButton} size="xs" onClick={() => editColumn(column)}>
-                                  <i className="fa fa-pencil"></i>
-                                </Button>
-                                <Button color="" className={s.transparentButton} size="xs" onClick={() => confirmRemoveColumn(column.id)}>
-                                  <i className="fa fa-remove"></i>
-                                </Button>
-                                {index + 1 < length ? (
-                                  <Button color="" className={s.transparentButton} size="xs" onClick={() => columnOrderingForward(column)}>
-                                    <i className="fa fa-arrow-right"></i>
-                                  </Button>
-                                ) : null}
-                              </div>
-                              <div className={s.droppableWrapper}>
-                                <Droppable droppableId={columnId} key={columnId}>
-                                  {(provided, snapshot) => {
-                                    return (
-                                      <div
-                                        className={s.droppableZone}
-                                        {...provided.droppableProps}
-                                        ref={provided.innerRef}
-                                        style={{
-                                          background: snapshot.isDraggingOver ? "rgba(255, 220, 40, 0.15)" : "",
-                                        }}
-                                      >
-                                        {column.tasks &&
-                                          column.tasks.map((item, index) => {
-                                            return (
-                                              <Draggable key={item.id} draggableId={item.id} index={index}>
-                                                {(provided, snapshot) => {
-                                                  return (
-                                                    <div
-                                                      className={s.droppableItem}
-                                                      ref={provided.innerRef}
-                                                      {...provided.draggableProps}
-                                                      {...provided.dragHandleProps}
-                                                      style={{
-                                                        backgroundColor: snapshot.isDragging ? "#263B4A" : themeColor,
-                                                        ...provided.draggableProps.style,
-                                                      }}
-                                                    >
-                                                      {item.labelColor && item.labelColor ? (
-                                                        <div className={s.circleLabel} style={{ background: item.labelColor }}></div>
-                                                      ) : null}
-                                                      <div className={s.right}>
-                                                        <Button
-                                                          color=""
-                                                          className={s.transparentButton}
-                                                          size="xs"
-                                                          onClick={() => confirmRemoveTask(item.id)}
-                                                        >
-                                                          <i className="fa fa-remove"></i>
-                                                        </Button>
-                                                      </div>
-                                                      <span
-                                                        className={s.titleSpan}
-                                                        onClick={() => {
-                                                          taskTitleClick(item);
-                                                        }}
-                                                      >
-                                                        {item.title}
-                                                      </span>
-                                                      <div style={{ height: "5px" }}></div>
-                                                      <span style={{ fontSize: "10px" }}>
-                                                        {item.dueDate ? (
-                                                          <>
-                                                            <input type="checkbox" checked={item.isDone} onChange={(e) => handleCheckbox(e, item)} />
-                                                            <label>
-                                                              &nbsp;
-                                                              <Moment
-                                                                format="YYYY-MM-DD HH:mm:ss"
-                                                                style={{
-                                                                  color:
-                                                                    item.dueDate && today === new Date(item.dueDate).toISOString().slice(0, 10)
-                                                                      ? "#D4B957"
-                                                                      : null,
-                                                                }}
-                                                              >
-                                                                {item.dueDate}
-                                                              </Moment>
-                                                            </label>
-                                                          </>
-                                                        ) : null}
-                                                      </span>
-                                                    </div>
-                                                  );
-                                                }}
-                                              </Draggable>
-                                            );
-                                          })}
-                                        {provided.placeholder}
-                                      </div>
-                                    );
-                                  }}
-                                </Droppable>
-                              </div>
-                              <div style={{ fontSize: "11px", fontStyle: "italic", textAlign: "right" }}>
-                                created by&nbsp; {column.manager ? column.manager.account : null}
-                              </div>
-                            </Widget>
+                            ) : null}
+                            {column.name}
+                            <Button color="" className={s.transparentButton} size="xs" onClick={() => editColumn(column)}>
+                              <i className="fa fa-pencil"></i>
+                            </Button>
+                            <Button color="" className={s.transparentButton} size="xs" onClick={() => confirmRemoveColumn(column.id)}>
+                              <i className="fa fa-remove"></i>
+                            </Button>
+                            {index + 1 < length ? (
+                              <Button color="" className={s.transparentButton} size="xs" onClick={() => columnOrderingForward(column)}>
+                                <i className="fa fa-arrow-right"></i>
+                              </Button>
+                            ) : null}
                           </div>
-                        </>
-                      );
-                    })}
-                </DragDropContext>
-              </div>
-            </Widget>
-          </Col>
-        </Row>
-        <AddTaskModal open={addTaskModalOpen} handleCloseClick={handleAddTaskModalClick} column={addColumnForm} />
-        <EditTaskModal open={editTaskModalOpen} handleCloseClick={handleEditTaskModalClick} task={editTaskForm} />
-        <EditFolderModal open={editFolderModalOpen} handleCloseClick={handleEditFolderModalClick} folder={editFolderForm} />
-        <MemberModal open={editSharedUserModalOpen} handleCloseClick={handleEditSharedUserModalClick} userFolder={editUserFolder} />
-      </div>
-    </>
+                          <div className={s.droppableWrapper}>
+                            <Droppable droppableId={columnId} key={columnId}>
+                              {(provided, snapshot) => {
+                                return (
+                                  <div
+                                    className={s.droppableZone}
+                                    {...provided.droppableProps}
+                                    ref={provided.innerRef}
+                                    style={{
+                                      background: snapshot.isDraggingOver ? "rgba(255, 220, 40, 0.15)" : "",
+                                    }}
+                                  >
+                                    {column.tasks &&
+                                      column.tasks.map((item, index) => {
+                                        return (
+                                          <Draggable key={item.id} draggableId={item.id} index={index}>
+                                            {(provided, snapshot) => {
+                                              return (
+                                                <div
+                                                  className={s.droppableItem}
+                                                  ref={provided.innerRef}
+                                                  {...provided.draggableProps}
+                                                  {...provided.dragHandleProps}
+                                                  style={{
+                                                    backgroundColor: snapshot.isDragging ? "#263B4A" : themeColor,
+                                                    ...provided.draggableProps.style,
+                                                  }}
+                                                >
+                                                  {item.labelColor && item.labelColor ? (
+                                                    <div className={s.circleLabel} style={{ background: item.labelColor }}></div>
+                                                  ) : null}
+                                                  <div className={s.right}>
+                                                    <Button
+                                                      color=""
+                                                      className={s.transparentButton}
+                                                      size="xs"
+                                                      onClick={() => confirmRemoveTask(item.id)}
+                                                    >
+                                                      <i className="fa fa-remove"></i>
+                                                    </Button>
+                                                  </div>
+                                                  <span
+                                                    className={s.titleSpan}
+                                                    onClick={() => {
+                                                      taskTitleClick(item);
+                                                    }}
+                                                  >
+                                                    {item.title}
+                                                  </span>
+                                                  <div style={{ height: "5px" }}></div>
+                                                  <span style={{ fontSize: "10px" }}>
+                                                    {item.dueDate ? (
+                                                      <div>
+                                                        <input type="checkbox" checked={item.isDone} onChange={(e) => handleCheckbox(e, item)} />
+                                                        <label>
+                                                          &nbsp;
+                                                          <Moment
+                                                            format="YYYY-MM-DD HH:mm:ss"
+                                                            style={{
+                                                              color:
+                                                                item.dueDate && today === new Date(item.dueDate).toISOString().slice(0, 10)
+                                                                  ? "#D4B957"
+                                                                  : null,
+                                                            }}
+                                                          >
+                                                            {item.dueDate}
+                                                          </Moment>
+                                                        </label>
+                                                      </div>
+                                                    ) : null}
+                                                  </span>
+                                                </div>
+                                              );
+                                            }}
+                                          </Draggable>
+                                        );
+                                      })}
+                                    {provided.placeholder}
+                                  </div>
+                                );
+                              }}
+                            </Droppable>
+                          </div>
+                          <div style={{ fontSize: "11px", fontStyle: "italic", textAlign: "right" }}>
+                            created by&nbsp; {column.manager ? column.manager.account : null}
+                          </div>
+                        </Widget>
+                      </div>
+                    );
+                  })}
+              </DragDropContext>
+            </div>
+          </Widget>
+        </Col>
+      </Row>
+      <AddTaskModal open={addTaskModalOpen} handleCloseClick={handleAddTaskModalClick} column={addColumnForm} />
+      <EditTaskModal open={editTaskModalOpen} handleCloseClick={handleEditTaskModalClick} task={editTaskForm} />
+      <EditFolderModal open={editFolderModalOpen} handleCloseClick={handleEditFolderModalClick} folder={editFolderForm} />
+      <MemberModal open={editSharedUserModalOpen} handleCloseClick={handleEditSharedUserModalClick} userFolder={editUserFolder} />
+    </div>
   );
 }
