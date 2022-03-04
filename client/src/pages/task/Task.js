@@ -4,12 +4,10 @@ import Moment from "react-moment";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { v4 as uuidv4 } from "uuid";
 import { CirclePicker } from "react-color";
-import { css } from "glamor";
-import { confirmAlert } from "react-confirm-alert";
+import Swal from "sweetalert2";
 
 import { Row, Col, Button, InputGroup, Input } from "reactstrap";
 
-import "react-confirm-alert/src/react-confirm-alert.css";
 import Widget from "../../components/Widget";
 import s from "./Task.module.scss";
 
@@ -289,25 +287,22 @@ export default function Task() {
 
   // 최상위 폴더 삭제 버튼 클릭
   const confirmRemoveFolder = (id) => {
-    confirmAlert({
-      closeOnClickOutside: false,
-      title: "",
-      message: "Are you sure delete this folder with all column?",
-      buttons: [
-        {
-          label: "Yes",
-          onClick: () => {
-            removeFolder(id);
-          },
-        },
-        {
-          label: "No",
-          onClick: () => {},
-        },
-      ],
-      overlayClassName: css({
-        background: "transparent !important",
-      }),
+    Swal.fire({
+      text: "Are you sure delete this folder with all column?",
+      icon: "warning",
+      backdrop: false,
+      showCancelButton: true,
+      confirmButtonColor: "#da2837",
+      cancelButtonColor: "#30324d",
+      confirmButtonText: "OK",
+      showClass: {
+        backdrop: "swal2-noanimation",
+        icon: "",
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        removeFolder(id);
+      }
     });
   };
 
@@ -352,25 +347,22 @@ export default function Task() {
 
   // 컬럼 삭제 버튼 클릭
   const confirmRemoveColumn = (id) => {
-    confirmAlert({
-      closeOnClickOutside: false,
-      title: "",
-      message: "Are you sure delete this column with all task?",
-      buttons: [
-        {
-          label: "Yes",
-          onClick: () => {
-            removeColumn(id);
-          },
-        },
-        {
-          label: "No",
-          onClick: () => {},
-        },
-      ],
-      overlayClassName: css({
-        background: "transparent !important",
-      }),
+    Swal.fire({
+      text: "Are you sure delete this column with all task?",
+      icon: "warning",
+      backdrop: false,
+      showCancelButton: true,
+      confirmButtonColor: "#da2837",
+      cancelButtonColor: "#30324d",
+      confirmButtonText: "OK",
+      showClass: {
+        backdrop: "swal2-noanimation",
+        icon: "",
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        removeColumn(id);
+      }
     });
   };
 
@@ -452,32 +444,31 @@ export default function Task() {
 
   // 테스크 삭제 버튼 클릭
   const confirmRemoveTask = (id) => {
-    confirmAlert({
-      closeOnClickOutside: false,
-      title: "",
-      message: "Are you sure delete this task?",
-      buttons: [
-        {
-          label: "Yes",
-          onClick: () => {
-            id = id.replace("task", "");
-            dispatch(deleteTask(id))
-              .then(() => {
-                getFolder(currentFolder);
-              })
-              .catch((e) => {
-                console.log(e);
-              });
-          },
-        },
-        {
-          label: "No",
-          onClick: () => {},
-        },
-      ],
-      overlayClassName: css({
-        background: "transparent !important",
-      }),
+    Swal.fire({
+      // title: " ",
+      text: "Are you sure delete this task?",
+      icon: "warning",
+      backdrop: false,
+      showCancelButton: true,
+      confirmButtonColor: "#da2837",
+      cancelButtonColor: "#30324d",
+      confirmButtonText: "OK",
+      showClass: {
+        backdrop: "swal2-noanimation", // disable backdrop animation
+        // popup: "", // disable popup animation
+        icon: "", // disable icon animation
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        id = id.replace("task", "");
+        dispatch(deleteTask(id))
+          .then(() => {
+            getFolder(currentFolder);
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      }
     });
   };
 

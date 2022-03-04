@@ -92,7 +92,7 @@ export default function MemberModal({ open, handleCloseClick, userFolder }) {
     <Modal isOpen={open} toggle={handleClose} backdrop={false} centered>
       <ModalBody>
         <span className="fw-semi-bold">Set Shared Member</span>
-        <h6 className="widget-auth-info">Please fill all fields below.</h6>
+        <h6 className="widget-auth-info">Please check checkbox below.</h6>
         <form onSubmit={addUserFolder}>
           {isShowErrAlert ? (
             <Alert className="alert-sm widget-middle-overflow rounded-0" color="danger" style={{ margin: 0 }}>

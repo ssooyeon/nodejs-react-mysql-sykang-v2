@@ -2,8 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { Row, Col, Button } from "reactstrap";
-import { css } from "glamor";
-import { confirmAlert } from "react-confirm-alert";
+import Swal from "sweetalert2";
 
 import Widget from "../../components/Widget";
 import s from "./Board.module.scss";
@@ -21,25 +20,22 @@ export default function BoardDetail(props) {
 
   // 게시글 삭제 전 확인
   const confirmRemovePost = () => {
-    confirmAlert({
-      closeOnClickOutside: false,
-      title: "",
-      message: "Are you sure delete this post?",
-      buttons: [
-        {
-          label: "Yes",
-          onClick: () => {
-            doRemovePost();
-          },
-        },
-        {
-          label: "No",
-          onClick: () => {},
-        },
-      ],
-      overlayClassName: css({
-        background: "transparent !important",
-      }),
+    Swal.fire({
+      text: "Are you sure delete this post?",
+      icon: "warning",
+      backdrop: false,
+      showCancelButton: true,
+      confirmButtonColor: "#da2837",
+      cancelButtonColor: "#30324d",
+      confirmButtonText: "OK",
+      showClass: {
+        backdrop: "swal2-noanimation",
+        icon: "",
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        doRemovePost();
+      }
     });
   };
 

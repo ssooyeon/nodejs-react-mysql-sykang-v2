@@ -79,7 +79,7 @@ export default function EditFolderModal({ open, handleCloseClick, folder }) {
           ) : null}
 
           <FormGroup className="mt">
-            <Label for="title">Title</Label>
+            <Label for="title">Name</Label>
             <InputGroup className="input-group-no-border">
               <Input
                 id="name"

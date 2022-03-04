@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Row, Col, Table, Button, FormGroup, InputGroup, Input } from "reactstrap";
-import { css } from "glamor";
-import { confirmAlert } from "react-confirm-alert";
 import PaginationComponent from "react-reactstrap-pagination";
+import Swal from "sweetalert2";
 
-import "react-confirm-alert/src/react-confirm-alert.css";
 import Widget from "../../components/Widget";
 import s from "./UserGroup.module.scss";
 
@@ -77,25 +75,22 @@ export default function Static() {
 
   // 사용자 테이블의 Delete 버튼 클릭
   const onUserDeleteClick = (userId) => {
-    confirmAlert({
-      closeOnClickOutside: false,
-      title: "",
-      message: "Are you sure delete this user?",
-      buttons: [
-        {
-          label: "Yes",
-          onClick: () => {
-            dispatch(deleteUser(userId));
-          },
-        },
-        {
-          label: "No",
-          onClick: () => {},
-        },
-      ],
-      overlayClassName: css({
-        background: "transparent !important",
-      }),
+    Swal.fire({
+      text: "Are you sure delete this user?",
+      icon: "warning",
+      backdrop: false,
+      showCancelButton: true,
+      confirmButtonColor: "#da2837",
+      cancelButtonColor: "#30324d",
+      confirmButtonText: "OK",
+      showClass: {
+        backdrop: "swal2-noanimation",
+        icon: "",
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(deleteUser(userId));
+      }
     });
   };
 
@@ -139,25 +134,22 @@ export default function Static() {
 
   // 그룹 테이블의 Delete 버튼 클릭
   const onGroupDeleteClick = (groupId) => {
-    confirmAlert({
-      closeOnClickOutside: false,
-      title: "",
-      message: "Are you sure delete this group with all members?",
-      buttons: [
-        {
-          label: "Yes",
-          onClick: () => {
-            dispatch(deleteGroup(groupId));
-          },
-        },
-        {
-          label: "No",
-          onClick: () => {},
-        },
-      ],
-      overlayClassName: css({
-        background: "transparent !important",
-      }),
+    Swal.fire({
+      text: "Are you sure delete this group with all members?",
+      icon: "warning",
+      backdrop: false,
+      showCancelButton: true,
+      confirmButtonColor: "#da2837",
+      cancelButtonColor: "#30324d",
+      confirmButtonText: "OK",
+      showClass: {
+        backdrop: "swal2-noanimation",
+        icon: "",
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(deleteGroup(groupId));
+      }
     });
   };
 
