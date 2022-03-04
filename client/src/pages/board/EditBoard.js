@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { Alert, Row, Col, Button, FormGroup, InputGroup, Input, Label } from "reactstrap";
+import { Editor } from "react-draft-wysiwyg";
+import { EditorState, ContentState, convertToRaw } from "draft-js";
+import draftToHtml from "draftjs-to-html";
+import htmlToDraft from "html-to-draftjs";
 
 import Widget from "../../components/Widget";
 import s from "./Board.module.scss";
 
-import { createBoard, updateBoard } from "../../actions/boards";
+import { updateBoard } from "../../actions/boards";
 import BoardService from "../../services/BoardService";
 
 export default function EditBoard(props) {
-  const { user: currentUser } = useSelector((state) => state.auth);
-
   const initialBoardState = {
     id: null,
     title: "",
@@ -19,6 +21,7 @@ export default function EditBoard(props) {
     userId: null,
   };
 
+  const [editorState, setEditorState] = useState(EditorState.createEmpty()); // description editor
   const [currentBoard, setCurrentBoard] = useState(initialBoardState);
   const [isShowSuccessAlert, setIsShowSuccessAlert] = useState(false); // 게시글 등록에 성공했는지의 여부
   const [successMessage, setSuccessMessage] = useState(""); // 게시글 등록에 성공했을 때의 메세지
@@ -36,7 +39,16 @@ export default function EditBoard(props) {
   const getBoard = (id) => {
     BoardService.get(id)
       .then((res) => {
-        setCurrentBoard(res.data);
+        const boardForm = res.data;
+        setCurrentBoard(boardForm);
+        if (boardForm.content !== undefined) {
+          // 에디터에 html 바인딩
+          const blocksFromHtml = htmlToDraft(boardForm.content);
+          const { contentBlocks, entityMap } = blocksFromHtml;
+          const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
+          const data = EditorState.createWithContent(contentState);
+          setEditorState(data);
+        }
       })
       .catch((e) => {
         console.log(e);
@@ -48,17 +60,37 @@ export default function EditBoard(props) {
     const { name, value } = e.target;
     setCurrentBoard({ ...currentBoard, [name]: value });
   };
+  const onEditorStateChange = (editorState) => {
+    setEditorState(editorState);
+  };
+
+  // 이미지 source to base64
+  const getFileBase64 = (file, callback) => {
+    var reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => callback(reader.result);
+    reader.onerror = (error) => {};
+  };
+
+  // 이미지 업로드
+  const uploadImageCallBack = (file) => {
+    return new Promise((resolve, reject) => getFileBase64(file, (data) => resolve({ data: { link: data } })));
+  };
 
   // 게시글 수정
   const doEditBoard = () => {
+    const rawContentState = convertToRaw(editorState.getCurrentContent());
+    const markup = draftToHtml(rawContentState);
+
     if (currentBoard.title === "") {
       setIsShowErrAlert(true);
       setErrMessage("Title field is empty.");
-    } else if (currentBoard.content === "") {
+    } else if (markup.trim() === "<p></p>") {
       setIsShowErrAlert(true);
       setErrMessage("Content field is empty.");
     } else {
-      dispatch(updateBoard(currentBoard.id, currentBoard))
+      const data = { ...currentBoard, content: markup };
+      dispatch(updateBoard(data.id, data))
         .then(() => {
           setIsShowSuccessAlert(true);
           setIsShowErrAlert(false);
@@ -120,16 +152,38 @@ export default function EditBoard(props) {
                 <FormGroup className="mt">
                   <Label for="content">Content</Label>
                   <InputGroup className="input-group-no-border">
-                    <Input
-                      id="content"
-                      className="input-transparent pl-3"
+                    <Editor
+                      editorStyle={{
+                        border: "1px solid #C0C0C0",
+                        height: "350px",
+                        padding: "5px",
+                        fontSize: "14px",
+                        width: "1580px",
+                      }}
+                      id="description"
+                      name="description"
                       value={currentBoard.content}
-                      onChange={handleInputChange}
-                      rows={15}
-                      type="textarea"
-                      required
-                      name="content"
-                      placeholder="content"
+                      wrapperClassName="wrapper-class"
+                      editorClassName="editor"
+                      toolbarClassName="toolbar-class"
+                      toolbar={{
+                        options: ["inline", "fontSize", "list", "textAlign", "colorPicker", "image", "history"],
+                        inline: { options: ["bold", "italic", "underline"] },
+                        // inDropdown: 해당 항목과 관련된 항목을 드롭다운으로 나타낼 것인지
+                        list: { inDropdown: true },
+                        textAlign: { inDropdown: true },
+                        image: { uploadCallback: uploadImageCallBack, previewImage: true },
+                        history: { inDropdown: false },
+                      }}
+                      placeholder="Description"
+                      // 한국어 설정
+                      localization={{
+                        locale: "ko",
+                      }}
+                      // 초기값 설정
+                      editorState={editorState}
+                      // 에디터의 값이 변경될 때마다 onEditorStateChange 호출
+                      onEditorStateChange={onEditorStateChange}
                     />
                   </InputGroup>
                 </FormGroup>

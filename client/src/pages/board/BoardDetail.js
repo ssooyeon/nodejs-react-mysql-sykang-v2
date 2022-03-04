@@ -89,7 +89,7 @@ export default function BoardDetail(props) {
                 <br />
                 <div className="widget-padding-md w-100 h-100 text-left border rounded" style={{ minHeight: "430px" }}>
                   <blockquote className="blockquote">
-                    <p>{boards.content}</p>
+                    <p dangerouslySetInnerHTML={{ __html: boards.content }}></p>
                   </blockquote>
                 </div>
               </blockquote>

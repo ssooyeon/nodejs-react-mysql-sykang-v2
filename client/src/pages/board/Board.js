@@ -101,7 +101,11 @@ export default function Board() {
                               <span className="fw-semi-bold">{board.title}</span>
                             </h3>
                           </Link>
-                          <p>{board.content.length > 400 ? board.content.substr(0, 400) + "..." : board.content}</p>
+                          <p>
+                            {board.content.replace(/<[^>]+>/g, "").length > 400
+                              ? board.content.replace(/<[^>]+>/g, "").substr(0, 400) + "..."
+                              : board.content.replace(/<[^>]+>/g, "")}
+                          </p>
                           <p style={{ fontSize: "12px" }}>
                             {board.user.account} / {board.createdAt}
                           </p>
