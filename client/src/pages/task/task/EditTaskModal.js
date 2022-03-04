@@ -184,7 +184,7 @@ export default function EditTaskModal({ open, handleCloseClick, task }) {
                 yearPlaceholder="yyyy"
                 className={s.dueDatePicker}
                 onChange={onDateChange}
-                value={taskForm.dueDate}
+                value={taskForm.dueDate ? new Date(taskForm.dueDate) : null}
               />
             </div>
           </FormGroup>
