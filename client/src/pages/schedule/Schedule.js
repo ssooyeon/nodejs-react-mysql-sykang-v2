@@ -521,6 +521,12 @@ export default function Schedule(props) {
                   eventContent={handleEventContent}
                   eventAllow={handleEventAllow}
                   contentHeight={600}
+                  // eventDataTransform={(event) => {
+                  //   if (event.isAllDay) {
+                  //     event.end = moment(event.end).add(1, "days").format("YYYY-MM-DD");
+                  //   }
+                  //   return event;
+                  // }}
                 />
               </div>
               <br />

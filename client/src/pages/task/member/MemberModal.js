@@ -16,7 +16,6 @@ export default function MemberModal({ open, handleCloseClick, userFolder }) {
   const { user: currentUser } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
-  const [searchUserInput, setSearchUserInput] = useState(null);
   const [usersCurrentPage, setUsersCurrentPage] = useState(0);
 
   const [isShowSuccessAlert, setIsShowSuccessAlert] = useState(false); // 게시글 등록에 성공했는지의 여부

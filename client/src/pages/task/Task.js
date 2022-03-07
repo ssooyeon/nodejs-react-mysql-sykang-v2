@@ -5,6 +5,7 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { v4 as uuidv4 } from "uuid";
 import { CirclePicker } from "react-color";
 import Swal from "sweetalert2";
+import { Scrollbars } from "react-custom-scrollbars";
 
 import { Row, Col, Button, InputGroup, Input } from "reactstrap";
 
@@ -584,87 +585,90 @@ export default function Task() {
                             ) : null}
                           </div>
                           <div className={s.droppableWrapper}>
-                            <Droppable droppableId={columnId} key={columnId}>
-                              {(provided, snapshot) => {
-                                return (
-                                  <div
-                                    className={s.droppableZone}
-                                    {...provided.droppableProps}
-                                    ref={provided.innerRef}
-                                    style={{
-                                      background: snapshot.isDraggingOver ? "rgba(255, 220, 40, 0.15)" : "",
-                                    }}
-                                  >
-                                    {column.tasks &&
-                                      column.tasks.map((item, index) => {
-                                        return (
-                                          <Draggable key={item.id} draggableId={item.id} index={index}>
-                                            {(provided, snapshot) => {
-                                              return (
-                                                <div
-                                                  className={s.droppableItem}
-                                                  ref={provided.innerRef}
-                                                  {...provided.draggableProps}
-                                                  {...provided.dragHandleProps}
-                                                  style={{
-                                                    backgroundColor: snapshot.isDragging ? "#263B4A" : themeColor,
-                                                    ...provided.draggableProps.style,
-                                                  }}
-                                                >
-                                                  {item.labelColor && item.labelColor ? (
-                                                    <div className={s.circleLabel} style={{ background: item.labelColor }}></div>
-                                                  ) : null}
-                                                  <div className={s.right}>
-                                                    <Button
-                                                      color=""
-                                                      className={s.transparentButton}
-                                                      size="xs"
-                                                      onClick={() => confirmRemoveTask(item.id)}
-                                                    >
-                                                      <i className="fa fa-remove"></i>
-                                                    </Button>
-                                                  </div>
-                                                  <span
-                                                    className={s.titleSpan}
-                                                    onClick={() => {
-                                                      taskTitleClick(item);
+                            <Scrollbars autoHeight autoHeightMin={100} autoHeightMax={525}>
+                              <Droppable droppableId={columnId} key={columnId}>
+                                {(provided, snapshot) => {
+                                  return (
+                                    <div
+                                      className={s.droppableZone}
+                                      {...provided.droppableProps}
+                                      ref={provided.innerRef}
+                                      style={{
+                                        background: snapshot.isDraggingOver ? "rgba(255, 220, 40, 0.15)" : "",
+                                        minHeight: "100px",
+                                      }}
+                                    >
+                                      {column.tasks &&
+                                        column.tasks.map((item, index) => {
+                                          return (
+                                            <Draggable key={item.id} draggableId={item.id} index={index}>
+                                              {(provided, snapshot) => {
+                                                return (
+                                                  <div
+                                                    className={s.droppableItem}
+                                                    ref={provided.innerRef}
+                                                    {...provided.draggableProps}
+                                                    {...provided.dragHandleProps}
+                                                    style={{
+                                                      backgroundColor: snapshot.isDragging ? "#263B4A" : themeColor,
+                                                      ...provided.draggableProps.style,
                                                     }}
                                                   >
-                                                    {item.title}
-                                                  </span>
-                                                  <div style={{ height: "5px" }}></div>
-                                                  <span style={{ fontSize: "10px" }}>
-                                                    {item.dueDate ? (
-                                                      <div>
-                                                        <input type="checkbox" checked={item.isDone} onChange={(e) => handleCheckbox(e, item)} />
-                                                        <label>
-                                                          &nbsp;
-                                                          <Moment
-                                                            format="YYYY-MM-DD HH:mm:ss"
-                                                            style={{
-                                                              color:
-                                                                item.dueDate && today === new Date(item.dueDate).toISOString().slice(0, 10)
-                                                                  ? "#D4B957"
-                                                                  : null,
-                                                            }}
-                                                          >
-                                                            {item.dueDate}
-                                                          </Moment>
-                                                        </label>
-                                                      </div>
+                                                    {item.labelColor && item.labelColor ? (
+                                                      <div className={s.circleLabel} style={{ background: item.labelColor }}></div>
                                                     ) : null}
-                                                  </span>
-                                                </div>
-                                              );
-                                            }}
-                                          </Draggable>
-                                        );
-                                      })}
-                                    {provided.placeholder}
-                                  </div>
-                                );
-                              }}
-                            </Droppable>
+                                                    <div className={s.right}>
+                                                      <Button
+                                                        color=""
+                                                        className={s.transparentButton}
+                                                        size="xs"
+                                                        onClick={() => confirmRemoveTask(item.id)}
+                                                      >
+                                                        <i className="fa fa-remove"></i>
+                                                      </Button>
+                                                    </div>
+                                                    <span
+                                                      className={s.titleSpan}
+                                                      onClick={() => {
+                                                        taskTitleClick(item);
+                                                      }}
+                                                    >
+                                                      {item.title}
+                                                    </span>
+                                                    <div style={{ height: "5px" }}></div>
+                                                    <span style={{ fontSize: "10px" }}>
+                                                      {item.dueDate ? (
+                                                        <div>
+                                                          <input type="checkbox" checked={item.isDone} onChange={(e) => handleCheckbox(e, item)} />
+                                                          <label>
+                                                            &nbsp;
+                                                            <Moment
+                                                              format="YYYY-MM-DD HH:mm:ss"
+                                                              style={{
+                                                                color:
+                                                                  item.dueDate && today === new Date(item.dueDate).toISOString().slice(0, 10)
+                                                                    ? "#D4B957"
+                                                                    : null,
+                                                              }}
+                                                            >
+                                                              {item.dueDate}
+                                                            </Moment>
+                                                          </label>
+                                                        </div>
+                                                      ) : null}
+                                                    </span>
+                                                  </div>
+                                                );
+                                              }}
+                                            </Draggable>
+                                          );
+                                        })}
+                                      {provided.placeholder}
+                                    </div>
+                                  );
+                                }}
+                              </Droppable>
+                            </Scrollbars>
                           </div>
                           <div style={{ fontSize: "11px", fontStyle: "italic", textAlign: "right" }}>
                             created by&nbsp; {column.manager ? column.manager.account : null}
