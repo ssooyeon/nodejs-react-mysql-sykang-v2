@@ -1,226 +1,195 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import cx from "classnames";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
 import { Progress, Alert } from "reactstrap";
-import { withRouter } from "react-router-dom";
-import { dismissAlert } from "../../actions/alerts";
+import Moment from "react-moment";
 import s from "./Sidebar.module.scss";
 import LinksGroup from "./LinksGroup";
 
 import { changeActiveSidebarItem } from "../../actions/navigation";
-import { logoutUser } from "../../actions/user";
 import HomeIcon from "../Icons/SidebarIcons/HomeIcon";
 import TypographyIcon from "../Icons/SidebarIcons/TypographyIcon";
 import TablesIcon from "../Icons/SidebarIcons/TablesIcon";
 import NotificationsIcon from "../Icons/SidebarIcons/NotificationsIcon";
 import ComponentsIcon from "../Icons/SidebarIcons/ComponentsIcon";
 
-class Sidebar extends React.Component {
-  static propTypes = {
-    sidebarStatic: PropTypes.bool,
-    sidebarOpened: PropTypes.bool,
-    dispatch: PropTypes.func.isRequired,
-    activeItem: PropTypes.string,
-    location: PropTypes.shape({
-      pathname: PropTypes.string,
-    }).isRequired,
-  };
+import WeatherService from "../../services/WeatherService";
 
-  static defaultProps = {
-    sidebarStatic: false,
-    activeItem: "",
-  };
+export default function Sidebar(props) {
+  const { user: currentUser } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
-  constructor(props) {
-    super(props);
+  const [date, setDate] = useState("");
+  const [temp, setTemp] = useState("");
+  const [humidity, setHumidity] = useState("");
 
-    this.doLogout = this.doLogout.bind(this);
-  }
+  useEffect(() => {
+    getTemp();
+    getHumidity();
+  }, []);
 
-  componentDidMount() {
-    this.element.addEventListener(
-      "transitionend",
-      () => {
-        if (this.props.sidebarOpened) {
-          this.element.classList.add(s.sidebarOpen);
+  const getTemp = () => {
+    WeatherService.getWeathers("first")
+      .then((res) => {
+        if (res !== null) {
+          const date = res.baseDate + " " + res.baseTime;
+          setDate(date);
+          setTemp(res.t1h);
+        } else {
+          console.log("temp is null");
         }
-      },
-      false
-    );
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.sidebarOpened !== this.props.sidebarOpened) {
-      if (nextProps.sidebarOpened) {
-        this.element.style.height = `${this.element.scrollHeight}px`;
-      } else {
-        this.element.classList.remove(s.sidebarOpen);
-        setTimeout(() => {
-          this.element.style.height = "";
-        }, 0);
-      }
-    }
-  }
-
-  dismissAlert(id) {
-    this.props.dispatch(dismissAlert(id));
-  }
-
-  doLogout() {
-    this.props.dispatch(logoutUser());
-  }
-
-  render() {
-    return (
-      <nav
-        className={cx(s.root)}
-        ref={(nav) => {
-          this.element = nav;
-        }}
-      >
-        <header className={s.logo}>
-          <a href="/">
-            🌚 <span className="fw-bold"></span>
-          </a>
-        </header>
-        <ul className={s.nav}>
-          <LinksGroup
-            onActiveSidebarItemChange={(activeItem) => this.props.dispatch(changeActiveSidebarItem(activeItem))}
-            activeItem={this.props.activeItem}
-            header="Dashboard"
-            isHeader
-            iconName={<HomeIcon className={s.menuIcon} />}
-            link="/app/main"
-            index="main"
-          />
-          <LinksGroup
-            onActiveSidebarItemChange={(t) => this.props.dispatch(changeActiveSidebarItem(t))}
-            activeItem={this.props.activeItem}
-            header="Users & Groups"
-            isHeader
-            iconName={<TypographyIcon className={s.menuIcon} />}
-            link="/app/tables"
-            index="tables"
-          />
-          <LinksGroup
-            onActiveSidebarItemChange={(t) => this.props.dispatch(changeActiveSidebarItem(t))}
-            activeItem={this.props.activeItem}
-            header="Board"
-            isHeader
-            iconName={<NotificationsIcon className={s.menuIcon} />}
-            link="/app/board"
-            index="board"
-          />
-          <LinksGroup
-            onActiveSidebarItemChange={(activeItem) => this.props.dispatch(changeActiveSidebarItem(activeItem))}
-            activeItem={this.props.activeItem}
-            header="Monitoring"
-            isHeader
-            iconName={<ComponentsIcon className={s.menuIcon} />}
-            link="/app/monitoring"
-            index="monitoring"
-            childrenLinks={[
-              {
-                header: "Charts",
-                link: "/app/monitoring/charts",
-              },
-            ]}
-          />
-          {this.props.currentUser ? (
-            <>
-              <LinksGroup
-                onActiveSidebarItemChange={(t) => this.props.dispatch(changeActiveSidebarItem(t))}
-                activeItem={this.props.activeItem}
-                header="Profile"
-                isHeader
-                iconName={<TablesIcon className={s.menuIcon} />}
-                link="/app/profile"
-                index="profile"
-              />
-              <LinksGroup
-                onActiveSidebarItemChange={(t) => this.props.dispatch(changeActiveSidebarItem(t))}
-                activeItem={this.props.activeItem}
-                header="Schedule"
-                isHeader
-                iconName={<TablesIcon className={s.menuIcon} />}
-                link="/app/schedule"
-                index="Schedule"
-              />
-              <LinksGroup
-                onActiveSidebarItemChange={(t) => this.props.dispatch(changeActiveSidebarItem(t))}
-                activeItem={this.props.activeItem}
-                header="Task"
-                isHeader
-                iconName={<TablesIcon className={s.menuIcon} />}
-                link="/app/task"
-                index="Task"
-              />
-            </>
-          ) : null}
-        </ul>
-        <h5 className={s.navTitle}>
-          BOOKMARK
-          {/* eslint-disable-next-line */}
-        </h5>
-        {/* eslint-disable */}
-        <ul className={s.sidebarLabels}>
-          <li>
-            <a href="#">
-              <i className="fa fa-circle text-success mr-2" />
-              <span className={s.labelName}>Link#1</span>
-            </a>
-          </li>
-          <li>
-            <a href="#">
-              <i className="fa fa-circle text-primary mr-2" />
-              <span className={s.labelName}>Link#2</span>
-            </a>
-          </li>
-          <li>
-            <a href="#">
-              <i className="fa fa-circle text-danger mr-2" />
-              <span className={s.labelName}>Link#3</span>
-            </a>
-          </li>
-        </ul>
-        {/* eslint-enable */}
-        <h5 className={s.navTitle}>ALRETS</h5>
-        <div className={s.sidebarAlerts}>
-          {this.props.alertsList.map(
-            (
-              alert // eslint-disable-line
-            ) => (
-              <Alert
-                key={alert.id}
-                className={s.sidebarAlert}
-                color="transparent"
-                isOpen={true} // eslint-disable-line
-                toggle={() => {
-                  this.dismissAlert(alert.id);
-                }}
-              >
-                <span>{alert.title}</span>
-                <br />
-                <Progress className={`bg-subtle-blue progress-xs mt-1`} color={alert.color} value={alert.value} />
-                <span className={s.alertFooter}>{alert.footer}</span>
-              </Alert>
-            )
-          )}
-        </div>
-      </nav>
-    );
-  }
-}
-
-function mapStateToProps(store) {
-  return {
-    sidebarOpened: store.navigation.sidebarOpened,
-    sidebarStatic: store.navigation.sidebarStatic,
-    alertsList: store.alerts.alertsList,
-    activeItem: store.navigation.activeItem,
-    currentUser: store.auth.user,
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   };
-}
 
-export default withRouter(connect(mapStateToProps)(Sidebar));
+  const getHumidity = () => {
+    WeatherService.getWeathers("second")
+      .then((res) => {
+        if (res !== null) {
+          setHumidity(res.reh);
+        } else {
+          console.log("humidity is null");
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  return (
+    <nav
+      className={cx(s.root)}
+      // ref={(nav) => {
+      //   this.element = nav;
+      // }}
+    >
+      <header className={s.logo}>
+        <a href="/">
+          🌚 <span className="fw-bold"></span>
+        </a>
+      </header>
+      <ul className={s.nav}>
+        <LinksGroup
+          onActiveSidebarItemChange={(activeItem) => dispatch(changeActiveSidebarItem(activeItem))}
+          activeItem={props.activeItem}
+          header="Dashboard"
+          isHeader
+          iconName={<HomeIcon className={s.menuIcon} />}
+          link="/app/main"
+          index="main"
+        />
+        <LinksGroup
+          onActiveSidebarItemChange={(t) => dispatch(changeActiveSidebarItem(t))}
+          activeItem={props.activeItem}
+          header="Users & Groups"
+          isHeader
+          iconName={<TypographyIcon className={s.menuIcon} />}
+          link="/app/tables"
+          index="tables"
+        />
+        <LinksGroup
+          onActiveSidebarItemChange={(t) => dispatch(changeActiveSidebarItem(t))}
+          activeItem={props.activeItem}
+          header="Board"
+          isHeader
+          iconName={<NotificationsIcon className={s.menuIcon} />}
+          link="/app/board"
+          index="board"
+        />
+        <LinksGroup
+          onActiveSidebarItemChange={(activeItem) => dispatch(changeActiveSidebarItem(activeItem))}
+          activeItem={props.activeItem}
+          header="Monitoring"
+          isHeader
+          iconName={<ComponentsIcon className={s.menuIcon} />}
+          link="/app/monitoring"
+          index="monitoring"
+          childrenLinks={[
+            {
+              header: "Charts",
+              link: "/app/monitoring/charts",
+            },
+          ]}
+        />
+        {currentUser ? (
+          <>
+            <LinksGroup
+              onActiveSidebarItemChange={(t) => dispatch(changeActiveSidebarItem(t))}
+              activeItem={props.activeItem}
+              header="Profile"
+              isHeader
+              iconName={<TablesIcon className={s.menuIcon} />}
+              link="/app/profile"
+              index="profile"
+            />
+            <LinksGroup
+              onActiveSidebarItemChange={(t) => dispatch(changeActiveSidebarItem(t))}
+              activeItem={props.activeItem}
+              header="Schedule"
+              isHeader
+              iconName={<TablesIcon className={s.menuIcon} />}
+              link="/app/schedule"
+              index="Schedule"
+            />
+            <LinksGroup
+              onActiveSidebarItemChange={(t) => dispatch(changeActiveSidebarItem(t))}
+              activeItem={props.activeItem}
+              header="Task"
+              isHeader
+              iconName={<TablesIcon className={s.menuIcon} />}
+              link="/app/task"
+              index="Task"
+            />
+          </>
+        ) : null}
+      </ul>
+      <h5 className={s.navTitle}>
+        BOOKMARK
+        {/* eslint-disable-next-line */}
+      </h5>
+      {/* eslint-disable */}
+      <ul className={s.sidebarLabels}>
+        <li>
+          <a href="#">
+            <i className="fa fa-circle text-success mr-2" />
+            <span className={s.labelName}>Link#1</span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i className="fa fa-circle text-primary mr-2" />
+            <span className={s.labelName}>Link#2</span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i className="fa fa-circle text-danger mr-2" />
+            <span className={s.labelName}>Link#3</span>
+          </a>
+        </li>
+      </ul>
+      {/* eslint-enable */}
+      {/* <h5 className={s.navTitle}>WEATHER</h5> */}
+      <div className={s.sidebarAlerts}>
+        <Alert className={s.sidebarAlert} color="transparent" isOpen={true}>
+          <span>Temperature: {temp}℃</span>
+          <br />
+          <Progress className={`bg-subtle-blue progress-xs mt-1`} color="danger" value={(Math.abs(temp) / 40) * 100} />
+          <span className={s.alertFooter} style={{ fontStyle: "italic", fontSize: "11px" }}>
+            <Moment format="YYYY-MM-DD HH:mm">{date}</Moment> 기준
+          </span>
+        </Alert>
+        <Alert className={s.sidebarAlert} color="transparent" isOpen={true}>
+          <span>Humidity: {humidity}%</span>
+          <br />
+          <Progress className={`bg-subtle-blue progress-xs mt-1`} color="warning" value={(humidity / 90) * 100} />
+          <span className={s.alertFooter} style={{ fontStyle: "italic", fontSize: "11px" }}>
+            <Moment format="YYYY-MM-DD HH:mm">{date}</Moment> 기준
+          </span>
+        </Alert>
+      </div>
+    </nav>
+  );
+}

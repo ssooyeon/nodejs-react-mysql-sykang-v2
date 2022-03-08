@@ -4,17 +4,17 @@ const defaultState = {
   alertsList: [
     {
       id: 0,
-      title: "alert#1",
+      title: "temperature",
       value: 16,
-      color: "primary",
-      footer: "alert message#1",
+      color: "danger",
+      footer: "2022-03-07 16:00 기준",
     },
     {
       id: 1,
-      title: "alert#2",
+      title: "humidity",
       value: 88,
-      color: "danger",
-      footer: "alert message#2",
+      color: "warning",
+      footer: "2022-03-07 16:00 기준",
     },
   ],
 };
