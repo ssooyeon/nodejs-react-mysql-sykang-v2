@@ -11,6 +11,11 @@ class ScheduleService {
     return http.get(`/schedules/${id}`);
   }
 
+  // 오늘 스케줄만 조회
+  getAllByToday() {
+    return http.get("/schedules/today");
+  }
+
   // 스케줄 생성
   create(data) {
     return http.post("/schedules", data);

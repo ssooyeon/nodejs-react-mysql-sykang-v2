@@ -1,4 +1,12 @@
-import { CREATE_SCHEDULE, RETRIEVE_SCHEDULES, RETRIEVE_SCHEDULE, UPDATE_SCHEDULE, DELETE_SCHEDULE, DELETE_ALL_SCHEDULES } from "./types";
+import {
+  CREATE_SCHEDULE,
+  RETRIEVE_SCHEDULES,
+  RETRIEVE_TODAY_SCHEDULES,
+  RETRIEVE_SCHEDULE,
+  UPDATE_SCHEDULE,
+  DELETE_SCHEDULE,
+  DELETE_ALL_SCHEDULES,
+} from "./types";
 
 import ScheduleService from "../services/ScheduleService";
 
@@ -29,6 +37,23 @@ export const retrieveSchedules = (params) => async (dispatch) => {
     const res = await ScheduleService.getAll(params);
     dispatch({
       type: RETRIEVE_SCHEDULES,
+      payload: res.data,
+    });
+    return Promise.resolve(res.data);
+  } catch (err) {
+    console.log(err);
+    return Promise.reject(err);
+  }
+};
+
+/**
+ * 오늘 스케줄 조회
+ */
+export const retrieveTodaySchedules = () => async (dispatch) => {
+  try {
+    const res = await ScheduleService.getAllByToday();
+    dispatch({
+      type: RETRIEVE_TODAY_SCHEDULES,
       payload: res.data,
     });
     return Promise.resolve(res.data);

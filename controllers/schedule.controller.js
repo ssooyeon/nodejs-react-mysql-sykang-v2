@@ -89,6 +89,31 @@ exports.findOne = (req, res) => {
 };
 
 /**
+ * 오늘 스케줄만 조회
+ */
+exports.findAllByToday = (req, res) => {
+  const today = new Date().toISOString().split("T")[0];
+  Schedule.findAll({
+    include: [
+      {
+        model: User,
+        as: "creater",
+      },
+    ],
+    where: {
+      start: { [Op.like]: today + "%" },
+      // end: {}
+    },
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({ message: err.message || "Some error occurred while retrieving schedules." });
+    });
+};
+
+/**
  * 스케줄 수정
  */
 exports.update = (req, res) => {

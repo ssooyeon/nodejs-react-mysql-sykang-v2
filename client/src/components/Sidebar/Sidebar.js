@@ -13,21 +13,37 @@ import TablesIcon from "../Icons/SidebarIcons/TablesIcon";
 import NotificationsIcon from "../Icons/SidebarIcons/NotificationsIcon";
 import ComponentsIcon from "../Icons/SidebarIcons/ComponentsIcon";
 
+import ScheduleService from "../../services/ScheduleService";
 import WeatherService from "../../services/WeatherService";
 
 export default function Sidebar(props) {
   const { user: currentUser } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
+  const [todaySchedules, setTodaySchedules] = useState([]);
   const [date, setDate] = useState("");
   const [temp, setTemp] = useState("");
   const [humidity, setHumidity] = useState("");
 
   useEffect(() => {
+    getSchedule();
     getTemp();
     getHumidity();
   }, []);
 
+  // 오늘 날짜 스케줄 가져오기
+  const getSchedule = () => {
+    ScheduleService.getAllByToday()
+      .then((res) => {
+        console.log(res.data);
+        setTodaySchedules(res.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  // 현재 온도 가져오기
   const getTemp = () => {
     WeatherService.getWeathers("first")
       .then((res) => {
@@ -44,6 +60,7 @@ export default function Sidebar(props) {
       });
   };
 
+  // 현재 습도 가져오기
   const getHumidity = () => {
     WeatherService.getWeathers("second")
       .then((res) => {
@@ -146,34 +163,42 @@ export default function Sidebar(props) {
         ) : null}
       </ul>
       <h5 className={s.navTitle}>
-        BOOKMARK
+        Today TODO
         {/* eslint-disable-next-line */}
       </h5>
       {/* eslint-disable */}
       <ul className={s.sidebarLabels}>
-        <li>
-          <a href="#">
-            <i className="fa fa-circle text-success mr-2" />
-            <span className={s.labelName}>Link#1</span>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <i className="fa fa-circle text-primary mr-2" />
-            <span className={s.labelName}>Link#2</span>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <i className="fa fa-circle text-danger mr-2" />
-            <span className={s.labelName}>Link#3</span>
-          </a>
-        </li>
+        {todaySchedules &&
+          todaySchedules.map((schedule, index) => {
+            return (
+              <li key={schedule.id}>
+                <a href="/#/app/schedule">
+                  {schedule.isAllDay ? (
+                    <>
+                      <i className="fa fa-circle text-success mr-2" />
+                      <span className={s.labelName} style={{ fontSize: "13px" }}>
+                        {schedule.title}
+                        <span style={{ fontStyle: "italic", fontSize: "11px" }}> (daily)</span>
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <i className="fa fa-circle text-info mr-2" />
+                      <span className={s.labelName} style={{ fontSize: "13px" }}>
+                        {schedule.title}
+                        <span style={{ fontStyle: "italic", fontSize: "11px" }}> ({schedule.start.split(" ")[1].slice(0, 5)}~)</span>
+                      </span>
+                    </>
+                  )}
+                </a>
+              </li>
+            );
+          })}
       </ul>
       {/* eslint-enable */}
       {/* <h5 className={s.navTitle}>WEATHER</h5> */}
       <div className={s.sidebarAlerts}>
-        <Alert className={s.sidebarAlert} color="transparent" isOpen={true}>
+        <Alert className={s.sidebarAlert} color="transparent" isOpen>
           <span>Temperature: {temp}℃</span>
           <br />
           <Progress className={`bg-subtle-blue progress-xs mt-1`} color="danger" value={(Math.abs(temp) / 40) * 100} />
@@ -181,7 +206,7 @@ export default function Sidebar(props) {
             <Moment format="YYYY-MM-DD HH:mm">{date}</Moment> 기준
           </span>
         </Alert>
-        <Alert className={s.sidebarAlert} color="transparent" isOpen={true}>
+        <Alert className={s.sidebarAlert} color="transparent" isOpen>
           <span>Humidity: {humidity}%</span>
           <br />
           <Progress className={`bg-subtle-blue progress-xs mt-1`} color="warning" value={(humidity / 90) * 100} />
