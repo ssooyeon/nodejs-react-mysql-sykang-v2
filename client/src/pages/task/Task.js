@@ -250,8 +250,9 @@ export default function Task() {
         dispatch(retrieveParentFolders(currentUser.id))
           .then((res) => {
             setFolders(res);
-            setCurrentFolder(createdFolder.id);
-            getFolder(createdFolder.id);
+            // 폴더 생성 후 생성된 폴더가 제대로 선택되지 않음 (select list가 제대로 반영이 안됨)
+            // setCurrentFolder(createdFolder.id);
+            // getFolder(createdFolder.id);
           })
           .catch((e) => {
             console.log(e);

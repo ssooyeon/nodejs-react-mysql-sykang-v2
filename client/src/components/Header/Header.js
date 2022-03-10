@@ -103,7 +103,14 @@ function Header(props) {
                 <p style={{ marginTop: "1rem" }}>S</p>
               </span>
               {currentUser ? (
-                <span className={`small d-sm-down-none ${s.accountCheck}`}>{currentUser.account}</span>
+                <span
+                  className={`small d-sm-down-none ${s.accountCheck}`}
+                  onClick={() => {
+                    props.history.push("/app/profile");
+                  }}
+                >
+                  {currentUser.account}
+                </span>
               ) : (
                 <span className={`small d-sm-down-none ${s.accountCheck}`}>Guest</span>
               )}

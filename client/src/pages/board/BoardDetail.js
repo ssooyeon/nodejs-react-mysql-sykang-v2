@@ -10,6 +10,7 @@ import s from "./Board.module.scss";
 import { retrieveBoard, deleteBoard } from "../../actions/boards";
 
 export default function BoardDetail(props) {
+  const { user: currentUser } = useSelector((state) => state.auth);
   const boards = useSelector((state) => state.boards);
   const dispatch = useDispatch();
 
@@ -61,16 +62,18 @@ export default function BoardDetail(props) {
           <Widget>
             <h3>
               <span className="fw-semi-bold">Post Detail</span>
-              <div className="float-right">
-                <Link to={`/app/board/edit/${boards.id}`}>
-                  <Button color="default" className="mr-2" size="sm">
-                    Edit
+              {boards.user && currentUser.id === boards.user.id ? (
+                <div className="float-right">
+                  <Link to={`/app/board/edit/${boards.id}`}>
+                    <Button color="default" className="mr-2" size="sm">
+                      Edit
+                    </Button>
+                  </Link>
+                  <Button color="danger" className="mr-2" size="sm" onClick={confirmRemovePost}>
+                    Remove
                   </Button>
-                </Link>
-                <Button color="danger" className="mr-2" size="sm" onClick={confirmRemovePost}>
-                  Remove
-                </Button>
-              </div>
+                </div>
+              ) : null}
             </h3>
             <p>
               {"Indicates a list of "}
