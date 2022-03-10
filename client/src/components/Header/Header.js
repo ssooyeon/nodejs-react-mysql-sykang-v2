@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { withRouter } from "react-router-dom";
 import {
   Navbar,
   Nav,
@@ -33,7 +34,7 @@ import { logout } from "../../actions/auth";
 
 const searchOpen = false;
 
-export default function Header(props) {
+function Header(props) {
   const [supportOpen, setSupportOpen] = useState(false);
   const [searchFocused, setSearchFocused] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
@@ -47,6 +48,7 @@ export default function Header(props) {
 
   const doLogout = () => {
     dispatch(logout());
+    props.history.push("/");
   };
 
   const toggleSupportDropdown = () => {
@@ -168,3 +170,5 @@ export default function Header(props) {
     </Navbar>
   );
 }
+
+export default withRouter(Header);
