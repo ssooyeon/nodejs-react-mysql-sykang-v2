@@ -6,18 +6,19 @@ import Moment from "react-moment";
 import s from "./Sidebar.module.scss";
 import LinksGroup from "./LinksGroup";
 
-import { changeActiveSidebarItem } from "../../actions/navigation";
 import HomeIcon from "../Icons/SidebarIcons/HomeIcon";
 import TypographyIcon from "../Icons/SidebarIcons/TypographyIcon";
 import TablesIcon from "../Icons/SidebarIcons/TablesIcon";
 import NotificationsIcon from "../Icons/SidebarIcons/NotificationsIcon";
 import ComponentsIcon from "../Icons/SidebarIcons/ComponentsIcon";
 
+import { changeActiveSidebarItem } from "../../actions/navigation";
 import ScheduleService from "../../services/ScheduleService";
 import WeatherService from "../../services/WeatherService";
 
-export default function Sidebar(props) {
+export default function Sidebar() {
   const { user: currentUser } = useSelector((state) => state.auth);
+  const activeItem = useSelector((store) => store.navigation.activeItem);
   const dispatch = useDispatch();
 
   const [todaySchedules, setTodaySchedules] = useState([]);
@@ -35,7 +36,6 @@ export default function Sidebar(props) {
   const getSchedule = () => {
     ScheduleService.getAllByToday()
       .then((res) => {
-        console.log(res.data);
         setTodaySchedules(res.data);
       })
       .catch((e) => {
@@ -90,7 +90,7 @@ export default function Sidebar(props) {
       <ul className={s.nav}>
         <LinksGroup
           onActiveSidebarItemChange={(activeItem) => dispatch(changeActiveSidebarItem(activeItem))}
-          activeItem={props.activeItem}
+          activeItem={activeItem}
           header="Dashboard"
           isHeader
           iconName={<HomeIcon className={s.menuIcon} />}
@@ -99,7 +99,7 @@ export default function Sidebar(props) {
         />
         <LinksGroup
           onActiveSidebarItemChange={(t) => dispatch(changeActiveSidebarItem(t))}
-          activeItem={props.activeItem}
+          activeItem={activeItem}
           header="Users & Groups"
           isHeader
           iconName={<TypographyIcon className={s.menuIcon} />}
@@ -107,8 +107,8 @@ export default function Sidebar(props) {
           index="tables"
         />
         <LinksGroup
-          onActiveSidebarItemChange={(t) => dispatch(changeActiveSidebarItem(t))}
-          activeItem={props.activeItem}
+          onActiveSidebarItemChange={(activeItem) => dispatch(changeActiveSidebarItem(activeItem))}
+          activeItem={activeItem}
           header="Board"
           isHeader
           iconName={<NotificationsIcon className={s.menuIcon} />}
@@ -117,7 +117,7 @@ export default function Sidebar(props) {
         />
         <LinksGroup
           onActiveSidebarItemChange={(activeItem) => dispatch(changeActiveSidebarItem(activeItem))}
-          activeItem={props.activeItem}
+          activeItem={activeItem}
           header="Monitoring"
           isHeader
           iconName={<ComponentsIcon className={s.menuIcon} />}
@@ -133,8 +133,8 @@ export default function Sidebar(props) {
         {currentUser ? (
           <>
             <LinksGroup
-              onActiveSidebarItemChange={(t) => dispatch(changeActiveSidebarItem(t))}
-              activeItem={props.activeItem}
+              onActiveSidebarItemChange={(activeItem) => dispatch(changeActiveSidebarItem(activeItem))}
+              activeItem={activeItem}
               header="Profile"
               isHeader
               iconName={<TablesIcon className={s.menuIcon} />}
@@ -142,8 +142,8 @@ export default function Sidebar(props) {
               index="profile"
             />
             <LinksGroup
-              onActiveSidebarItemChange={(t) => dispatch(changeActiveSidebarItem(t))}
-              activeItem={props.activeItem}
+              onActiveSidebarItemChange={(activeItem) => dispatch(changeActiveSidebarItem(activeItem))}
+              activeItem={activeItem}
               header="Schedule"
               isHeader
               iconName={<TablesIcon className={s.menuIcon} />}
@@ -151,8 +151,8 @@ export default function Sidebar(props) {
               index="Schedule"
             />
             <LinksGroup
-              onActiveSidebarItemChange={(t) => dispatch(changeActiveSidebarItem(t))}
-              activeItem={props.activeItem}
+              onActiveSidebarItemChange={(activeItem) => dispatch(changeActiveSidebarItem(activeItem))}
+              activeItem={activeItem}
               header="Task"
               isHeader
               iconName={<TablesIcon className={s.menuIcon} />}
@@ -198,7 +198,7 @@ export default function Sidebar(props) {
       {/* eslint-enable */}
       {/* <h5 className={s.navTitle}>WEATHER</h5> */}
       <div className={s.sidebarAlerts}>
-        <Alert className={s.sidebarAlert} color="transparent" isOpen>
+        <Alert className={s.sidebarAlert} color="transparent" isOpen={true}>
           <span>Temperature: {temp}℃</span>
           <br />
           <Progress className={`bg-subtle-blue progress-xs mt-1`} color="danger" value={(Math.abs(temp) / 40) * 100} />
@@ -206,7 +206,7 @@ export default function Sidebar(props) {
             <Moment format="YYYY-MM-DD HH:mm">{date}</Moment> 기준
           </span>
         </Alert>
-        <Alert className={s.sidebarAlert} color="transparent" isOpen>
+        <Alert className={s.sidebarAlert} color="transparent" isOpen={true}>
           <span>Humidity: {humidity}%</span>
           <br />
           <Progress className={`bg-subtle-blue progress-xs mt-1`} color="warning" value={(humidity / 90) * 100} />
