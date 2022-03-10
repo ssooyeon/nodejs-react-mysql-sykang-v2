@@ -45,6 +45,35 @@ exports.findAll = (req, res) => {
     });
 };
 
+// 현재 로그인한 사용자의 오늘 테스크 목록 조회
+exports.findAllByUser = (req, res) => {
+  const userId = req.params.userId;
+  const todayStart = new Date().setHours(0, 0, 0, 0);
+  const todayEnd = new Date().setHours(23, 59, 59, 59);
+  Task.findAll({
+    include: [
+      {
+        model: User,
+        as: "creater",
+      },
+    ],
+    where: {
+      createrId: { [Op.eq]: userId },
+      dueDate: {
+        [Op.gt]: todayStart,
+        [Op.lt]: todayEnd,
+      },
+    },
+    order: [["ordering", "DESC"]],
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({ message: err.message || "Some error occurred while retrieving tasks." });
+    });
+};
+
 /**
  * 테스크 조회
  */

@@ -4,6 +4,7 @@ module.exports = (app) => {
 
   router.post("/", tasks.create);
   router.get("/", tasks.findAll);
+  router.get("/user/:userId", tasks.findAllByUser);
   router.get("/:id", tasks.findOne);
   router.put("/:id", tasks.update);
   router.delete("/:id", tasks.delete);

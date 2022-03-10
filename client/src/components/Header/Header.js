@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { withRouter } from "react-router-dom";
 import {
@@ -31,16 +31,32 @@ import s from "./Header.module.scss";
 import "animate.css";
 
 import { logout } from "../../actions/auth";
+import TaskService from "../../services/TaskService";
 
 const searchOpen = false;
+const labels = ["warning", "success", "info", "danger"];
+const icons = ["fa fa-question-circle", "fa fa-info-circle", "fa fa-plus", "fa fa-tag", "fa fa-question-circle"];
 
 function Header(props) {
   const [supportOpen, setSupportOpen] = useState(false);
   const [searchFocused, setSearchFocused] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [notificationList, setNotificationList] = useState([]);
 
   const dispatch = useDispatch();
   const { user: currentUser } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (currentUser) {
+      TaskService.getAllByUser(currentUser.id)
+        .then((res) => {
+          setNotificationList(res.data);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
+  }, []);
 
   const toggleNotifications = () => {
     setNotificationsOpen(!notificationsOpen);
@@ -123,39 +139,25 @@ function Header(props) {
               <div className={s.count}></div>
             </DropdownToggle>
             <DropdownMenu right className={`${s.dropdownMenu} ${s.support}`}>
+              {notificationList &&
+                notificationList.map((noti, index) => {
+                  return (
+                    <DropdownItem key={noti.id}>
+                      <Badge color={labels[Math.floor(Math.random() * 4)]}>
+                        <i className={icons[Math.floor(Math.random() * 5)]} />
+                      </Badge>
+                      {noti.isDone ? (
+                        <div className={s.details} style={{ textDecoration: "line-through", color: "rgba(244, 244, 245, 0.6)" }}>
+                          {noti.title.length > 30 ? noti.title.substr(0, 30) + "..." : noti.title}
+                        </div>
+                      ) : (
+                        <div className={s.details}>{noti.title.length > 30 ? noti.title.substr(0, 30) + "..." : noti.title}</div>
+                      )}
+                    </DropdownItem>
+                  );
+                })}
               <DropdownItem>
-                <Badge color="danger">
-                  <i className="fa fa-bell-o" />
-                </Badge>
-                <div className={s.details}>alert message#1</div>
-              </DropdownItem>
-              <DropdownItem>
-                <Badge color="warning">
-                  <i className="fa fa-question-circle" />
-                </Badge>
-                <div className={s.details}>alert message#2</div>
-              </DropdownItem>
-              <DropdownItem>
-                <Badge color="success">
-                  <i className="fa fa-info-circle" />
-                </Badge>
-                <div className={s.details}>alert message#3</div>
-              </DropdownItem>
-              <DropdownItem>
-                <Badge color="info">
-                  <i className="fa fa-plus" />
-                </Badge>
-                <div className={s.details}>alert message#4</div>
-              </DropdownItem>
-              <DropdownItem>
-                <Badge color="danger">
-                  <i className="fa fa-tag" />
-                </Badge>
-                <div className={s.details}>alert message#5</div>
-              </DropdownItem>
-              <DropdownItem>
-                {/* eslint-disable-next-line */}
-                <a href="#" className="text-white">
+                <a href="/#/app/task" className="text-white">
                   More <ArrowIcon className={s.headerIcon} maskName="bellArrow" />
                 </a>
               </DropdownItem>

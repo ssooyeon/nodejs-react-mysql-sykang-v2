@@ -11,6 +11,11 @@ class TaskService {
     return http.get(`/tasks/${id}`);
   }
 
+  // 현재 로그인한 사용자의 테스크 전체 조회
+  getAllByUser(userId) {
+    return http.get(`/tasks/user/${userId}`);
+  }
+
   // 테스크 생성
   create(data) {
     return http.post("/tasks", data);
