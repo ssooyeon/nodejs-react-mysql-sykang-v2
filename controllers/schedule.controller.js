@@ -92,6 +92,7 @@ exports.findOne = (req, res) => {
  * 오늘 스케줄만 조회
  */
 exports.findAllByToday = (req, res) => {
+  const id = req.params.userId;
   const today = new Date().toISOString().split("T")[0];
   Schedule.findAll({
     include: [
@@ -101,6 +102,7 @@ exports.findAllByToday = (req, res) => {
       },
     ],
     where: {
+      createrId: { [Op.eq]: id },
       start: { [Op.like]: today + "%" },
       // end: {}
     },

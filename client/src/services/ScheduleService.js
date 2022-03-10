@@ -11,9 +11,9 @@ class ScheduleService {
     return http.get(`/schedules/${id}`);
   }
 
-  // 오늘 스케줄만 조회
-  getAllByToday() {
-    return http.get("/schedules/today");
+  // 현재 접속한 사용자의 오늘 스케줄만 조회
+  getAllByToday(userId) {
+    return http.get(`/schedules/today/${userId}`);
   }
 
   // 스케줄 생성

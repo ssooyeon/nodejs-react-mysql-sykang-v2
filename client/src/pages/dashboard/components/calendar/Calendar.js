@@ -95,7 +95,8 @@ export default function Calendar() {
                   ) : (
                     <span className="badge badge-pill badge-primary float-right">all day</span>
                   )}
-                  {schedule.title}
+                  {schedule.title} &nbsp;
+                  <span style={{ fontStyle: "italic", fontSize: "12px", color: "rgba(244, 244, 245, 0.6)" }}>({schedule.creater.account})</span>
                 </button>
               );
             })}

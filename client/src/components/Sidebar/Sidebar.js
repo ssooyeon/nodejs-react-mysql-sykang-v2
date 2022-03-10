@@ -34,13 +34,15 @@ export default function Sidebar() {
 
   // 오늘 날짜 스케줄 가져오기
   const getSchedule = () => {
-    ScheduleService.getAllByToday()
-      .then((res) => {
-        setTodaySchedules(res.data);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    if (currentUser) {
+      ScheduleService.getAllByToday(currentUser.id)
+        .then((res) => {
+          setTodaySchedules(res.data);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
   };
 
   // 현재 온도 가져오기
