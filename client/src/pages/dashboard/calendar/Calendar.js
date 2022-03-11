@@ -6,8 +6,8 @@ import Week from "./Week";
 import moment from "moment/moment";
 import s from "./Calendar.module.scss";
 
-import { retrieveSchedules } from "../../../../actions/schedules";
-// import ScheduleService from "../../../../services/ScheduleService";
+import { retrieveSchedules } from "../../../actions/schedules";
+// import ScheduleService from "../../../services/ScheduleService";
 
 const selectedDay = moment().startOf("day");
 

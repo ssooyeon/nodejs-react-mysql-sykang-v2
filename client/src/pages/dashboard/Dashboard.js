@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Row, Col, Progress, Button, FormGroup, InputGroup, Input } from "reactstrap";
 import Moment from "react-moment";
 import Widget from "../../components/Widget";
-import Calendar from "./components/calendar/Calendar";
+import Calendar from "./calendar/Calendar";
 import AnimateNumber from "react-animated-number";
 import dateTime from "date-and-time";
 import s from "./Dashboard.module.scss";
