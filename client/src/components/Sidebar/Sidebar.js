@@ -127,8 +127,16 @@ export default function Sidebar() {
           index="monitoring"
           childrenLinks={[
             {
-              header: "Charts",
-              link: "/app/monitoring/charts",
+              header: "System",
+              link: "/app/monitoring/system",
+            },
+            {
+              header: "User",
+              link: "/app/monitoring/user",
+            },
+            {
+              header: "Task",
+              link: "/app/monitoring/task",
             },
           ]}
         />

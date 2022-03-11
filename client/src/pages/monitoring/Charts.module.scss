@@ -1,4 +1,4 @@
-@import '../../../styles/app';
+@import "../../styles/app";
 
 .root {
   :global {
@@ -74,7 +74,7 @@
     /* Apex Chart */
     .apexcharts-menu {
       background: $main-gradient;
-      box-shadow: 0 0px 40px 2px rgba(#020202,.5);
+      box-shadow: 0 0px 40px 2px rgba(#020202, 0.5);
       border: none;
     }
 

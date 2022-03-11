@@ -38,6 +38,39 @@ exports.findAll = (req, res) => {
 };
 
 /**
+ * 로그 월별/일별 조회
+ */
+exports.findAllByChart = (req, res) => {
+  const { category, status } = req.query;
+
+  if (category === "" || category === undefined) {
+    res.status(400).send({ message: "Category (daliy or monthly) cannot be empty." });
+    return;
+  }
+
+  let format = "%Y-%m";
+  if (category === "date") {
+    format = "%m-%d";
+  }
+
+  Log.findAll({
+    group: [db.Sequelize.fn(category, db.Sequelize.col("createdAt"))],
+    attributes: [
+      [db.Sequelize.fn("date_format", db.Sequelize.col("createdAt"), format), "createdAt"],
+      [db.Sequelize.fn("count", "*"), "count"],
+    ],
+    order: [["createdAt", "DESC"]],
+    where: status ? { status: status } : null,
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({ message: err.message || "Some error occurred while retrieving monthly logs." });
+    });
+};
+
+/**
  * 로그 조회
  */
 exports.findOne = (req, res) => {

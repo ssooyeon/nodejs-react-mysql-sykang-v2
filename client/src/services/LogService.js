@@ -6,6 +6,11 @@ class LogService {
     return http.get("/logs");
   }
 
+  // 월별/일별 로그 조회
+  getAllByChart(params) {
+    return http.get("/logs/statistic", { params });
+  }
+
   // 로그 조회
   get(id) {
     return http.get(`/logs/${id}`);

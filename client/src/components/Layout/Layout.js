@@ -13,7 +13,9 @@ import EditBoard from "../../pages/board/EditBoard";
 import Profile from "../../pages/profile/Profile";
 import Schedule from "../../pages/schedule/Schedule";
 import Task from "../../pages/task/Task";
-import Charts from "../../pages/monitoring/charts/Charts";
+import SystemCharts from "../../pages/monitoring/system/SystemCharts";
+import UserCharts from "../../pages/monitoring/user/UserCharts";
+import TaskCharts from "../../pages/monitoring/task/TaskCharts";
 import Dashboard from "../../pages/dashboard";
 
 import Header from "../Header";
@@ -71,7 +73,9 @@ class Layout extends React.Component {
                   <Switch>
                     <Route path="/app/main" exact render={() => <Redirect to="/app/main/dashboard" />} />
                     <Route path="/app/main/dashboard" exact component={Dashboard} />
-                    <Route path="/app/monitoring/charts" exact component={Charts} />
+                    <Route path="/app/monitoring/system" exact component={SystemCharts} />
+                    <Route path="/app/monitoring/user" exact component={UserCharts} />
+                    <Route path="/app/monitoring/task" exact component={TaskCharts} />
                     <Route path="/app/tables" exact component={UserGroupTable} />
                     <Route path="/app/board" exact component={Board} />
                     <Route path="/app/board/add" exact component={AddBoard} />
