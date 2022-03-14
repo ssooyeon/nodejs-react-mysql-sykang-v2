@@ -11,7 +11,7 @@ import rrulePlugin from "@fullcalendar/rrule";
 import { Row, Col, Button, InputGroup, InputGroupAddon, InputGroupText, Input } from "reactstrap";
 
 import Widget from "../../components/Widget";
-import Toggle from "./components/Toggle";
+import Toggle from "../../components/Toggle/Toggle";
 import s from "./Schedule.module.scss";
 import "./Schedule.css";
 

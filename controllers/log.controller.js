@@ -50,17 +50,28 @@ exports.findAllByChart = (req, res) => {
 
   let format = "%Y-%m";
   if (category === "date") {
-    format = "%m-%d";
+    format = "%Y-%m-%d";
   }
 
+  const now = new Date();
+  const start = new Date(now.setMonth(now.getMonth() - 1)).setHours(0, 0, 0, 0);
+  const end = new Date().setHours(23, 59, 59, 59);
+
   Log.findAll({
-    group: [db.Sequelize.fn(category, db.Sequelize.col("createdAt"))],
+    group: [db.Sequelize.fn(category, db.Sequelize.col("createdAt")), "status"],
     attributes: [
-      [db.Sequelize.fn("date_format", db.Sequelize.col("createdAt"), format), "createdAt"],
-      [db.Sequelize.fn("count", "*"), "count"],
+      "status",
+      [db.Sequelize.fn("date_format", db.Sequelize.col("createdAt"), format), "name"],
+      [db.Sequelize.fn("count", db.Sequelize.col("status")), "count"],
     ],
-    order: [["createdAt", "DESC"]],
-    where: status ? { status: status } : null,
+    order: [["createdAt", "ASC"]],
+    where: {
+      status: { [Op.eq]: status },
+      createdAt: {
+        [Op.gt]: start,
+        [Op.lt]: end,
+      },
+    },
   })
     .then((data) => {
       res.send(data);
