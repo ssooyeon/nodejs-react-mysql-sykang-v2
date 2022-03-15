@@ -5,6 +5,8 @@ module.exports = (app) => {
   router.post("/", logs.create);
   router.get("/", logs.findAll);
   router.get("/statistic", logs.findAllByChart);
+  router.get("/statistic/login", logs.findAllLoginByChart);
+  router.get("/statistic/login/top5", logs.findTop5Login);
   router.get("/message/:message", logs.findAllByMessage);
   router.get("/:id", logs.findOne);
 

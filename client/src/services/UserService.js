@@ -6,6 +6,16 @@ class UserService {
     return http.get("/users", { params });
   }
 
+  // 월별/일별 사용자 생성수 조회
+  getAllCreationByChart(params) {
+    return http.get("/users/statistic/creation", { params });
+  }
+
+  // 사용자 생성수 최고 5일 조회
+  getTop5Creation() {
+    return http.get("/users/statistic/creation/top5");
+  }
+
   // 사용자 조회
   get(id) {
     return http.get(`/users/${id}`);

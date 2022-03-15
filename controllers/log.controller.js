@@ -81,6 +81,70 @@ exports.findAllByChart = (req, res) => {
 };
 
 /**
+ * 사용자 로그인 수 월별/일별 조회
+ */
+exports.findAllLoginByChart = (req, res) => {
+  const { category } = req.query;
+
+  if (category === "" || category === undefined) {
+    res.status(400).send({ message: "Category (daliy or monthly) cannot be empty." });
+    return;
+  }
+
+  let format = "%Y-%m";
+  let start = new Date(new Date().setFullYear(new Date().getFullYear() - 1)).setHours(0, 0, 0, 0);
+  if (category === "date") {
+    format = "%Y-%m-%d";
+    start = new Date(new Date().setMonth(new Date().getMonth() - 1)).setHours(0, 0, 0, 0);
+  }
+  const end = new Date().setHours(23, 59, 59, 59);
+
+  Log.findAll({
+    group: [db.Sequelize.fn(category, db.Sequelize.col("createdAt"))],
+    attributes: [
+      [db.Sequelize.fn("date_format", db.Sequelize.col("createdAt"), format), "name"],
+      [db.Sequelize.fn("count", "*"), "count"],
+    ],
+    order: [["createdAt", "ASC"]],
+    where: {
+      message: { [Op.like]: `%login successfully%` },
+      createdAt: {
+        [Op.gt]: start,
+        [Op.lt]: end,
+      },
+    },
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({ message: err.message || "Some error occurred while retrieving user login logs." });
+    });
+};
+
+/**
+ * 사용자 로그인 수 top5 조회
+ */
+exports.findTop5Login = (req, res) => {
+  Log.findAll({
+    group: [db.Sequelize.fn("date", db.Sequelize.col("createdAt"))],
+    attributes: [
+      [db.Sequelize.fn("date_format", db.Sequelize.col("createdAt"), "%Y-%m-%d"), "name"],
+      [db.Sequelize.fn("count", "*"), "count"],
+    ],
+    where: { message: { [Op.like]: `%login successfully%` } },
+    order: [[db.Sequelize.literal("count"), "DESC"]],
+    limit: 5,
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({ message: err.message || "Some error occurred while retrieving user login Top5." });
+    });
+};
+
+/**
  * 로그 조회
  */
 exports.findOne = (req, res) => {

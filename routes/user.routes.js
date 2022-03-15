@@ -4,6 +4,8 @@ module.exports = (app) => {
 
   router.post("/", users.create);
   router.get("/", users.findAll);
+  router.get("/statistic/creation", users.findAllCreationByChart);
+  router.get("/statistic/creation/top5", users.findTop5Creation);
   router.get("/:id", users.findOne);
   router.get("/account/:account", users.findByAccount);
   router.post("/compare/password", users.compareCurrentPassword);
