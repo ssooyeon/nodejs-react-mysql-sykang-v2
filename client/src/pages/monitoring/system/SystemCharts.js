@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Row, Col } from "reactstrap";
-import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { AreaChart, BarChart, Area, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import moment from "moment/moment";
 
 import s from "../Charts.module.scss";
@@ -8,9 +8,15 @@ import s from "../Charts.module.scss";
 import Widget from "../../../components/Widget";
 import Toggle from "../../../components/Toggle/Toggle";
 
+import useInterval from "../../../utils/useInterval";
+import MonitoringService from "../../../services/MonitoringService";
 import LogService from "../../../services/LogService";
 
 export default function SystemCharts() {
+  const [cpuStatistic, setCpuStatistic] = useState([]);
+  const [memoryStatistic, setMemoryStatistic] = useState([]);
+  const [diskStatistic, setDiskStatistic] = useState([]);
+
   const [isBasicDaliyView, setIsBasicDaliyView] = useState(true);
   const [isSuccessDaliyView, setIsSuccessDaliyView] = useState(true);
   const [isErrorDaliyView, setIsErrorDaliyView] = useState(true);
@@ -20,10 +26,67 @@ export default function SystemCharts() {
   const [errorLogStatistic, setErrorLogStatistic] = useState([]);
 
   useEffect(() => {
+    getCPUChart();
+    getMemoryChart();
+    getDiskChart();
     getLogChart({ category: "date", status: "BASIC" });
     getLogChart({ category: "date", status: "SUCCESS" });
     getLogChart({ category: "date", status: "ERROR" });
   }, []);
+
+  useInterval(() => {
+    getCPUChart();
+    getMemoryChart();
+    getDiskChart();
+  }, 5000);
+
+  // cpu 통계 5초마다 추가
+  const getCPUChart = () => {
+    MonitoringService.getCPUUsage()
+      .then((res) => {
+        const cpu = res.data;
+        setCpuStatistic(cpuStatistic.concat({ name: moment().format("HH:mm:ss"), value: parseInt(cpu) }));
+        if (cpuStatistic.length >= 20) {
+          const removeFirstItem = cpuStatistic.splice(1);
+          setCpuStatistic(removeFirstItem);
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  // 메모리 통계 5초마다 추가
+  const getMemoryChart = () => {
+    MonitoringService.getMemoryUsage()
+      .then((res) => {
+        const mem = res.data;
+        setMemoryStatistic(memoryStatistic.concat({ name: moment().format("HH:mm:ss"), value: parseInt(mem) }));
+        if (memoryStatistic.length >= 20) {
+          const removeFirstItem = memoryStatistic.splice(1);
+          setMemoryStatistic(removeFirstItem);
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  // 디스크 통계 5초마다 추가
+  const getDiskChart = () => {
+    MonitoringService.getDiskUsage()
+      .then((res) => {
+        const disk = res.data;
+        setDiskStatistic(diskStatistic.concat({ name: moment().format("HH:mm:ss"), value: parseInt(disk) }));
+        if (diskStatistic.length >= 20) {
+          const removeFirstItem = diskStatistic.splice(1);
+          setDiskStatistic(removeFirstItem);
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
 
   // 로그 통계
   const getLogChart = (params) => {
@@ -132,7 +195,7 @@ export default function SystemCharts() {
         <div className="custom-tooltip" style={{ fontSize: "13px" }}>
           <p className="label">
             date: {label} <br />
-            count: {payload[0].value}
+            value: {payload[0].value}
           </p>
         </div>
       );
@@ -155,10 +218,26 @@ export default function SystemCharts() {
                   <span className="fw-semi-bold">CPU</span> Real-time Usage
                 </h6>
               }
-              dataType="cpu-chart"
-              refreshFun={() => {}}
-              refresh
-            ></Widget>
+            >
+              <ResponsiveContainer width="100%" height={340}>
+                <AreaChart
+                  height={340}
+                  data={cpuStatistic}
+                  margin={{
+                    top: 0,
+                    right: 0,
+                    left: -30,
+                    bottom: 0,
+                  }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis domain={[0, 100]} />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Area type="monotone" isAnimationActive={false} dataKey="value" stroke="#8884d8" fill="#8884d8" dot={true} />
+                </AreaChart>
+              </ResponsiveContainer>
+            </Widget>
           </Col>
           <Col lg={7} xs={12}>
             <Widget
@@ -213,10 +292,26 @@ export default function SystemCharts() {
                   <span className="fw-semi-bold">MEMORY</span> Real-time Usage
                 </h6>
               }
-              dataType="memory-chart"
-              refreshFun={() => {}}
-              refresh
-            ></Widget>
+            >
+              <ResponsiveContainer width="100%" height={340}>
+                <AreaChart
+                  height={340}
+                  data={memoryStatistic}
+                  margin={{
+                    top: 0,
+                    right: 0,
+                    left: -30,
+                    bottom: 0,
+                  }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis domain={[0, 100]} />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Area type="monotone" isAnimationActive={false} dataKey="value" stroke="#8884d8" fill="#8884d8" dot={true} />
+                </AreaChart>
+              </ResponsiveContainer>
+            </Widget>
           </Col>
           <Col lg={7} xs={12}>
             <Widget
@@ -271,10 +366,26 @@ export default function SystemCharts() {
                   <span className="fw-semi-bold">DISK</span> Real-time Usage
                 </h6>
               }
-              dataType="disk-chart"
-              refreshFun={() => {}}
-              refresh
-            ></Widget>
+            >
+              <ResponsiveContainer width="100%" height={340}>
+                <AreaChart
+                  height={340}
+                  data={diskStatistic}
+                  margin={{
+                    top: 0,
+                    right: 0,
+                    left: -30,
+                    bottom: 0,
+                  }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis domain={[0, 100]} />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Area type="monotone" isAnimationActive={false} dataKey="value" stroke="#8884d8" fill="#8884d8" dot={true} />
+                </AreaChart>
+              </ResponsiveContainer>
+            </Widget>
           </Col>
           <Col lg={7} xs={12}>
             <Widget
