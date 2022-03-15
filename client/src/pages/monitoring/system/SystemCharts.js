@@ -259,9 +259,6 @@ export default function SystemCharts() {
                   </div>
                 </h6>
               }
-              dataType="basic-log-chart"
-              refreshFun={() => {}}
-              refresh
             >
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart
@@ -333,9 +330,6 @@ export default function SystemCharts() {
                   </div>
                 </h6>
               }
-              dataType="success-log-chart"
-              refreshFun={() => {}}
-              refresh
             >
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart
@@ -407,9 +401,6 @@ export default function SystemCharts() {
                   </div>
                 </h6>
               }
-              dataType="error-log-chart"
-              refreshFun={() => {}}
-              refresh
             >
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart
