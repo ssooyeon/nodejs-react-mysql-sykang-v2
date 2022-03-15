@@ -49,12 +49,11 @@ exports.findAllByChart = (req, res) => {
   }
 
   let format = "%Y-%m";
+  let start = new Date(new Date().setFullYear(new Date().getFullYear() - 1)).setHours(0, 0, 0, 0);
   if (category === "date") {
     format = "%Y-%m-%d";
+    start = new Date(new Date().setMonth(new Date().getMonth() - 1)).setHours(0, 0, 0, 0);
   }
-
-  const now = new Date();
-  const start = new Date(now.setMonth(now.getMonth() - 1)).setHours(0, 0, 0, 0);
   const end = new Date().setHours(23, 59, 59, 59);
 
   Log.findAll({

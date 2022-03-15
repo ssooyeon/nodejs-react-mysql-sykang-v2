@@ -5,9 +5,11 @@ import moment from "moment/moment";
 
 import s from "../Charts.module.scss";
 
+import CustomTooltip from "../component/CustomTooltip";
 import Widget from "../../../components/Widget";
 import Toggle from "../../../components/Toggle/Toggle";
 
+import { getDatesStartToLast, getMonthsStartToLast } from "../../../utils/getDateTerms";
 import useInterval from "../../../utils/useInterval";
 import MonitoringService from "../../../services/MonitoringService";
 import LogService from "../../../services/LogService";
@@ -17,9 +19,9 @@ export default function SystemCharts() {
   const [memoryStatistic, setMemoryStatistic] = useState([]);
   const [diskStatistic, setDiskStatistic] = useState([]);
 
-  const [isBasicDaliyView, setIsBasicDaliyView] = useState(true);
-  const [isSuccessDaliyView, setIsSuccessDaliyView] = useState(true);
-  const [isErrorDaliyView, setIsErrorDaliyView] = useState(true);
+  const [isBasicDateView, setIsBasicDateView] = useState(true);
+  const [isSuccessDateView, setIsSuccessDateView] = useState(true);
+  const [isErrorDateView, setIsErrorDateView] = useState(true);
 
   const [basicLogStatistic, setBasicLogStatistic] = useState([]);
   const [successLogStatistic, setSuccessLogStatistic] = useState([]);
@@ -132,37 +134,10 @@ export default function SystemCharts() {
     });
   };
 
-  // 날짜 사이의 모든 날짜 구하기 (일)
-  const getDatesStartToLast = (startDate, lastDate) => {
-    var regex = RegExp(/^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/);
-    if (!(regex.test(startDate) && regex.test(lastDate))) return "Not Date Format";
-    var result = [];
-    var curDate = new Date(startDate);
-    while (curDate <= new Date(lastDate)) {
-      result.push(curDate.toISOString().split("T")[0]);
-      curDate.setDate(curDate.getDate() + 1);
-    }
-    return result;
-  };
-
-  // 날짜 사이의 모든 날짜 구하기 (월)
-  const getMonthsStartToLast = (startMonth, lastMonth) => {
-    var regex = RegExp(/^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/);
-    if (!(regex.test(startMonth) && regex.test(lastMonth))) return "Not Date Format";
-    var result = [];
-    var curDate = new Date(startMonth);
-    while (curDate <= new Date(lastMonth)) {
-      let yyymmdd = curDate.toISOString().split("T")[0];
-      result.push(yyymmdd.slice(0, 7));
-      curDate.setMonth(curDate.getMonth() + 1);
-    }
-    return result;
-  };
-
   // toggle button click
   const handleBasicToggle = (e) => {
     const value = e.target.checked;
-    setIsBasicDaliyView(value);
+    setIsBasicDateView(value);
     if (value) {
       getLogChart({ category: "date", status: "BASIC" });
     } else {
@@ -171,7 +146,7 @@ export default function SystemCharts() {
   };
   const handleSuccessToggle = (e) => {
     const value = e.target.checked;
-    setIsSuccessDaliyView(value);
+    setIsSuccessDateView(value);
     if (value) {
       getLogChart({ category: "date", status: "SUCCESS" });
     } else {
@@ -180,28 +155,12 @@ export default function SystemCharts() {
   };
   const handleErrorToggle = (e) => {
     const value = e.target.checked;
-    setIsErrorDaliyView(value);
+    setIsErrorDateView(value);
     if (value) {
       getLogChart({ category: "date", status: "ERROR" });
     } else {
       getLogChart({ category: "month", status: "ERROR" });
     }
-  };
-
-  // tooltip 내용 변경
-  const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="custom-tooltip" style={{ fontSize: "13px" }}>
-          <p className="label">
-            date: {label} <br />
-            value: {payload[0].value}
-          </p>
-        </div>
-      );
-    }
-
-    return null;
   };
 
   return (
@@ -246,8 +205,8 @@ export default function SystemCharts() {
                   <span className="fw-semi-bold">BASIC Log</span> Count
                   <div className={s.toggleLabel}>
                     <Toggle
-                      checked={isBasicDaliyView}
-                      text={isBasicDaliyView ? "daily" : "monthly"}
+                      checked={isBasicDateView}
+                      text={isBasicDateView ? "daily" : "monthly"}
                       size="default"
                       disabled={false}
                       onChange={handleBasicToggle}
@@ -317,8 +276,8 @@ export default function SystemCharts() {
                   <span className="fw-semi-bold">SUCCESS Log</span> Count
                   <div className={s.toggleLabel}>
                     <Toggle
-                      checked={isSuccessDaliyView}
-                      text={isSuccessDaliyView ? "daily" : "monthly"}
+                      checked={isSuccessDateView}
+                      text={isSuccessDateView ? "daily" : "monthly"}
                       size="default"
                       disabled={false}
                       onChange={handleSuccessToggle}
@@ -388,8 +347,8 @@ export default function SystemCharts() {
                   <span className="fw-semi-bold">ERROR Log</span> Count
                   <div className={s.toggleLabel}>
                     <Toggle
-                      checked={isErrorDaliyView}
-                      text={isErrorDaliyView ? "daily" : "monthly"}
+                      checked={isErrorDateView}
+                      text={isErrorDateView ? "daily" : "monthly"}
                       size="default"
                       disabled={false}
                       onChange={handleErrorToggle}
