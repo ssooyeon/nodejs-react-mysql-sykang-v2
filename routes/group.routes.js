@@ -4,6 +4,7 @@ module.exports = (app) => {
 
   router.post("/", groups.create);
   router.get("/", groups.findAll);
+  router.get("/statistic/creation", groups.findAllCreationByChart);
   router.get("/:id", groups.findOne);
   router.get("/name/:name", groups.findByName);
   router.put("/:id", groups.update);

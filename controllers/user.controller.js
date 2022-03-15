@@ -109,7 +109,7 @@ exports.findAllCreationByChart = (req, res) => {
       res.send(data);
     })
     .catch((err) => {
-      res.status(500).send({ message: err.message || "Some error occurred while retrieving monthly user creation." });
+      res.status(500).send({ message: err.message || "Some error occurred while retrieving user creation." });
     });
 };
 
@@ -131,6 +131,33 @@ exports.findTop5Creation = (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({ message: err.message || "Some error occurred while retrieving user creation Top5." });
+    });
+};
+
+/**
+ * 그룹 사용자 상위 5개 날짜 조회
+ */
+exports.findTop5Group = (req, res) => {
+  User.findAll({
+    group: "groupId",
+    attributes: [
+      [db.Sequelize.col("group.name"), "name"],
+      [db.Sequelize.fn("count", db.Sequelize.col("groupId")), "count"],
+    ],
+    include: [
+      {
+        model: Group,
+        as: "group",
+      },
+    ],
+    order: [[db.Sequelize.literal("count"), "DESC"]],
+    limit: 5,
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({ message: err.message || "Some error occurred while retrieving groups having lots of users." });
     });
 };
 

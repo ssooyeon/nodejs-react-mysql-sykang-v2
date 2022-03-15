@@ -10,7 +10,7 @@ import Toggle from "../../../components/Toggle/Toggle";
 import CustomTooltip from "../component/CustomTooltip";
 import renderActiveShape from "../component/PieChartShape";
 
-import { getDatesStartToLast, getMonthsStartToLast } from "../../../utils/getDateTerms";
+import { getChartData } from "../../../utils/getChartDataWithZero";
 import UserService from "../../../services/UserService";
 import GroupService from "../../../services/GroupService";
 import LogService from "../../../services/LogService";
@@ -26,6 +26,9 @@ export default function UserCharts() {
   const [userLoginActiveIndex, setUserLoginActiveIndex] = useState(0);
   const [userLoginTop5, setUserLoginTop5] = useState([]);
 
+  const [userGroupActiveIndex, setUserGroupActiveIndex] = useState(0);
+  const [userGroupTop5, setUserGroupTop5] = useState([]);
+
   const [userCreationStatistic, setUserCreationStatistic] = useState([]);
   const [userLoginStatistic, setUserLoginStatistic] = useState([]);
   const [groupCreationStatistic, setGroupCreationStatistic] = useState([]);
@@ -35,6 +38,8 @@ export default function UserCharts() {
     getUserCreationTop5();
     getUserLoginTop5();
     getUserLoginChart({ category: "date" });
+    getGroupCreationChart({ category: "date" });
+    getUserGroupTop5();
   }, []);
 
   //----------------------------------------사용자 생성 수 (bar chart)
@@ -42,30 +47,7 @@ export default function UserCharts() {
   const getUserCreationChart = (params) => {
     UserService.getAllCreationByChart(params).then((res) => {
       const data = res.data;
-      let dailyList;
-      const end = moment(new Date()).format("YYYY-MM-DD");
-
-      if (params.category === "date") {
-        // 일별 통계일 경우 한달치 제공
-        const start = moment(new Date()).add("-1", "M").format("YYYY-MM-DD");
-        dailyList = getDatesStartToLast(start, end);
-      } else if (params.category === "month") {
-        // 월별 통계일 경우 일년치 제공
-        const start = moment(new Date()).add("-1", "Y").format("YYYY-MM-DD");
-        dailyList = getMonthsStartToLast(start, end);
-      }
-
-      let result = [];
-      let arrayIndex = 0;
-
-      for (var i = 0; i < dailyList.length; i++) {
-        if (data[arrayIndex] !== undefined && data[arrayIndex].name === dailyList[i]) {
-          result.push({ name: data[arrayIndex].name, count: data[arrayIndex].count });
-          arrayIndex++;
-        } else {
-          result.push({ name: dailyList[i], count: 0 });
-        }
-      }
+      const result = getChartData(data, params);
       setUserCreationStatistic(result);
     });
   };
@@ -98,7 +80,7 @@ export default function UserCharts() {
     setUserCreationActiveIndex(index);
   };
 
-  //----------------------------------------사용자 로그인 수 (pie) chart)
+  //----------------------------------------사용자 로그인 수 (pie chart)
   // 사용자 로그인 수 top5 통계
   const getUserLoginTop5 = () => {
     LogService.getTop5Login()
@@ -121,30 +103,7 @@ export default function UserCharts() {
   const getUserLoginChart = (params) => {
     LogService.getAllLoginByChart(params).then((res) => {
       const data = res.data;
-      let dailyList;
-      const end = moment(new Date()).format("YYYY-MM-DD");
-
-      if (params.category === "date") {
-        // 일별 통계일 경우 한달치 제공
-        const start = moment(new Date()).add("-1", "M").format("YYYY-MM-DD");
-        dailyList = getDatesStartToLast(start, end);
-      } else if (params.category === "month") {
-        // 월별 통계일 경우 일년치 제공
-        const start = moment(new Date()).add("-1", "Y").format("YYYY-MM-DD");
-        dailyList = getMonthsStartToLast(start, end);
-      }
-
-      let result = [];
-      let arrayIndex = 0;
-
-      for (var i = 0; i < dailyList.length; i++) {
-        if (data[arrayIndex] !== undefined && data[arrayIndex].name === dailyList[i]) {
-          result.push({ name: data[arrayIndex].name, count: data[arrayIndex].count });
-          arrayIndex++;
-        } else {
-          result.push({ name: dailyList[i], count: 0 });
-        }
-      }
+      const result = getChartData(data, params);
       setUserLoginStatistic(result);
     });
   };
@@ -160,7 +119,43 @@ export default function UserCharts() {
     }
   };
 
+  //----------------------------------------그룹 사용자 수 (pie chart)
+  // 그룹 사용자 수 top5 통계
+  const getUserGroupTop5 = () => {
+    UserService.getTop5Group()
+      .then((res) => {
+        setUserGroupTop5(res.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  // 그룹 사용자 수 pie chart에서 마우스 hover
+  const onUserGroupPieEnter = (_, index) => {
+    setUserGroupActiveIndex(index);
+  };
+
   //----------------------------------------그룹 생성 수 (bar chart)
+  // 그룹 생성 통계
+  const getGroupCreationChart = (params) => {
+    GroupService.getAllCreationByChart(params).then((res) => {
+      const data = res.data;
+      const result = getChartData(data, params);
+      setGroupCreationStatistic(result);
+    });
+  };
+
+  // 그룹 생성 통계 toggle button click
+  const handleGroupCreationToggle = (e) => {
+    const value = e.target.checked;
+    setIsGroupCreationDateView(value);
+    if (value) {
+      getGroupCreationChart({ category: "date" });
+    } else {
+      getGroupCreationChart({ category: "month" });
+    }
+  };
 
   return (
     <div className={s.root}>
@@ -183,8 +178,8 @@ export default function UserCharts() {
                       onChange={handleUserCreationToggle}
                       offstyle="btn-danger"
                       onstyle="btn-success"
-                      onBackgroundColor="#735A37"
-                      offBackgroundColor="#3d301e"
+                      onBackgroundColor="#243627"
+                      offBackgroundColor="#122115"
                     />
                   </div>
                 </h6>
@@ -278,8 +273,8 @@ export default function UserCharts() {
                       onChange={handleUserLoginToggle}
                       offstyle="btn-danger"
                       onstyle="btn-success"
-                      onBackgroundColor="#735A37"
-                      offBackgroundColor="#3d301e"
+                      onBackgroundColor="#5c3d44"
+                      offBackgroundColor="#47383b"
                     />
                   </div>
                 </h6>
@@ -306,7 +301,75 @@ export default function UserCharts() {
             </Widget>
           </Col>
         </Row>
-        <Row></Row>
+        <Row>
+          <Col lg={9} xs={12}>
+            <Widget
+              title={
+                <h6>
+                  <span className="fw-semi-bold">Group Creation</span> Count
+                  <div className={s.toggleLabel}>
+                    <Toggle
+                      checked={isGroupCreationDateView}
+                      text={isGroupCreationDateView ? "daily" : "monthly"}
+                      size="default"
+                      disabled={false}
+                      onChange={handleGroupCreationToggle}
+                      offstyle="btn-danger"
+                      onstyle="btn-success"
+                      onBackgroundColor="#735A37"
+                      offBackgroundColor="#3d301e"
+                    />
+                  </div>
+                </h6>
+              }
+            >
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart
+                  height={300}
+                  data={groupCreationStatistic}
+                  margin={{
+                    top: 0,
+                    right: 0,
+                    left: -30,
+                    bottom: 0,
+                  }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip cursor={{ fill: "#60606e" }} content={<CustomTooltip />} />
+                  <Bar dataKey="count" stackId="a" fill="#735A37" />
+                </BarChart>
+              </ResponsiveContainer>
+            </Widget>
+          </Col>
+          <Col lg={3} xs={12}>
+            <Widget
+              title={
+                <h6>
+                  <span className="fw-semi-bold">Group having lots of users</span> Top 5
+                </h6>
+              }
+            >
+              <ResponsiveContainer width="100%" height={340}>
+                <PieChart height={340}>
+                  <Pie
+                    activeIndex={userGroupActiveIndex}
+                    activeShape={renderActiveShape}
+                    data={userGroupTop5}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={80}
+                    fill="#735A37"
+                    dataKey="count"
+                    onMouseEnter={onUserGroupPieEnter}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </Widget>
+          </Col>
+        </Row>
       </div>
     </div>
   );

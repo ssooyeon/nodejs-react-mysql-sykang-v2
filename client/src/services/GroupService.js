@@ -11,6 +11,11 @@ class GroupService {
     return http.get(`/groups/${id}`);
   }
 
+  // 월별/일별 그룹 생성수 조회
+  getAllCreationByChart(params) {
+    return http.get("/groups/statistic/creation", { params });
+  }
+
   // 그룹 이름으로 조회
   findByName(name) {
     return http.get(`/groups/name/${name}`);

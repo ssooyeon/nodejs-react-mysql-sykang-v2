@@ -9,7 +9,7 @@ import CustomTooltip from "../component/CustomTooltip";
 import Widget from "../../../components/Widget";
 import Toggle from "../../../components/Toggle/Toggle";
 
-import { getDatesStartToLast, getMonthsStartToLast } from "../../../utils/getDateTerms";
+import { getChartData } from "../../../utils/getChartDataWithZero";
 import useInterval from "../../../utils/useInterval";
 import MonitoringService from "../../../services/MonitoringService";
 import LogService from "../../../services/LogService";
@@ -94,30 +94,7 @@ export default function SystemCharts() {
   const getLogChart = (params) => {
     LogService.getAllByChart(params).then((res) => {
       const data = res.data;
-      let dailyList;
-      const end = moment(new Date()).format("YYYY-MM-DD");
-
-      if (params.category === "date") {
-        // 일별 통계일 경우 한달치 제공
-        const start = moment(new Date()).add("-1", "M").format("YYYY-MM-DD");
-        dailyList = getDatesStartToLast(start, end);
-      } else if (params.category === "month") {
-        // 월별 통계일 경우 일년치 제공
-        const start = moment(new Date()).add("-1", "Y").format("YYYY-MM-DD");
-        dailyList = getMonthsStartToLast(start, end);
-      }
-
-      let result = [];
-      let arrayIndex = 0;
-
-      for (var i = 0; i < dailyList.length; i++) {
-        if (data[arrayIndex] !== undefined && data[arrayIndex].name === dailyList[i]) {
-          result.push({ name: data[arrayIndex].name, count: data[arrayIndex].count });
-          arrayIndex++;
-        } else {
-          result.push({ name: dailyList[i], count: 0 });
-        }
-      }
+      const result = getChartData(data, params);
       switch (params.status) {
         case "BASIC":
           setBasicLogStatistic(result);

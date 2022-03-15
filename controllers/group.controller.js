@@ -63,6 +63,47 @@ exports.findAll = (req, res) => {
 };
 
 /**
+ * 그룹 생성 수 월별/일별 조회
+ */
+exports.findAllCreationByChart = (req, res) => {
+  const { category } = req.query;
+
+  if (category === "" || category === undefined) {
+    res.status(400).send({ message: "Category (daliy or monthly) cannot be empty." });
+    return;
+  }
+
+  let format = "%Y-%m";
+  let start = new Date(new Date().setFullYear(new Date().getFullYear() - 1)).setHours(0, 0, 0, 0);
+  if (category === "date") {
+    format = "%Y-%m-%d";
+    start = new Date(new Date().setMonth(new Date().getMonth() - 1)).setHours(0, 0, 0, 0);
+  }
+  const end = new Date().setHours(23, 59, 59, 59);
+
+  Group.findAll({
+    group: [db.Sequelize.fn(category, db.Sequelize.col("createdAt"))],
+    attributes: [
+      [db.Sequelize.fn("date_format", db.Sequelize.col("createdAt"), format), "name"],
+      [db.Sequelize.fn("count", "*"), "count"],
+    ],
+    order: [["createdAt", "ASC"]],
+    where: {
+      createdAt: {
+        [Op.gt]: start,
+        [Op.lt]: end,
+      },
+    },
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({ message: err.message || "Some error occurred while retrieving group creation." });
+    });
+};
+
+/**
  * 그룹 조회
  */
 exports.findOne = (req, res) => {

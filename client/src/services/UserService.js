@@ -16,6 +16,11 @@ class UserService {
     return http.get("/users/statistic/creation/top5");
   }
 
+  // 그룹 사용자 최대 5개 조회
+  getTop5Group() {
+    return http.get("/users/statistic/group/top5");
+  }
+
   // 사용자 조회
   get(id) {
     return http.get(`/users/${id}`);
