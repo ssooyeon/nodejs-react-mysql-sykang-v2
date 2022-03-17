@@ -1,4 +1,5 @@
 const db = require("../models");
+const Folder = db.folders;
 const Task = db.tasks;
 const User = db.users;
 const Log = db.logs;
@@ -143,5 +144,161 @@ exports.deleteAll = (req, res) => {
     .catch((err) => {
       Log.create({ status: "ERROR", message: "All tasks delete failed" });
       res.status(500).send({ message: err.message || "Some error occurred while deleting all tasks." });
+    });
+};
+
+/************************************************************ 통계 */
+/**
+ * 테스크 개수 통계 조회
+ */
+exports.findAllDueDateByChart = (req, res) => {
+  const { category } = req.query;
+  if (category === "" || category === undefined) {
+    res.status(400).send({ message: "Category (daliy or monthly) cannot be empty." });
+    return;
+  }
+
+  let format = "%Y-%m";
+  let start = new Date(new Date().setFullYear(new Date().getFullYear() - 1)).setHours(0, 0, 0, 0);
+  if (category === "date") {
+    format = "%Y-%m-%d";
+    start = new Date(new Date().setMonth(new Date().getMonth() - 1)).setHours(0, 0, 0, 0);
+  }
+  const end = new Date().setHours(23, 59, 59, 59);
+
+  Task.findAll({
+    group: [db.Sequelize.fn(category, db.Sequelize.col("dueDate"))],
+    attributes: [
+      [db.Sequelize.fn("date_format", db.Sequelize.col("dueDate"), format), "name"],
+      [db.Sequelize.fn("count", "*"), "count"],
+    ],
+    order: [["dueDate", "ASC"]],
+    where: {
+      dueDate: {
+        [Op.gt]: start,
+        [Op.lt]: end,
+      },
+    },
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({ message: err.message || "Some error occurred while retrieving task due date." });
+    });
+};
+
+/**
+ * 테스크 개수 상위 5개 날짜 조회
+ */
+exports.findTop5DueDate = (req, res) => {
+  Task.findAll({
+    group: [db.Sequelize.fn("date", db.Sequelize.col("dueDate"))],
+    attributes: [
+      [db.Sequelize.fn("date_format", db.Sequelize.col("dueDate"), "%Y-%m-%d"), "name"],
+      [db.Sequelize.fn("count", "*"), "count"],
+    ],
+    where: { dueDate: { [Op.ne]: null } },
+    order: [[db.Sequelize.literal("count"), "DESC"]],
+    limit: 5,
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({ message: err.message || "Some error occurred while retrieving task due date Top5." });
+    });
+};
+
+/**
+ * 폴더별 테스크 개수 통계 조회
+ */
+exports.findAllFolderByChart = (req, res) => {
+  Task.findAll({
+    group: ["folder.parentId"],
+    attributes: [
+      [db.Sequelize.col("folder.parent.name"), "name"],
+      [db.Sequelize.fn("count", "folderId"), "count"],
+    ],
+    include: [
+      {
+        model: Folder,
+        as: "folder",
+        include: [
+          {
+            model: Folder,
+            as: "parent",
+            where: { parentId: { [Op.eq]: null } },
+          },
+        ],
+      },
+    ],
+    order: [[db.Sequelize.literal("count"), "DESC"]],
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({ message: err.message || "Some error occurred while retrieving task count with folder." });
+    });
+};
+
+/**
+ * 폴더별, 사용자별 테스크 개수 통계 조회
+ */
+exports.findAllUserFolderByChart = (req, res) => {
+  Task.findAll({
+    group: ["folder.parentId", "createrId"],
+    attributes: ["createrId", [db.Sequelize.col("folder.parent.name"), "name"], [db.Sequelize.fn("count", "id"), "count"]],
+    include: [
+      {
+        model: User,
+        as: "creater",
+      },
+      {
+        model: Folder,
+        as: "folder",
+        include: [
+          {
+            model: Folder,
+            as: "parent",
+            where: { parentId: { [Op.eq]: null } },
+          },
+        ],
+      },
+    ],
+    order: [[db.Sequelize.literal("count"), "DESC"]],
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({ message: err.message || "Some error occurred while retrieving task count with folder." });
+    });
+};
+
+// 테스크 개수 최고 사용자 조회
+exports.findTop5TaskUser = (req, res) => {
+  Task.findAll({
+    group: ["createrId"],
+    attributes: [
+      [db.Sequelize.col("creater.account"), "name"],
+      [db.Sequelize.fn("count", "*"), "count"],
+    ],
+    include: [
+      {
+        model: User,
+        as: "creater",
+      },
+    ],
+    where: { dueDate: { [Op.ne]: null } },
+    order: [[db.Sequelize.literal("count"), "DESC"]],
+    limit: 5,
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({ message: err.message || "Some error occurred while retrieving task due date Top5." });
     });
 };

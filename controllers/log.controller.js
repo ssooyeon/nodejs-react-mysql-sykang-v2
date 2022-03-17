@@ -38,11 +38,57 @@ exports.findAll = (req, res) => {
 };
 
 /**
+ * 로그 조회
+ */
+exports.findOne = (req, res) => {
+  const id = req.params.id;
+  Log.findByPk(id)
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({ message: err.message || `Error retrieving Log with id=${id}` });
+    });
+};
+
+/**
+ * 로그 내용으로 조회
+ */
+exports.findAllByMessage = (req, res) => {
+  const message = req.params.message;
+  const condition = message ? { message: { [Op.like]: `%${message}%` } } : null;
+  Log.findAll({
+    where: condition,
+    order: [["createdAt", "DESC"]],
+    offset: 0,
+    limit: 10,
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({ message: err.message || "Some error occurred while retrieving logs using message." });
+    });
+};
+
+/**
+ * 로그 수정
+ */
+
+/**
+ * 로그 삭제
+ */
+
+/**
+ * 로그 전체 삭제
+ */
+
+/************************************************************ 통계 */
+/**
  * 로그 월별/일별 조회
  */
 exports.findAllByChart = (req, res) => {
   const { category, status } = req.query;
-
   if (category === "" || category === undefined) {
     res.status(400).send({ message: "Category (daliy or monthly) cannot be empty." });
     return;
@@ -143,49 +189,3 @@ exports.findTop5Login = (req, res) => {
       res.status(500).send({ message: err.message || "Some error occurred while retrieving user login Top5." });
     });
 };
-
-/**
- * 로그 조회
- */
-exports.findOne = (req, res) => {
-  const id = req.params.id;
-  Log.findByPk(id)
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({ message: err.message || `Error retrieving Log with id=${id}` });
-    });
-};
-
-/**
- * 로그 내용으로 조회
- */
-exports.findAllByMessage = (req, res) => {
-  const message = req.params.message;
-  const condition = message ? { message: { [Op.like]: `%${message}%` } } : null;
-  Log.findAll({
-    where: condition,
-    order: [["createdAt", "DESC"]],
-    offset: 0,
-    limit: 10,
-  })
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({ message: err.message || "Some error occurred while retrieving logs using message." });
-    });
-};
-
-/**
- * 로그 수정
- */
-
-/**
- * 로그 삭제
- */
-
-/**
- * 로그 전체 삭제
- */

@@ -4,9 +4,6 @@ module.exports = (app) => {
 
   router.post("/", users.create);
   router.get("/", users.findAll);
-  router.get("/statistic/creation", users.findAllCreationByChart);
-  router.get("/statistic/creation/top5", users.findTop5Creation);
-  router.get("/statistic/group/top5", users.findTop5Group);
   router.get("/:id", users.findOne);
   router.get("/account/:account", users.findByAccount);
   router.post("/compare/password", users.compareCurrentPassword);
@@ -14,6 +11,11 @@ module.exports = (app) => {
   router.delete("/:id", users.delete);
   router.delete("/", users.deleteAll);
   router.post("/auth/login", users.authLogin);
+
+  /************************************************************ 통계 */
+  router.get("/statistic/creation", users.findAllCreationByChart);
+  router.get("/statistic/creation/top5", users.findTop5Creation);
+  router.get("/statistic/group/top5", users.findTop5Group);
 
   app.use("/api/users", router);
 };

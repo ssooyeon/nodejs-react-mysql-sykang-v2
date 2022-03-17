@@ -6,21 +6,6 @@ class UserService {
     return http.get("/users", { params });
   }
 
-  // 월별/일별 사용자 생성수 조회
-  getAllCreationByChart(params) {
-    return http.get("/users/statistic/creation", { params });
-  }
-
-  // 사용자 생성수 최고 5일 조회
-  getTop5Creation() {
-    return http.get("/users/statistic/creation/top5");
-  }
-
-  // 그룹 사용자 최대 5개 조회
-  getTop5Group() {
-    return http.get("/users/statistic/group/top5");
-  }
-
   // 사용자 조회
   get(id) {
     return http.get(`/users/${id}`);
@@ -59,6 +44,22 @@ class UserService {
   // 사용자 로그인
   getAuthLogin(data) {
     return http.post("/users/auth/login", data);
+  }
+
+  /************************************************************ 통계 */
+  // 월별/일별 사용자 생성수 조회
+  getAllCreationByChart(params) {
+    return http.get("/users/statistic/creation", { params });
+  }
+
+  // 사용자 생성수 최고 5일 조회
+  getTop5Creation() {
+    return http.get("/users/statistic/creation/top5");
+  }
+
+  // 그룹 사용자 최대 5개 조회
+  getTop5Group() {
+    return http.get("/users/statistic/group/top5");
   }
 }
 

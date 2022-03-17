@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Row, Col } from "reactstrap";
-import { PieChart, BarChart, Bar, Pie, Sector, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import moment from "moment/moment";
+import { PieChart, BarChart, Bar, Pie, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 import s from "../Charts.module.scss";
 

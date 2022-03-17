@@ -35,6 +35,32 @@ class TaskService {
   deleteAll() {
     return http.delete("/tasks");
   }
+
+  /************************************************************ 통계 */
+  // 월별/일별 테스크 만료일 수 조회
+  getAllDueDateByChart(params) {
+    return http.get("/tasks/statistic/duedate", { params });
+  }
+
+  // 테스크 due date 개수 최고 5일 조회
+  getTop5DueDate() {
+    return http.get("/tasks/statistic/duedate/top5");
+  }
+
+  // 폴더별 테스크 수 조회
+  getAllFolderByChart() {
+    return http.get("/tasks/statistic/folder");
+  }
+
+  // 폴더별, 사용자별 테스크 수 조회
+  getAllUserFolderByChart() {
+    return http.get("/tasks/statistic/folder/user");
+  }
+
+  // 테스크 개수 최고 사용자 조회
+  getTop5TaskUser() {
+    return http.get("/tasks/statistic/user/top5");
+  }
 }
 
 export default new TaskService();
