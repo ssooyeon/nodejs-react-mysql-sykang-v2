@@ -19,7 +19,7 @@ const PrivateRoute = ({ dispatch, component, ...rest }) => {
 
 const CloseButton = ({ closeToast }) => <i onClick={closeToast} className="la la-close notifications-close" />;
 
-class App extends React.PureComponent {
+class App extends React.Component {
   render() {
     return (
       <div>
