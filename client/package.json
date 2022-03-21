@@ -134,7 +134,8 @@
     "chalk": "4.1.0",
     "css-loader": "2.1.1",
     "dotenv": "8.0.0",
-    "dotenv-expand": "5.1.0"
+    "dotenv-expand": "5.1.0",
+    "pnp-webpack-plugin": "1.4.3"
   },
   "devDependencies": {
     "eslint": "5.16.0",
@@ -158,7 +159,6 @@
     "mini-css-extract-plugin": "0.6.0",
     "node-sass": "^4.13.1",
     "optimize-css-assets-webpack-plugin": "5.0.1",
-    "pnp-webpack-plugin": "1.4.3",
     "postcss-flexbugs-fixes": "4.1.0",
     "postcss-loader": "3.0.0",
     "postcss-preset-env": "6.6.0",
