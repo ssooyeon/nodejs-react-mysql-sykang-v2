@@ -135,7 +135,11 @@
     "css-loader": "2.1.1",
     "dotenv": "8.0.0",
     "dotenv-expand": "5.1.0",
-    "pnp-webpack-plugin": "1.4.3"
+    "pnp-webpack-plugin": "1.4.3",
+    "html-webpack-plugin": "4.0.0-alpha.2",
+    "webpack-dev-server": "3.11.0",
+    "webpack-manifest-plugin": "2.2.0",
+    "webpack-raphael": "2.1.4"
   },
   "devDependencies": {
     "eslint": "5.16.0",
@@ -148,7 +152,6 @@
     "eslint-plugin-react-hooks": "1.6.0",
     "expose-loader": "0.7.5",
     "file-loader": "3.0.1",
-    "html-webpack-plugin": "4.0.0-alpha.2",
     "identity-obj-proxy": "3.0.0",
     "imports-loader": "0.8.0",
     "jest": "24.8.0",
@@ -168,9 +171,6 @@
     "style-loader": "0.23.0",
     "terser-webpack-plugin": "1.2.3",
     "url-loader": "4.1.0",
-    "webpack-dev-server": "3.11.0",
-    "webpack-manifest-plugin": "2.2.0",
-    "webpack-raphael": "2.1.4",
     "workbox-webpack-plugin": "5.1.3"
   }
 }
