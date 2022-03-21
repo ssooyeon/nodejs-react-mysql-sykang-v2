@@ -120,13 +120,6 @@ module.exports = {
   optimization: {
     minimizer: [
       new TerserPlugin({
-        chunkFilter: (chunk) => {
-          // Exclude uglification for the `vendors` chunk
-          if (chunk.name === "vendors") {
-            return false;
-          }
-          return true;
-        },
         terserOptions: {
           parse: {
             // we want terser to parse ecma 8 code. However, we don't want it

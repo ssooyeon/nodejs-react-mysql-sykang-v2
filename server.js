@@ -8,8 +8,6 @@ const http = require("http");
 const cron = require("node-cron");
 const app = express();
 
-require("dotenv").config();
-
 app.use(cors());
 app.use(bodyParser.json());
 app.use(
@@ -32,12 +30,6 @@ if (process.env.NODE_ENV === "production") {
     console.log("==========================>test from app.get!");
     res.sendFile(path.join(__dirname, "client", "build", "index.html"));
   });
-
-  // heroku server를 9(utc:0)-19(utc:10)시에 20분마다 호출
-  cron.schedule("*/20 0-10 * * *", function () {
-    console.log(`node-cron: call ${process.env.DEPLOY_SERVER_URL}`);
-    http.get(process.env.DEPLOY_SERVER_URL);
-  });
 }
 
 // routes
@@ -52,6 +44,5 @@ require("./routes/schedule.routes")(app);
 
 const PORT = process.env.PORT || 8081;
 app.listen(PORT, () => {
-  console.log(process.env.NODE_ENV);
   console.log(`Server is running on port ${PORT}.`);
 });
