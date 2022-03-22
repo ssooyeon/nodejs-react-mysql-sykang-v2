@@ -122,7 +122,7 @@ function Header(props) {
             <Dropdown className="d-none d-sm-block" nav isOpen={supportOpen} toggle={toggleSupportDropdown}>
               <DropdownToggle nav className={`${s.navItem} text-white`}>
                 <BellIcon className={s.headerIcon} />
-                <div className={s.count}></div>
+                {notificationList.length > 0 ? <div className={s.count}></div> : null}
               </DropdownToggle>
               <DropdownMenu right className={`${s.dropdownMenu} ${s.support}`}>
                 {notificationList &&
@@ -142,11 +142,14 @@ function Header(props) {
                       </DropdownItem>
                     );
                   })}
-                <DropdownItem>
-                  <a href="/#/app/task" className="text-white">
-                    More <ArrowIcon className={s.headerIcon} maskName="bellArrow" />
-                  </a>
-                </DropdownItem>
+
+                {notificationList.length > 0 ? (
+                  <DropdownItem>
+                    <a href="/#/app/task" className="text-white">
+                      More <ArrowIcon className={s.headerIcon} maskName="bellArrow" />
+                    </a>
+                  </DropdownItem>
+                ) : null}
               </DropdownMenu>
             </Dropdown>
           ) : null}
