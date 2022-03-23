@@ -14,7 +14,7 @@ import EditUserModal from "./user/EditUserModal";
 import AddGroupModal from "./group/AddGroupModal";
 import EditGroupModal from "./group/EditGroupModal";
 
-const pageSize = 5;
+const pageSize = 8;
 
 export default function Static() {
   const users = useSelector((state) => state.users || []);
@@ -49,10 +49,7 @@ export default function Static() {
   // 사용자 등록 버튼 클릭 및 AddUserModal.js에서 닫기 버튼 클릭
   const handleUserAddModalClick = (value, isDone) => {
     setUserAddModalOpen(value);
-  };
-  // 사용자 등록이 실제로 이루어지면 search input 초기화
-  const handleUserResetInput = (isReset) => {
-    if (isReset) {
+    if (isDone) {
       resetInputAndRetrieve();
     }
   };
@@ -343,7 +340,7 @@ export default function Static() {
         </Col>
       </Row>
 
-      <AddUserModal open={userAddModalOpen} handleCloseClick={handleUserAddModalClick} handleResetInput={handleUserResetInput} />
+      <AddUserModal open={userAddModalOpen} handleCloseClick={handleUserAddModalClick} />
       <EditUserModal open={userEditModalOpen} handleCloseClick={handleUserEditModalClick} user={editUser} />
 
       <AddGroupModal open={groupAddModalOpen} handleCloseClick={handleGroupAddModalClick} handleResetInput={handleGroupResetInput} />

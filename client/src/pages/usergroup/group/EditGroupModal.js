@@ -14,10 +14,15 @@ import {
   ModalFooter,
   Table,
 } from "reactstrap";
+import PaginationComponent from "react-reactstrap-pagination";
+
+import s from "./Group.module.scss";
 
 import { updateGroup, updateGroupMember } from "../../../actions/groups";
 import UserService from "../../../services/UserService";
 import GroupService from "../../../services/GroupService";
+
+const pageSize = 5;
 
 export default function EditGroupModal({ open, handleCloseClick, group }) {
   const initialGroupState = {
@@ -36,6 +41,8 @@ export default function EditGroupModal({ open, handleCloseClick, group }) {
   const [isShowErrAlert, setIsShowErrAlert] = useState(false); // 사용자 등록에 실패했는지의 여부
   const [errMessage, setErrMessage] = useState(""); // 사용자 등록에 실패했을 때의 에러 메시지
 
+  const [membersCurrentPage, setMembersCurrentPage] = useState(0);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -52,6 +59,11 @@ export default function EditGroupModal({ open, handleCloseClick, group }) {
         console.log(e);
       });
   }, [group]);
+
+  // 사용자 테이블 페이징
+  const handleMemberTablePaging = (selectedPage) => {
+    setMembersCurrentPage(selectedPage - 1);
+  };
 
   // 닫기 버튼 클릭
   const handleClose = () => {
@@ -210,7 +222,7 @@ export default function EditGroupModal({ open, handleCloseClick, group }) {
                 {/* eslint-disable */}
                 <tbody>
                   {users &&
-                    users.map((user, key) => {
+                    users.slice(membersCurrentPage * pageSize, (membersCurrentPage + 1) * pageSize).map((user) => {
                       return (
                         <tr key={user.id}>
                           <td>
@@ -240,6 +252,19 @@ export default function EditGroupModal({ open, handleCloseClick, group }) {
             </div>
           </FormGroup>
         </form>
+        <div className={s.userPaging}>
+          <PaginationComponent
+            size="sm"
+            totalItems={users.length}
+            pageSize={pageSize}
+            defaultActivePage={1}
+            firstPageText="<<"
+            previousPageText="<"
+            nextPageText=">"
+            lastPageText=">>"
+            onSelect={handleMemberTablePaging}
+          />
+        </div>
       </ModalBody>
       <ModalFooter>
         <Button color="danger" className="mr-2" size="sm" onClick={doEditGroup}>

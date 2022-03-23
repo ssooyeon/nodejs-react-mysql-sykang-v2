@@ -45,9 +45,13 @@ export default function AddUserModal({ open, handleCloseClick, handleResetInput 
     setIsShowErrAlert(false);
   };
 
-  // 사용자 추가를 수행하면 검색란을 초기화
-  const sendSearchReset = () => {
-    handleResetInput(true);
+  // 사용자 추가 완료
+  const handleDone = () => {
+    const isDone = true;
+    handleCloseClick(false, isDone);
+    setUserForm(initialUserState);
+    setIsShowSuccessAlert(false);
+    setIsShowErrAlert(false);
   };
 
   // input 값 변경 시 user state 업데이트
@@ -118,7 +122,6 @@ export default function AddUserModal({ open, handleCloseClick, handleResetInput 
     if (checkDoneAccount === userForm.account) {
       // 비밀번호와 비밀번호 확인란이 일치할 때
       if (isPasswordValid()) {
-        sendSearchReset();
         dispatch(createUser(userForm))
           .then(() => {
             setIsShowSuccessAlert(true);
@@ -126,7 +129,7 @@ export default function AddUserModal({ open, handleCloseClick, handleResetInput 
             setSuccessMessage("New user added successfully.");
 
             setTimeout(() => {
-              handleClose();
+              handleDone();
             }, 500);
           })
           .catch((e) => {
@@ -143,8 +146,6 @@ export default function AddUserModal({ open, handleCloseClick, handleResetInput 
 
   return (
     <Modal isOpen={open} toggle={handleClose} backdrop={false} centered>
-      {/* <ModalHeader toggle={handleClose} charCode="<i className='fa fa-search' />">
-      </ModalHeader> */}
       <ModalBody>
         <span className="fw-semi-bold">Add New User</span>
         <h6 className="widget-auth-info">Please fill all fields below.</h6>
@@ -261,6 +262,7 @@ export default function AddUserModal({ open, handleCloseClick, handleResetInput 
                 value={userForm.groupId || ""}
                 onChange={handleGroupOption}
               >
+                <option value={""}>-</option>
                 {groups &&
                   groups.map((group, index) => {
                     return (
