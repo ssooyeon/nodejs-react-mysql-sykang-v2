@@ -1,0 +1,473 @@
+[33mcommit c780b86b390f1f01a8dd797b6087c163887bd648[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31mheroku/master[m[33m)[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Wed Mar 23 11:09:42 2022 +0900
+
+    usergroup paging&group select
+
+[33mcommit d7abd79a3c0eb8856860fed1f8caf0790d0b068c[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Tue Mar 22 14:52:27 2022 +0900
+
+    header noti icon show if task not null
+
+[33mcommit 57d3485dcc9cd3d1c40c7694436c388b0d6f76e3[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Mon Mar 21 16:56:08 2022 +0900
+
+    /
+
+[33mcommit 25558a5e384c631e365ef0dd1d6974d2aa579366[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Mon Mar 21 15:59:40 2022 +0900
+
+    .
+
+[33mcommit 5ea1e9a990315c6a432ffa87043210e86a5be8c8[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Mon Mar 21 15:41:35 2022 +0900
+
+    .
+
+[33mcommit e788f2eb6d0ae50e32b6e08e6583d0f26ba13edd[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Mon Mar 21 14:18:37 2022 +0900
+
+    .
+
+[33mcommit db1a0757ff1b132e6a3026c534220775d12d14eb[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Mon Mar 21 13:38:25 2022 +0900
+
+    .
+
+[33mcommit 78a49150831ff0260096729a7a1e16d9745abdfb[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Mon Mar 21 11:35:30 2022 +0900
+
+    setting heroku#6
+
+[33mcommit 9f4a2a8fdb95905e3ef79e0b40267850e0a3a7e9[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Mon Mar 21 11:33:12 2022 +0900
+
+    setting heroku#5
+
+[33mcommit c0c383e9292cfceae1d5e95500c85c5a003da3d5[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Mon Mar 21 11:29:58 2022 +0900
+
+    setting heroku#4
+
+[33mcommit e588cd870460c4a0b6dcd005a5bb94d10935028b[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Mon Mar 21 11:25:36 2022 +0900
+
+    setting heroku#3
+
+[33mcommit 244eff8f010c35c0d16ee3d25e6fa4e0d2b16eb2[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Mon Mar 21 11:23:15 2022 +0900
+
+    setting heroku#2
+
+[33mcommit 3d2d834a68ab7e79aa03608f24aad8a636312de6[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Mon Mar 21 11:20:51 2022 +0900
+
+    setting heroku
+
+[33mcommit 9368d6b87d0f2da6774a046745539aed7b5f2ae7[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Fri Mar 18 16:11:52 2022 +0900
+
+    move dependency
+
+[33mcommit 451baf75c195197ae31cb90127b24678c9f7b1ce[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Fri Mar 18 16:08:37 2022 +0900
+
+    update dependency#2
+
+[33mcommit 4cbe02932580a49bb7e6f2f0c99dcfead1e1a20c[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Fri Mar 18 16:06:29 2022 +0900
+
+    update dependency
+
+[33mcommit 6634f2ba3b5c45b58aec36dcc960d2827fc35733[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Fri Mar 18 16:04:11 2022 +0900
+
+    ready deploy#2
+
+[33mcommit a7f9f488425b142f7571051e883a088a78fea932[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Fri Mar 18 16:00:20 2022 +0900
+
+    ready deploy
+
+[33mcommit 3360c9324c6344bf6ef7f5c4aea310c30d38e667[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Fri Mar 18 15:56:26 2022 +0900
+
+    remove corss-env in client scripts
+
+[33mcommit 10a1e633fd6450929fc649e6701363760853db55[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Thu Mar 17 16:51:08 2022 +0900
+
+    task monitoring
+
+[33mcommit 09e136cab064bbc4ce5fe0b615c46b8137ecc47a[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Tue Mar 15 16:57:19 2022 +0900
+
+    group chart & separate common function
+
+[33mcommit 61beba2e68cd88adc1df42fa30d4acb7845f85c8[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Tue Mar 15 16:22:20 2022 +0900
+
+    user creation&login chart in monitoring
+
+[33mcommit 10083e749bb1e1b8cc0478446fc1e6c12183e495[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Tue Mar 15 15:10:33 2022 +0900
+
+    separate common function in monitoring
+
+[33mcommit b15143376df980747a54c3764c7b7c057fa14224[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Tue Mar 15 11:38:21 2022 +0900
+
+    remove refresh button in monitoring
+
+[33mcommit 2d1f7d155cdd7081a6536a2d0aaf0492ad692623[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Tue Mar 15 11:18:29 2022 +0900
+
+    system realtime chart in monitoring
+
+[33mcommit 1e834cd399c854befa280e9e931beaf45a2a9c8a[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Mon Mar 14 16:55:32 2022 +0900
+
+    log chart in monitoring
+
+[33mcommit ae0d2a0828baf686feffb8885d9bfdea71f692a3[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Fri Mar 11 17:31:43 2022 +0900
+
+    remove unused page
+
+[33mcommit 2aeb9c6a53cf4b8d1912e077b72fc39b1196d083[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Fri Mar 11 17:15:58 2022 +0900
+
+    add new default page
+
+[33mcommit fc416447aa8fdb2f3ae5da03ce964af8d1be3ce7[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Thu Mar 10 16:02:20 2022 +0900
+
+    remove header search input
+
+[33mcommit 5ac79e5d0f617054c78cfc921c865dfb4ff3a400[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Thu Mar 10 15:57:18 2022 +0900
+
+    show today task in header notification
+
+[33mcommit 8164fc29453dc328a8c519d0523fe2cc95e3f299[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Thu Mar 10 15:07:37 2022 +0900
+
+    only edit post if logged user is writer
+
+[33mcommit 3599a84715fbef61518000b5b89a9e1f6a497051[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Thu Mar 10 14:20:24 2022 +0900
+
+    show logged user schedule list in sidebar
+
+[33mcommit e1df229809e40bef1967e745a2606f6a6bb8eeae[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Thu Mar 10 14:12:01 2022 +0900
+
+    add redirect main after logout
+
+[33mcommit 0f45ebcaa52125d6eb3a07b9439e133bc2ec4004[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Thu Mar 10 10:53:51 2022 +0900
+
+    fix invalid isOpen prop error
+
+[33mcommit c40592d54e77c95ffae911d2274e979ac2e16b54[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Tue Mar 8 18:20:17 2022 +0900
+
+    sidebar today schedule list
+
+[33mcommit 1328f1bb7c0c0b037d224e20a5c42981433afe09[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Tue Mar 8 16:26:55 2022 +0900
+
+    show sidebar current weather
+
+[33mcommit a91938ee2b3c9291a89b453f1205d5ffbdfe0071[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Mon Mar 7 16:19:58 2022 +0900
+
+    some fix
+
+[33mcommit 9c129cdc428eb65965622d1bc0230402b3811fef[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Fri Mar 4 16:59:46 2022 +0900
+
+    fix dataetimepicker bug
+
+[33mcommit 5c2913a146d2a371430759b306acb102c40166bc[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Fri Mar 4 16:48:19 2022 +0900
+
+    change textarea to editor in board
+
+[33mcommit 2e003cada8c890609a1217215cfd107cb92b43be[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Fri Mar 4 14:27:12 2022 +0900
+
+    update alert style
+
+[33mcommit 8f94b0723b60dea7bac63208bb12db69773a2829[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Thu Mar 3 18:14:17 2022 +0900
+
+    fix some
+
+[33mcommit 4eb8c36a370a03e36e084ba17ea4c427b7af7585[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Thu Mar 3 14:43:05 2022 +0900
+
+    update task theme color list
+
+[33mcommit e7c30aa872a9d64a2a708e53748d5620a71688a1[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Thu Mar 3 14:30:32 2022 +0900
+
+    task shared user setting function
+
+[33mcommit 2cbabcc2b4f125fa0a41ecd2ad6a510db3920d30[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Wed Mar 2 11:10:53 2022 +0900
+
+    folder(column) name update function
+
+[33mcommit e34e46689076c6e52b0b17145dd8ab541fad98af[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Wed Mar 2 10:58:01 2022 +0900
+
+    task column, folder create and delete function
+
+[33mcommit 9cb29fef44dc335d2b274e204a77dfc68b3f9c9a[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Wed Mar 2 10:45:53 2022 +0900
+
+    task move function
+
+[33mcommit 365da0be22f2d8dbde51fb5aa4e5adee9c528da7[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Wed Feb 23 13:27:47 2022 +0900
+
+    delete task function
+
+[33mcommit 8913d1ab782ce7ecf739425454e80df871205355[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Wed Feb 23 11:44:21 2022 +0900
+
+    edit task layout, function
+
+[33mcommit 796d24582370bb6ec8fae38d5efb10e834912d7e[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Wed Feb 23 11:04:23 2022 +0900
+
+    add task layout, function
+
+[33mcommit dfb96b97db852d614a2e26d915e6c9f37e9b0ac4[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Mon Feb 21 17:20:48 2022 +0900
+
+    task page layout & retrieve task
+
+[33mcommit b9238888bee020ccc51a0f1d17a8f7121d0ad2b6[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Mon Feb 21 13:18:28 2022 +0900
+
+    remove unused code
+
+[33mcommit 2ba665e4e78d55e10f1d3b40f1263a41be6d50ad[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Mon Feb 21 13:17:26 2022 +0900
+
+    schedule darg/resize function
+
+[33mcommit 86527269acbacdeddfd179e049c111a2bd9679b0[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Fri Feb 18 16:51:05 2022 +0900
+
+    schedule update, delete function
+
+[33mcommit 4c75dc04def6ab5cc9b4e5576fc884772834361b[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Fri Feb 18 15:36:08 2022 +0900
+
+    schedule create function
+
+[33mcommit 9bacaf1d42bed6f923e585a7b985e384f5f55f07[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Tue Feb 15 18:18:18 2022 +0900
+
+    search schedule
+
+[33mcommit 7ff50b86011224870deff733e577edd7646941b3[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Tue Feb 15 16:10:38 2022 +0900
+
+    calendar page
+
+[33mcommit 422413b3e22700800a5023344e53a2cb0ae8749d[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Tue Feb 15 10:33:12 2022 +0900
+
+    binding todolist in dashboard calendar
+
+[33mcommit 17a601c84bb32ff836a1f4af65e6b431f6aef4e4[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Mon Feb 14 13:15:57 2022 +0900
+
+    binding calendar data
+
+[33mcommit fa09fc15842fcbd22c126df668f4312fea25ef45[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Fri Feb 11 17:59:28 2022 +0900
+
+    dashboard calendar component to hooks
+
+[33mcommit e5d35db9cb03fc8b466bbb37cbbe6b4976e36e1a[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Fri Feb 11 16:53:20 2022 +0900
+
+    remove unused code
+
+[33mcommit 29803cb2f0ff54a691e69eae4763a39840cd845b[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Fri Feb 11 16:27:06 2022 +0900
+
+    set dashboard updating date
+
+[33mcommit efdf53b706d1041ff491b98e178b0784968367cd[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Fri Feb 11 14:37:27 2022 +0900
+
+    dashboard refresh data
+
+[33mcommit 0a5a6676b2ef817ff986a18891bef8f34389e281[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Thu Feb 10 18:17:50 2022 +0900
+
+    search log function in dashboard
+
+[33mcommit 08ffdf158ae158015f20e8791e6fe0ccf7158fed[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Thu Feb 10 13:57:13 2022 +0900
+
+    remove some unused code
+
+[33mcommit 74fb42eea89476697e9f4d7ac7fc0ba7126ed52a[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Wed Feb 9 17:56:42 2022 +0900
+
+    show weather information in dashboard
+
+[33mcommit a89622b1f9cef3f20fb73799c7ff0169b7d9d034[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Mon Feb 7 17:30:32 2022 +0900
+
+    system usage & log list in dashboard
+
+[33mcommit 1f112a56ee94097409b7834fd07cbafd493571c1[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Tue Jan 25 16:27:26 2022 +0900
+
+    fix some err
+
+[33mcommit 28f433f5c80657521f93c1115b8cfa55dc663d72[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Mon Jan 3 16:02:40 2022 +0900
+
+    edit my profile function
+
+[33mcommit 00aa4fd6a3256b946b7e1124bff156bfe20989bf[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Thu Dec 23 15:39:22 2021 +0900
+
+    board detail, edit, delete
+
+[33mcommit 41aac2fc443de76be236ba5cd33da527e5a620ce[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Mon Dec 20 17:27:43 2021 +0900
+
+    post create function
+
+[33mcommit 32e42095af4431c338efbde3aae83cefbafc4646[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Mon Dec 20 15:40:33 2021 +0900
+
+    board default retrieve
+
+[33mcommit 14146b50117768151cb661a19e56b34e60e1340d[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Fri Dec 10 16:55:42 2021 +0900
+
+    add reset searchinput if crud
+
+[33mcommit afe0f21d380b5d0f9c1393b8e1d1bf87dd561fed[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Fri Dec 10 16:38:10 2021 +0900
+
+    user/group table search
+
+[33mcommit 8dd296b69a25c2a24cc21b61ea1286419a623997[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Fri Dec 10 15:20:35 2021 +0900
+
+    user/group table pagination
+
+[33mcommit 898122bc09f1a1c0416160cf5afd0f16485385ec[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Tue Dec 7 16:56:49 2021 +0900
+
+    user&group update function
+
+[33mcommit 023b953497caf980005fe20190b2a432d5c900ec[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Mon Dec 6 14:48:31 2021 +0900
+
+    user edit/delete function
+
+[33mcommit 3ea7e727622c16af49dad14694c22f9380b482d1[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Fri Dec 3 11:18:23 2021 +0900
+
+    register function
+
+[33mcommit c322b27c4a77e3256e20343c40cbeb134d7db958[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Thu Dec 2 18:13:13 2021 +0900
+
+    default login/register function
+
+[33mcommit 82ed0630ba6a2cd92a7396fe6f9dbfd9a276af10[m
+Author: sykang <sykang@inspace.re.kr>
+Date:   Thu Dec 2 15:45:34 2021 +0900
+
+    first commit
