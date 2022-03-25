@@ -163,6 +163,7 @@
     "sweetalert2": "^11.4.6",
     "tabler-icons": "^1.10.0",
     "terser-webpack-plugin": "1.2.3",
+    "uglifyjs-webpack-plugin": "^2.2.0",
     "url-loader": "4.1.0",
     "uuid": "^8.3.2",
     "webpack": "4.43.0",
