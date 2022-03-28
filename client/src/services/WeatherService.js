@@ -16,9 +16,12 @@ class WeatherService {
 
     const CURRENT_API_URL = BASE_API_URL + `&base_date=${base_date}&base_time=${base_time}&nx=67&ny=101&dataType=JSON`;
 
+    console.log(`CURRENT_API_URL: ${CURRENT_API_URL}`);
+
     return axios
       .get(CURRENT_API_URL)
       .then((data) => {
+        console.log(data);
         if (data.data.response.body !== undefined) {
           const currentData = data.data.response.body.items;
           const firstData = currentData.item[0];
