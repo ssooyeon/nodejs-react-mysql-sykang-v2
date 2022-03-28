@@ -1,7 +1,7 @@
 import axios from "axios";
 import dateTime from "date-and-time";
 
-const BASE_API_URL = `http://localhost:8083/weather/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst?serviceKey=${process.env.REACT_APP_WEATHER_API_KEY}&numOfRows=100&pageNo=1`;
+const BASE_API_URL = `/weather/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst?serviceKey=${process.env.REACT_APP_WEATHER_API_KEY}&numOfRows=100&pageNo=1`;
 
 class WeatherService {
   getWeathers(type) {
