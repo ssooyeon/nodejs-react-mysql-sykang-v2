@@ -8,7 +8,11 @@ const http = require("http");
 const cron = require("node-cron");
 const app = express();
 
-app.use(cors());
+let corsOptions = {
+  origin: ["URL ALLOWED"],
+};
+
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(
   session({

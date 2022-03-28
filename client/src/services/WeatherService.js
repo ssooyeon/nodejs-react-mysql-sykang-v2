@@ -1,7 +1,7 @@
 import axios from "axios";
 import dateTime from "date-and-time";
 
-const BASE_API_URL = `https://sopal.herokuapp.com/weather/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst?serviceKey=${process.env.REACT_APP_WEATHER_API_KEY}&numOfRows=100&pageNo=1`;
+const BASE_API_URL = `weather/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst?serviceKey=${process.env.REACT_APP_WEATHER_API_KEY}&numOfRows=100&pageNo=1`;
 
 class WeatherService {
   getWeathers(type) {
@@ -16,12 +16,9 @@ class WeatherService {
 
     const CURRENT_API_URL = BASE_API_URL + `&base_date=${base_date}&base_time=${base_time}&nx=67&ny=101&dataType=JSON`;
 
-    console.log(`CURRENT_API_URL: ${CURRENT_API_URL}`);
-
     return axios
       .get(CURRENT_API_URL)
       .then((data) => {
-        console.log(data);
         if (data.data.response.body !== undefined) {
           const currentData = data.data.response.body.items;
           const firstData = currentData.item[0];
