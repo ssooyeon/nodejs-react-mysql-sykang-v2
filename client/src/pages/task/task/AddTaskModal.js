@@ -99,6 +99,7 @@ export default function AddTaskModal({ open, handleCloseClick, column }) {
       const rawContentState = convertToRaw(editorState.getCurrentContent());
       const markup = draftToHtml(rawContentState);
       const data = { ...taskForm, description: markup };
+      console.log(data);
       dispatch(createTask(data))
         .then(() => {
           setIsShowSuccessAlert(true);
