@@ -113,20 +113,22 @@ export default function Dashboard() {
 
   // 첫번째 블록 날씨 정보 조회 (지역, 하늘상태, 기온)
   const get1stWeather = () => {
-    WeatherService.getWeathers("first")
+    WeatherService.getAllCurrent({ type: "first" })
       .then((res) => {
+        console.log(res);
         if (res !== null) {
           const weather = {
-            baseDateTime: res.baseDate + " " + res.baseTime, // 발표날짜
-            fcstDateTime: res.fcstDate + " " + res.fcstTime, // 측정날짜
-            skyStatus: skys[res.sky], // 하늘상태1-4
-            temp: res.t1h, // 기온c
+            baseDateTime: res.data.baseDate + " " + res.data.baseTime, // 발표날짜
+            fcstDateTime: res.data.fcstDate + " " + res.data.fcstTime, // 측정날짜
+            skyStatus: skys[res.data.sky], // 하늘상태1-4
+            temp: res.data.t1h, // 기온c
           };
           setFirstWeatherData(weather);
 
           // 하루 전 온도 조회
-          WeatherService.getPastWeather("temp").then((res) => {
-            setPastTemp(res);
+          WeatherService.getAllPast({ type: "temp" }).then((res) => {
+            console.log(res);
+            setPastTemp(res.data);
           });
         } else {
           console.log("1st weather is null");
@@ -139,55 +141,53 @@ export default function Dashboard() {
 
   // 두번째 블록 날씨 정보 조회 (습도, 강수형태, 강수량)
   const get2ndWeather = () => {
-    WeatherService.getWeathers("second")
-      .then((res) => {
-        if (res !== null) {
-          const weather = {
-            baseDateTime: res.baseDate + " " + res.baseTime, // 발표날짜
-            fcstDateTime: res.fcstDate + " " + res.fcstTime, // 측정날짜
-            humidity: res.reh, // 습도%
-            precipitationStatus: precipitations[res.pty], // 강수형태1-4
-            precipitation: res.rn1, // 강수량mm
-          };
-          setSecondWeatherData(weather);
-
-          // 하루 전 습도 조회
-          WeatherService.getPastWeather("humidity").then((res) => {
-            setPastHumidity(res);
-          });
-        } else {
-          console.log("2nd weather is null");
-        }
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    // WeatherService.getWeathers("second")
+    //   .then((res) => {
+    //     if (res !== null) {
+    //       const weather = {
+    //         baseDateTime: res.baseDate + " " + res.baseTime, // 발표날짜
+    //         fcstDateTime: res.fcstDate + " " + res.fcstTime, // 측정날짜
+    //         humidity: res.reh, // 습도%
+    //         precipitationStatus: precipitations[res.pty], // 강수형태1-4
+    //         precipitation: res.rn1, // 강수량mm
+    //       };
+    //       setSecondWeatherData(weather);
+    //       // 하루 전 습도 조회
+    //       WeatherService.getPastWeather("humidity").then((res) => {
+    //         setPastHumidity(res);
+    //       });
+    //     } else {
+    //       console.log("2nd weather is null");
+    //     }
+    //   })
+    //   .catch((e) => {
+    //     console.log(e);
+    //   });
   };
 
   // 세번째 블록 날씨 정보 조회 (풍향, 풍속)
   const get3rdWeather = () => {
-    WeatherService.getWeathers("third")
-      .then((res) => {
-        if (res !== null) {
-          const weather = {
-            baseDateTime: res.baseDate + " " + res.baseTime, // 발표날짜
-            fcstDateTime: res.fcstDate + " " + res.fcstTime, // 측정날짜
-            windDirection: res.vec, // 풍향deg
-            windSpeed: res.wsd, // 풍속m/s
-          };
-          setThirdWeatherData(weather);
-
-          // 하루 전 풍속 조회
-          WeatherService.getPastWeather("wind").then((res) => {
-            setPastWindSpeed(res);
-          });
-        } else {
-          console.log("3rd weather is null");
-        }
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    // WeatherService.getWeathers("third")
+    //   .then((res) => {
+    //     if (res !== null) {
+    //       const weather = {
+    //         baseDateTime: res.baseDate + " " + res.baseTime, // 발표날짜
+    //         fcstDateTime: res.fcstDate + " " + res.fcstTime, // 측정날짜
+    //         windDirection: res.vec, // 풍향deg
+    //         windSpeed: res.wsd, // 풍속m/s
+    //       };
+    //       setThirdWeatherData(weather);
+    //       // 하루 전 풍속 조회
+    //       WeatherService.getPastWeather("wind").then((res) => {
+    //         setPastWindSpeed(res);
+    //       });
+    //     } else {
+    //       console.log("3rd weather is null");
+    //     }
+    //   })
+    //   .catch((e) => {
+    //     console.log(e);
+    //   });
   };
 
   // 로그 리스트 중 최신 10개 조회

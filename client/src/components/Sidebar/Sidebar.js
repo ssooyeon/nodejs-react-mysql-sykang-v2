@@ -28,8 +28,8 @@ export default function Sidebar() {
 
   useEffect(() => {
     getSchedule();
-    getTemp();
-    getHumidity();
+    // getTemp();
+    // getHumidity();
   }, []);
 
   // 오늘 날짜 스케줄 가져오기
