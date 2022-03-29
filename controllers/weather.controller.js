@@ -1,7 +1,7 @@
 const axios = require("axios");
 const dateTime = require("date-and-time");
 
-const BASE_API_URL = `${process.env.DEPLOY_SERVER_URL}/weather/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst?serviceKey=${process.env.REACT_APP_WEATHER_API_KEY}&numOfRows=100&pageNo=1`;
+const BASE_API_URL = `http://localhost:8083/weather/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst?serviceKey=${process.env.REACT_APP_WEATHER_API_KEY}&numOfRows=100&pageNo=1`;
 
 exports.findCurrentWeathers = (req, res) => {
   const { type } = req.query;
