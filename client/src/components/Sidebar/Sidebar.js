@@ -28,8 +28,8 @@ export default function Sidebar() {
 
   useEffect(() => {
     getSchedule();
-    // getTemp();
-    // getHumidity();
+    getTemp();
+    getHumidity();
   }, []);
 
   // 오늘 날짜 스케줄 가져오기
@@ -47,12 +47,12 @@ export default function Sidebar() {
 
   // 현재 온도 가져오기
   const getTemp = () => {
-    WeatherService.getWeathers("first")
+    WeatherService.getAllCurrent({ type: "first" })
       .then((res) => {
-        if (res !== null) {
-          const date = res.baseDate + " " + res.baseTime;
+        if (res.data !== null) {
+          const date = res.data.baseDate + " " + res.data.baseTime;
           setDate(date);
-          setTemp(res.t1h);
+          setTemp(res.data.t1h);
         } else {
           console.log("temp is null");
         }
@@ -64,10 +64,10 @@ export default function Sidebar() {
 
   // 현재 습도 가져오기
   const getHumidity = () => {
-    WeatherService.getWeathers("second")
+    WeatherService.getAllCurrent({ type: "second" })
       .then((res) => {
-        if (res !== null) {
-          setHumidity(res.reh);
+        if (res.data !== null) {
+          setHumidity(res.data.reh);
         } else {
           console.log("humidity is null");
         }
