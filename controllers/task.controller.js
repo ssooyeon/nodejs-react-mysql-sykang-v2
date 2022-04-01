@@ -14,7 +14,6 @@ exports.create = (req, res) => {
     return;
   }
   const task = req.body;
-  console.log(task);
   Task.create(task)
     .then((data) => {
       Log.create({ status: "SUCCESS", message: `Task create successfully. New task title is: ${req.body.title}` });

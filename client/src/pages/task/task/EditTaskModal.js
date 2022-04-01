@@ -7,6 +7,7 @@ import { Editor } from "react-draft-wysiwyg";
 import { EditorState, ContentState, convertToRaw } from "draft-js";
 import draftToHtml from "draftjs-to-html";
 import htmlToDraft from "html-to-draftjs";
+import Swal from "sweetalert2";
 
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import "./Editor.css";
@@ -23,6 +24,8 @@ export default function EditTaskModal({ open, handleCloseClick, task }) {
 
   const [isShowErrAlert, setIsShowErrAlert] = useState(false); // 게시글 등록에 실패했는지의 여부
   const [errMessage, setErrMessage] = useState(""); // 게시글 등록에 실패했을 때의 에러 메시지
+
+  const [isEdit, setIsEdit] = useState(false); // 상세보기인지 수정인지의 여부
 
   const dispatch = useDispatch();
 
@@ -42,6 +45,7 @@ export default function EditTaskModal({ open, handleCloseClick, task }) {
   const handleClose = () => {
     handleCloseClick(false);
     setTaskForm({ ...taskForm, labelColor: null });
+    setIsEdit(false);
     setIsShowSuccessAlert(false);
     setIsShowErrAlert(false);
   };
@@ -72,6 +76,34 @@ export default function EditTaskModal({ open, handleCloseClick, task }) {
   // 이미지 업로드
   const uploadImageCallBack = (file) => {
     return new Promise((resolve, reject) => getFileBase64(file, (data) => resolve({ data: { link: data } })));
+  };
+
+  // 테스크 내용 수정 취소 버튼 클릭
+  const cancelEditDescription = () => {
+    Swal.fire({
+      text: "Return to the description before the edit. Would you like to cancel?",
+      icon: "warning",
+      backdrop: false,
+      showCancelButton: true,
+      confirmButtonColor: "#da2837",
+      cancelButtonColor: "#30324d",
+      confirmButtonText: "OK",
+      showClass: {
+        backdrop: "swal2-noanimation",
+        icon: "",
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setIsEdit(false);
+        setTaskForm({ ...taskForm, description: task.description });
+        // 에디터에 수정 전 html 바인딩
+        const blocksFromHtml = htmlToDraft(task.description);
+        const { contentBlocks, entityMap } = blocksFromHtml;
+        const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
+        const data = EditorState.createWithContent(contentState);
+        setEditorState(data);
+      }
+    });
   };
 
   // 테스크 수정 버튼 클릭
@@ -134,42 +166,68 @@ export default function EditTaskModal({ open, handleCloseClick, task }) {
             </InputGroup>
           </FormGroup>
           <FormGroup>
-            <Label for="description">Description</Label>
-            <InputGroup className="input-group-no-border">
-              <Editor
-                editorStyle={{
-                  border: "1px solid #C0C0C0",
-                  height: "350px",
-                  padding: "5px",
-                  fontSize: "14px",
-                  width: "770px",
-                }}
-                id="description"
-                name="description"
-                value={taskForm.description}
-                wrapperClassName="wrapper-class"
-                editorClassName="editor"
-                toolbarClassName="toolbar-class"
-                toolbar={{
-                  options: ["inline", "fontSize", "list", "textAlign", "colorPicker", "image", "history"],
-                  inline: { options: ["bold", "italic", "underline"] },
-                  // inDropdown: 해당 항목과 관련된 항목을 드롭다운으로 나타낼 것인지
-                  list: { inDropdown: true },
-                  textAlign: { inDropdown: true },
-                  image: { uploadCallback: uploadImageCallBack, previewImage: true },
-                  history: { inDropdown: false },
-                }}
-                placeholder="Description"
-                // 한국어 설정
-                localization={{
-                  locale: "ko",
-                }}
-                // 초기값 설정
-                editorState={editorState}
-                // 에디터의 값이 변경될 때마다 onEditorStateChange 호출
-                onEditorStateChange={onEditorStateChange}
-              />
-            </InputGroup>
+            <Label for="description" style={{ width: "100%" }}>
+              Description
+              {isEdit ? (
+                <Button color="danger" className={s.transparentButton} size="xs" style={{ float: "right" }} onClick={cancelEditDescription}>
+                  <i className="fa fa-remove"></i> Cancel
+                </Button>
+              ) : (
+                <Button
+                  color="inverse"
+                  className={s.transparentButton}
+                  size="xs"
+                  style={{ float: "right" }}
+                  onClick={() => {
+                    setIsEdit(true);
+                  }}
+                >
+                  <i className="fa fa-edit"></i> Edit
+                </Button>
+              )}
+            </Label>
+            {isEdit ? (
+              <InputGroup className="input-group-no-border">
+                <Editor
+                  editorStyle={{
+                    border: "1px solid #C0C0C0",
+                    height: "350px",
+                    padding: "5px",
+                    fontSize: "14px",
+                    width: "770px",
+                  }}
+                  id="description"
+                  name="description"
+                  value={taskForm.description}
+                  wrapperClassName="wrapper-class"
+                  editorClassName="editor"
+                  toolbarClassName="toolbar-class"
+                  toolbar={{
+                    options: ["inline", "fontSize", "list", "textAlign", "colorPicker", "image", "history"],
+                    inline: { options: ["bold", "italic", "underline"] },
+                    // inDropdown: 해당 항목과 관련된 항목을 드롭다운으로 나타낼 것인지
+                    list: { inDropdown: true },
+                    textAlign: { inDropdown: true },
+                    image: { uploadCallback: uploadImageCallBack, previewImage: true },
+                    history: { inDropdown: false },
+                  }}
+                  placeholder="Description"
+                  // 한국어 설정
+                  localization={{
+                    locale: "ko",
+                  }}
+                  // 초기값 설정
+                  editorState={editorState}
+                  // 에디터의 값이 변경될 때마다 onEditorStateChange 호출
+                  onEditorStateChange={onEditorStateChange}
+                />
+              </InputGroup>
+            ) : (
+              <div
+                style={{ height: "400px", overflowY: "auto", wordBreak: "break-word", border: "1px solid", padding: "10px" }}
+                dangerouslySetInnerHTML={{ __html: taskForm.description }}
+              ></div>
+            )}
           </FormGroup>
           <FormGroup>
             <div className={s.dateWrapper}>
