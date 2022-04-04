@@ -171,6 +171,15 @@ export default function Sidebar() {
             />
           </>
         ) : null}
+        <LinksGroup
+          onActiveSidebarItemChange={(activeItem) => dispatch(changeActiveSidebarItem(activeItem))}
+          activeItem={activeItem}
+          header="Formatter"
+          isHeader
+          iconName={<NotificationsIcon className={s.menuIcon} />}
+          link="/app/formatter"
+          index="formatter"
+        />
       </ul>
       <h5 className={s.navTitle}>
         Today TODO

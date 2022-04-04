@@ -1,0 +1,8 @@
+.__json-pretty__,
+.__json-pretty-error__ {
+  border: none;
+}
+
+.__json-pretty-error__ {
+  background: transparent !important;
+}

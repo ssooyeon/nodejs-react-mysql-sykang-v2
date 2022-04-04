@@ -17,6 +17,7 @@ import SystemCharts from "../../pages/monitoring/system/SystemCharts";
 import UserCharts from "../../pages/monitoring/user/UserCharts";
 import TaskCharts from "../../pages/monitoring/task/TaskCharts";
 import Dashboard from "../../pages/dashboard";
+import Formatter from "../../pages/formatter/Formatter";
 
 import Header from "../Header";
 import Sidebar from "../Sidebar";
@@ -84,6 +85,7 @@ class Layout extends React.Component {
                     <Route path="/app/profile" exact component={Profile} />
                     <Route path="/app/schedule" exact component={Schedule} />
                     <Route path="/app/task" exact component={Task} />
+                    <Route path="/app/formatter" exact component={Formatter} />
                   </Switch>
                 </CSSTransition>
               </TransitionGroup>
