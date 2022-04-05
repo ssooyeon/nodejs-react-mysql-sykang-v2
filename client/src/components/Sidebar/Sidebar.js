@@ -3,14 +3,15 @@ import { useDispatch, useSelector } from "react-redux";
 import cx from "classnames";
 import { Progress, Alert } from "reactstrap";
 import Moment from "react-moment";
+import { MdDashboard, MdTaskAlt } from "react-icons/md";
+// import { HiOutlineUsers } from "react-icons/hi";
+import { RiUserSettingsFill } from "react-icons/ri";
+import { FaUserEdit } from "react-icons/fa";
+import { BsTable, BsFillCalendarCheckFill, BsCodeSlash } from "react-icons/bs";
+import { AiOutlineLineChart } from "react-icons/ai";
+
 import s from "./Sidebar.module.scss";
 import LinksGroup from "./LinksGroup";
-
-import HomeIcon from "../Icons/SidebarIcons/HomeIcon";
-import TypographyIcon from "../Icons/SidebarIcons/TypographyIcon";
-import TablesIcon from "../Icons/SidebarIcons/TablesIcon";
-import NotificationsIcon from "../Icons/SidebarIcons/NotificationsIcon";
-import ComponentsIcon from "../Icons/SidebarIcons/ComponentsIcon";
 
 import { changeActiveSidebarItem } from "../../actions/navigation";
 import ScheduleService from "../../services/ScheduleService";
@@ -95,7 +96,7 @@ export default function Sidebar() {
           activeItem={activeItem}
           header="Dashboard"
           isHeader
-          iconName={<HomeIcon className={s.menuIcon} />}
+          iconName={<MdDashboard size={20} className={s.menuIcon} />}
           link="/app/main"
           index="main"
         />
@@ -104,7 +105,7 @@ export default function Sidebar() {
           activeItem={activeItem}
           header="Users & Groups"
           isHeader
-          iconName={<TypographyIcon className={s.menuIcon} />}
+          iconName={<RiUserSettingsFill size={20} className={s.menuIcon} />}
           link="/app/tables"
           index="tables"
         />
@@ -113,7 +114,7 @@ export default function Sidebar() {
           activeItem={activeItem}
           header="Board"
           isHeader
-          iconName={<NotificationsIcon className={s.menuIcon} />}
+          iconName={<BsTable size={20} className={s.menuIcon} />}
           link="/app/board"
           index="board"
         />
@@ -122,7 +123,7 @@ export default function Sidebar() {
           activeItem={activeItem}
           header="Monitoring"
           isHeader
-          iconName={<ComponentsIcon className={s.menuIcon} />}
+          iconName={<AiOutlineLineChart size={20} className={s.menuIcon} />}
           link="/app/monitoring"
           index="monitoring"
           childrenLinks={[
@@ -147,7 +148,7 @@ export default function Sidebar() {
               activeItem={activeItem}
               header="Profile"
               isHeader
-              iconName={<TablesIcon className={s.menuIcon} />}
+              iconName={<FaUserEdit size={20} className={s.menuIcon} />}
               link="/app/profile"
               index="profile"
             />
@@ -156,7 +157,7 @@ export default function Sidebar() {
               activeItem={activeItem}
               header="Schedule"
               isHeader
-              iconName={<TablesIcon className={s.menuIcon} />}
+              iconName={<BsFillCalendarCheckFill size={20} className={s.menuIcon} />}
               link="/app/schedule"
               index="Schedule"
             />
@@ -165,7 +166,7 @@ export default function Sidebar() {
               activeItem={activeItem}
               header="Task"
               isHeader
-              iconName={<TablesIcon className={s.menuIcon} />}
+              iconName={<MdTaskAlt size={20} className={s.menuIcon} />}
               link="/app/task"
               index="Task"
             />
@@ -176,7 +177,7 @@ export default function Sidebar() {
           activeItem={activeItem}
           header="Formatter"
           isHeader
-          iconName={<NotificationsIcon className={s.menuIcon} />}
+          iconName={<BsCodeSlash size={20} className={s.menuIcon} />}
           link="/app/formatter"
           index="formatter"
         />

@@ -144,6 +144,7 @@
     "react-dom": "^16.13.1",
     "react-draft-wysiwyg": "^1.14.7",
     "react-google-maps": "^9.4.5",
+    "react-icons": "^4.3.1",
     "react-json-pretty": "^2.2.0",
     "react-moment": "^1.1.1",
     "react-reactstrap-pagination": "^2.0.3",
