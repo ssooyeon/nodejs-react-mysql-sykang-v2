@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { Row, Col, Button, FormGroup, InputGroup, Input, Label } from "reactstrap";
 import JSONPretty from "react-json-pretty";
 import XMLViewer from "react-xml-viewer";
+import SyntaxHighlighter from "react-syntax-highlighter";
+// import { CopyToClipboard } from "react-copy-to-clipboard";
+
+import { docco } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
 import Widget from "../../components/Widget";
 import s from "./Formatter.module.scss";
@@ -11,20 +14,16 @@ import "react-json-pretty/themes/monikai.css";
 import "./Formatter.css";
 
 const JSONPrettyMon = require("react-json-pretty/dist/monikai");
-const HTMLPretty = require("html-prettify");
+const beautify_js = require("js-beautify").js;
+const beautify_html = require("js-beautify").html;
+const beautify_css = require("js-beautify").css;
 
 const customXMLTheme = {
-  attributeKeyColor: "#0074D9",
-  attributeValueColor: "#2ECC40",
-  separatorColor: "#cfcfcf",
-  textColor: "#cfcfcf",
-};
-
-const customMinifyOptions = {
-  html: {
-    removeAttributeQuotes: false,
-    removeOptionalTags: false,
-  },
+  attributeKeyColor: "#954121",
+  attributeValueColor: "#40a070",
+  tagColor: "#0086b3",
+  separatorColor: "rgba(244, 244, 245, 0.6)",
+  textColor: "rgba(244, 244, 245, 0.6)",
 };
 
 export default function Formatter() {
@@ -49,8 +48,21 @@ export default function Formatter() {
     setType("XML");
     setOutput(originalInput);
   };
-  const doJSFormat = () => {};
-  const doHTMLFormat = () => {};
+  const doJSFormat = () => {
+    setType("JS");
+    const data = beautify_js(originalInput, { indent_size: 2, space_in_empty_paren: true });
+    setOutput(data);
+  };
+  const doHTMLFormat = () => {
+    setType("HTML");
+    const data = beautify_html(originalInput, { indent_size: 2, space_in_empty_paren: true });
+    setOutput(data);
+  };
+  const doCSSFormat = () => {
+    setType("CSS");
+    const data = beautify_css(originalInput, { indent_size: 2, space_in_empty_paren: true });
+    setOutput(data);
+  };
   const doMinify = () => {
     setType("MINIFY");
   };
@@ -85,7 +97,7 @@ export default function Formatter() {
                       required
                       name="original"
                       placeholder="Original input"
-                      style={{ border: "1px solid", padding: "10px" }}
+                      style={{ border: "1px solid", padding: "10px", resize: "none" }}
                     />
                   </InputGroup>
                 </FormGroup>
@@ -104,6 +116,9 @@ export default function Formatter() {
                   <Button color="default" className="mr-2" size="sm" onClick={doHTMLFormat}>
                     HTML Formatter
                   </Button>
+                  <Button color="default" className="mr-2" size="sm" onClick={doCSSFormat}>
+                    CSS Formatter
+                  </Button>
                   <Button color="inverse" className="mr-2" size="sm" onClick={doMinify}>
                     Minify
                   </Button>
@@ -112,7 +127,10 @@ export default function Formatter() {
               <Col lg={6} md={6} sm={12}>
                 <FormGroup>
                   <Label for="original">Output</Label>
-                  <div style={{ height: "550px", overflowY: "auto", border: "1px solid", padding: "10px" }}>
+                  <Button color="inverse" className="mr-2" size="xs" onClick={() => {}} style={{ float: "right" }}>
+                    Copy
+                  </Button>
+                  <div style={{ height: "550px", overflowY: "auto", border: "1px solid", padding: "10px", whiteSpace: "pre" }}>
                     {type === "JSON" ? (
                       <JSONPretty
                         data={output}
@@ -120,12 +138,30 @@ export default function Formatter() {
                         onJSONPrettyError={(e) => {
                           console.log(e);
                         }}
-                        space="4"
+                        space="2"
+                        style={{ whiteSpace: "pre" }}
                       ></JSONPretty>
                     ) : null}
-                    {type === "XML" ? <XMLViewer xml={output} theme={customXMLTheme} /> : null}
-                    {type === "JS" ? <></> : null}
-                    {type === "HTML" ? <></> : null}
+                    {type === "XML" ? (
+                      <pre style={{ background: "transparent", border: "none" }}>
+                        <XMLViewer xml={output} theme={customXMLTheme} />
+                      </pre>
+                    ) : null}
+                    {type === "JS" ? (
+                      <SyntaxHighlighter className={s.codezone} language="javascript" style={docco}>
+                        {output}
+                      </SyntaxHighlighter>
+                    ) : null}
+                    {type === "HTML" ? (
+                      <SyntaxHighlighter className={s.codezone} language="html" style={docco}>
+                        {output}
+                      </SyntaxHighlighter>
+                    ) : null}
+                    {type === "CSS" ? (
+                      <SyntaxHighlighter className={s.codezone} language="css" style={docco}>
+                        {output}
+                      </SyntaxHighlighter>
+                    ) : null}
                     {type === "MINIFY" ? <></> : null}
                   </div>
                 </FormGroup>
