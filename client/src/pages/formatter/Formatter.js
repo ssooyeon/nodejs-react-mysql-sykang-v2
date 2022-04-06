@@ -1,18 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Row, Col, Button, FormGroup, InputGroup, Input, Label } from "reactstrap";
 import JSONPretty from "react-json-pretty";
 import XMLViewer from "react-xml-viewer";
 import SyntaxHighlighter from "react-syntax-highlighter";
-// import { CopyToClipboard } from "react-copy-to-clipboard";
-
+import { NotificationContainer, NotificationManager } from "react-notifications";
 import { MdArrowForwardIos } from "react-icons/md";
 
 import { docco } from "react-syntax-highlighter/dist/esm/styles/hljs";
-
 import Widget from "../../components/Widget";
-import s from "./Formatter.module.scss";
 
+import s from "./Formatter.module.scss";
 import "react-json-pretty/themes/monikai.css";
+import "react-notifications/lib/notifications.css";
 import "./Formatter.css";
 
 const JSONPrettyMon = require("react-json-pretty/dist/monikai");
@@ -32,6 +31,8 @@ export default function Formatter() {
   const [originalInput, setOriginalInput] = useState("");
   const [output, setOutput] = useState("");
   const [type, setType] = useState(null);
+  const outputRef = useRef(null);
+  const [isCopyBtnDisabled, setIsCopyBtnDisabled] = useState(false);
 
   useEffect(() => {}, []);
 
@@ -69,6 +70,23 @@ export default function Formatter() {
     setType("MINIFY");
   };
 
+  // copy button click
+  const copyToclipboard = () => {
+    window.getSelection().selectAllChildren(outputRef.current);
+    navigator.clipboard.writeText(window.getSelection().toString()).then(
+      () => {
+        setIsCopyBtnDisabled(true);
+        setTimeout(() => {
+          setIsCopyBtnDisabled(false);
+        }, 2000);
+        NotificationManager.success("Copied", null, 2000);
+      },
+      (e) => {
+        console.log(e);
+      }
+    );
+  };
+
   return (
     <div className={s.root}>
       <h2 className="page-title">
@@ -84,6 +102,7 @@ export default function Formatter() {
               {"Indicates a list of "}
               <code>pretty formatter</code> for JSON, XML, etc.
             </p>
+            <NotificationContainer />
             <Row>
               <Col lg={5} md={5} sm={12}>
                 <FormGroup>
@@ -181,10 +200,17 @@ export default function Formatter() {
               <Col lg={6} md={6} sm={12}>
                 <FormGroup>
                   <Label for="original">Output</Label>
-                  <Button color="inverse" className="mr-2" size="xs" onClick={() => {}} style={{ float: "right" }}>
-                    Copy
+                  <Button
+                    color="inverse"
+                    className="mr-2"
+                    size="xs"
+                    onClick={copyToclipboard}
+                    style={{ float: "right", cursor: isCopyBtnDisabled ? "not-allowed" : "" }}
+                    disabled={isCopyBtnDisabled}
+                  >
+                    {isCopyBtnDisabled ? "Wait.." : "Copy"}
                   </Button>
-                  <div style={{ height: "550px", overflowY: "auto", border: "1px solid", padding: "10px", whiteSpace: "pre" }}>
+                  <div ref={outputRef} className={s.outputWrapper}>
                     {type === "JSON" ? (
                       <JSONPretty
                         data={output}

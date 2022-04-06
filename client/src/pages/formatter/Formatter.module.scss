@@ -7,6 +7,14 @@
   vertical-align: middle;
 }
 
+.outputWrapper {
+  height: 550px;
+  overflow-y: auto;
+  border: 1px solid;
+  padding: 10px;
+  white-space: pre;
+}
+
 .codezone {
   background: transparent !important;
   border: none !important;
