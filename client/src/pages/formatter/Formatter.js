@@ -5,6 +5,8 @@ import XMLViewer from "react-xml-viewer";
 import SyntaxHighlighter from "react-syntax-highlighter";
 // import { CopyToClipboard } from "react-copy-to-clipboard";
 
+import { MdArrowForwardIos } from "react-icons/md";
+
 import { docco } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
 import Widget from "../../components/Widget";
@@ -105,22 +107,74 @@ export default function Formatter() {
               <Col lg={1} md={1} sm={12}>
                 <div className={s.btnWrapper}>
                   <Button color="default" className="mr-2" size="sm" onClick={doJSONFormat}>
-                    JSON Formatter
+                    <Row className={s.buttonRow}>
+                      <Col lg={9} md={9} sm={9}>
+                        JSON
+                        <br />
+                        Beautify
+                      </Col>
+                      <Col lg={3} md={3} sm={3} className={s.buttonIcon}>
+                        <MdArrowForwardIos />
+                      </Col>
+                    </Row>
                   </Button>
                   <Button color="default" className="mr-2" size="sm" onClick={doXMLFormat}>
-                    XML Formatter
+                    <Row className={s.buttonRow}>
+                      <Col lg={9} md={9} sm={9}>
+                        XML
+                        <br />
+                        Beautify
+                      </Col>
+                      <Col lg={3} md={3} sm={3} className={s.buttonIcon}>
+                        <MdArrowForwardIos />
+                      </Col>
+                    </Row>
                   </Button>
                   <Button color="default" className="mr-2" size="sm" onClick={doJSFormat}>
-                    JS Formatter
+                    <Row className={s.buttonRow}>
+                      <Col lg={9} md={9} sm={9}>
+                        JS
+                        <br />
+                        Beautify
+                      </Col>
+                      <Col lg={3} md={3} sm={3} className={s.buttonIcon}>
+                        <MdArrowForwardIos />
+                      </Col>
+                    </Row>
                   </Button>
                   <Button color="default" className="mr-2" size="sm" onClick={doHTMLFormat}>
-                    HTML Formatter
+                    <Row className={s.buttonRow}>
+                      <Col lg={9} md={9} sm={9}>
+                        HTML
+                        <br />
+                        Beautify
+                      </Col>
+                      <Col lg={3} md={3} sm={3} className={s.buttonIcon}>
+                        <MdArrowForwardIos />
+                      </Col>
+                    </Row>
                   </Button>
                   <Button color="default" className="mr-2" size="sm" onClick={doCSSFormat}>
-                    CSS Formatter
+                    <Row className={s.buttonRow}>
+                      <Col lg={9} md={9} sm={9}>
+                        CSS
+                        <br />
+                        Beautify
+                      </Col>
+                      <Col lg={3} md={3} sm={3} className={s.buttonIcon}>
+                        <MdArrowForwardIos />
+                      </Col>
+                    </Row>
                   </Button>
                   <Button color="inverse" className="mr-2" size="sm" onClick={doMinify}>
-                    Minify
+                    <Row className={s.buttonRow}>
+                      <Col lg={9} md={9} sm={9}>
+                        Minify
+                      </Col>
+                      <Col lg={3} md={3} sm={3} className={s.buttonIcon}>
+                        <MdArrowForwardIos />
+                      </Col>
+                    </Row>
                   </Button>
                 </div>
               </Col>
