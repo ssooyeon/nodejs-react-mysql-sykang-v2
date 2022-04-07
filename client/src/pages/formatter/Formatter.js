@@ -18,6 +18,7 @@ const JSONPrettyMon = require("react-json-pretty/dist/monikai");
 const beautify_js = require("js-beautify").js;
 const beautify_html = require("js-beautify").html;
 const beautify_css = require("js-beautify").css;
+const minify = require("string-minify");
 
 const customXMLTheme = {
   attributeKeyColor: "#954121",
@@ -68,6 +69,8 @@ export default function Formatter() {
   };
   const doMinify = () => {
     setType("MINIFY");
+    const data = minify(originalInput);
+    setOutput(data);
   };
 
   // copy button click
@@ -242,7 +245,13 @@ export default function Formatter() {
                         {output}
                       </SyntaxHighlighter>
                     ) : null}
-                    {type === "MINIFY" ? <></> : null}
+                    {type === "MINIFY" ? (
+                      <div>
+                        <pre className={s.codezone} style={{ color: "rgba(244, 244, 245, 0.6)" }}>
+                          {output}
+                        </pre>
+                      </div>
+                    ) : null}
                   </div>
                 </FormGroup>
               </Col>

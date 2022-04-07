@@ -167,6 +167,7 @@
     "rickshaw": "1.7.1",
     "rrule": "^2.6.9",
     "sass-loader": "7.1.0",
+    "string-minify": "^1.0.1",
     "style-loader": "0.23.0",
     "sweetalert2": "^11.4.6",
     "tabler-icons": "^1.10.0",
