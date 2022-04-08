@@ -1,0 +1,23 @@
+.colorDiv {
+  width: 70px;
+  height: 70px;
+  border: 1px solid #403e3e;
+}
+
+.colorDivWrapper {
+  display: flex;
+}
+
+.colorText {
+  width: 70px;
+  height: 30px;
+  background: transparent;
+  border: none;
+  color: #c7c2c2;
+  text-align: center;
+  resize: none;
+}
+
+.nbsp {
+  width: 45px;
+}

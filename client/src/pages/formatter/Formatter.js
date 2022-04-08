@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { Row, Col, Button, FormGroup, InputGroup, Input, Label } from "reactstrap";
 import JSONPretty from "react-json-pretty";
 import XMLViewer from "react-xml-viewer";
@@ -34,8 +34,6 @@ export default function Formatter() {
   const [type, setType] = useState(null);
   const outputRef = useRef(null);
   const [isCopyBtnDisabled, setIsCopyBtnDisabled] = useState(false);
-
-  useEffect(() => {}, []);
 
   // original input 값 변경 시 originalInput state 업데이트
   const handleInputChange = (e) => {

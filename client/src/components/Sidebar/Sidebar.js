@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import cx from "classnames";
 import { Progress, Alert } from "reactstrap";
 import Moment from "react-moment";
-import { MdDashboard, MdTaskAlt } from "react-icons/md";
+import { MdDashboard, MdTaskAlt, MdColorLens } from "react-icons/md";
 import { RiUserSettingsFill } from "react-icons/ri";
 import { FaUserEdit } from "react-icons/fa";
 import { BsTable, BsFillCalendarCheckFill, BsCodeSlash } from "react-icons/bs";
@@ -179,6 +179,15 @@ export default function Sidebar() {
           iconName={<BsCodeSlash size={20} className={s.menuIcon} />}
           link="/app/formatter"
           index="formatter"
+        />
+        <LinksGroup
+          onActiveSidebarItemChange={(activeItem) => dispatch(changeActiveSidebarItem(activeItem))}
+          activeItem={activeItem}
+          header="ColorPicker"
+          isHeader
+          iconName={<MdColorLens size={20} className={s.menuIcon} />}
+          link="/app/colorpicker"
+          index="colorpicker"
         />
       </ul>
       <h5 className={s.navTitle}>
