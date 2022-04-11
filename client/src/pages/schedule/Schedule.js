@@ -60,15 +60,19 @@ export default function Schedule(props) {
   // isUserView===true 때, currentUser의 group의 schedule을 모두 표출(기본)
   const loadCurrentUserSchedule = (isUser) => {
     const currentGroupId = currentUser.groupId;
-    if (!isUser) {
-      setSelectedGroupIds([currentUser.groupId]);
+    let currentGroup = null;
+    // 로그인한 사용자가 그룹이 없을 경우
+    if (currentGroupId === null || currentGroupId === undefined) {
+      currentGroup = groups[0];
+    } else {
+      if (!isUser) {
+        setSelectedGroupIds([currentUser.groupId]);
+      }
+      currentGroup = groups.find((x) => x.id === currentGroupId);
     }
-    const currentGroup = groups.find((x) => x.id === currentGroupId);
     setSelectedGroup(currentGroup);
-
     const selectUserIds = currentGroup.users.map((obj) => obj.id);
     setSelectedUserIds(selectUserIds);
-
     searchSchedule(selectUserIds, currentGroup);
   };
 
@@ -312,8 +316,13 @@ export default function Schedule(props) {
           text = currentUser.account;
         }
       } else if (!isUserView) {
-        const currentGroup = groups.find((x) => x.id === creater.groupId);
-        text = currentGroup.name;
+        const groupId = creater.groupId;
+        if (groupId === null || groupId === undefined) {
+          text = "-";
+        } else {
+          const currentGroup = groups.find((x) => x.id === creater.groupId);
+          text = currentGroup.name;
+        }
       }
 
       // 반복 일정인 경우 아이콘 추가

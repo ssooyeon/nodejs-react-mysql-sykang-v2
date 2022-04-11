@@ -46,6 +46,11 @@ class UserService {
     return http.post("/users/auth/login", data);
   }
 
+  // 사용자 로그인
+  getSocialLogin(data) {
+    return http.post("/users/auth/social/login", data);
+  }
+
   /************************************************************ 통계 */
   // 월별/일별 사용자 생성수 조회
   getAllCreationByChart(params) {

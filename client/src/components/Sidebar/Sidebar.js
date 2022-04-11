@@ -142,15 +142,17 @@ export default function Sidebar() {
         />
         {currentUser ? (
           <>
-            <LinksGroup
-              onActiveSidebarItemChange={(activeItem) => dispatch(changeActiveSidebarItem(activeItem))}
-              activeItem={activeItem}
-              header="Profile"
-              isHeader
-              iconName={<FaUserEdit size={20} className={s.menuIcon} />}
-              link="/app/profile"
-              index="profile"
-            />
+            {currentUser.type === null ? (
+              <LinksGroup
+                onActiveSidebarItemChange={(activeItem) => dispatch(changeActiveSidebarItem(activeItem))}
+                activeItem={activeItem}
+                header="Profile"
+                isHeader
+                iconName={<FaUserEdit size={20} className={s.menuIcon} />}
+                link="/app/profile"
+                index="profile"
+              />
+            ) : null}
             <LinksGroup
               onActiveSidebarItemChange={(activeItem) => dispatch(changeActiveSidebarItem(activeItem))}
               activeItem={activeItem}

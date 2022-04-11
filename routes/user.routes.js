@@ -11,6 +11,7 @@ module.exports = (app) => {
   router.delete("/:id", users.delete);
   router.delete("/", users.deleteAll);
   router.post("/auth/login", users.authLogin);
+  router.post("/auth/social/login", users.socialLogin);
 
   /************************************************************ 통계 */
   router.get("/statistic/creation", users.findAllCreationByChart);

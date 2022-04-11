@@ -45,6 +45,7 @@ function Header(props) {
 
   useEffect(() => {
     if (currentUser) {
+      console.log(currentUser);
       TaskService.getAllByUser(currentUser.id)
         .then((res) => {
           setNotificationList(res.data);
@@ -100,20 +101,31 @@ function Header(props) {
         <Nav className="ml-md-0">
           <Dropdown nav isOpen={notificationsOpen} toggle={toggleNotifications} id="basic-nav-dropdown" className={`${s.notificationsMenu}`}>
             <DropdownToggle nav caret style={{ color: "#C1C3CF", padding: 0 }}>
-              <span className={`${s.avatar} rounded-circle thumb-sm float-left`} style={{ background: "#5c4c4c" }}>
-                <p style={{ marginTop: "1rem" }}>S</p>
-              </span>
               {currentUser ? (
-                <span
-                  className={`small d-sm-down-none ${s.accountCheck}`}
-                  onClick={() => {
-                    props.history.push("/app/profile");
-                  }}
-                >
-                  {currentUser.account}
-                </span>
+                <>
+                  <span className={`${s.avatar} rounded-circle thumb-sm float-left`} style={{ background: "#5c4c4c" }}>
+                    <p style={{ marginTop: "1rem" }}>{currentUser.account[0].toUpperCase()}</p>
+                  </span>
+                  {currentUser.type !== null && currentUser.type !== undefined ? (
+                    <span className={`small d-sm-down-none ${s.accountCheck}`}>{currentUser.email}</span>
+                  ) : (
+                    <span
+                      className={`small d-sm-down-none ${s.accountCheck}`}
+                      onClick={() => {
+                        props.history.push("/app/profile");
+                      }}
+                    >
+                      {currentUser.account}
+                    </span>
+                  )}
+                </>
               ) : (
-                <span className={`small d-sm-down-none ${s.accountCheck}`}>Guest</span>
+                <>
+                  <span className={`${s.avatar} rounded-circle thumb-sm float-left`} style={{ background: "#5c4c4c" }}>
+                    <p style={{ marginTop: "1rem" }}>G</p>
+                  </span>
+                  <span className={`small d-sm-down-none ${s.accountCheck}`}>Guest</span>
+                </>
               )}
             </DropdownToggle>
           </Dropdown>

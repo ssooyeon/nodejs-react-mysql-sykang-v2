@@ -228,9 +228,15 @@ export default function Static() {
                           <td>{user.group ? user.group.name : "-"}</td>
                           <td>{user.createdAt}</td>
                           <td>
-                            <Button color="default" className="mr-2" size="xs" onClick={(e) => onUserEditClick(user)}>
-                              E
-                            </Button>
+                            {user.type === null || user.type === undefined ? (
+                              <Button color="default" className="mr-2" size="xs" onClick={(e) => onUserEditClick(user)}>
+                                E
+                              </Button>
+                            ) : (
+                              <Button color="default" className="mr-2" size="xs" style={{ cursor: "not-allowed", opacity: "0.5" }} disabled>
+                                E
+                              </Button>
+                            )}
                             <Button color="inverse" className="mr-2" size="xs" onClick={(e) => onUserDeleteClick(user.id)}>
                               D
                             </Button>

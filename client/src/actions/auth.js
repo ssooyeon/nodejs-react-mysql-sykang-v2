@@ -27,6 +27,30 @@ export const authLogin = (data) => async (dispatch) => {
 };
 
 /**
+ * social 로그인 (구글)
+ */
+export const authSocialLogin = (data) => async (dispatch) => {
+  try {
+    const res = await UserService.getSocialLogin(data);
+    dispatch({
+      type: LOGIN_SUCCESS,
+      payload: res.data,
+    });
+    if (res.message !== undefined) {
+      return Promise.resolve(res.message);
+    } else {
+      return Promise.resolve(res.data);
+    }
+  } catch (err) {
+    console.log(err);
+    dispatch({
+      type: LOGIN_FAIL,
+    });
+    return Promise.reject(err);
+  }
+};
+
+/**
  * 로그아웃
  */
 export const logout = () => (dispatch) => {

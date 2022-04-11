@@ -4,10 +4,11 @@ import { useDispatch } from "react-redux";
 import axios from "axios";
 import { Container, Alert, Button, FormGroup, Label, InputGroup, InputGroupAddon, Input, InputGroupText } from "reactstrap";
 
-import Widget from "../../components/Widget";
-import microsoft from "../../assets/microsoft.png";
+import { LoginSocialGoogle } from "reactjs-social-login";
 
-import { authLogin } from "../../actions/auth";
+import Widget from "../../components/Widget";
+
+import { authLogin, authSocialLogin } from "../../actions/auth";
 
 export default function Login(props) {
   // 초기 user object
@@ -54,6 +55,30 @@ export default function Login(props) {
       .catch((e) => {
         console.log(e);
       });
+  };
+
+  // 소셜 로그인 수행 (구글)
+  const doSocialLogin = (provider) => {
+    const account = provider.data.email.split("@")[0];
+    let loging = {
+      type: provider.provider,
+      account: account,
+      email: provider.data.email,
+    };
+
+    dispatch(authSocialLogin(loging)).then((res) => {
+      // 에러메세지가 존재하면
+      if (res.message !== undefined) {
+        setIsLoginFailed(true);
+        setErrMessage(res.message);
+      } else {
+        // 로그인에 성공했을 경우 local storage에 저장
+        axios.defaults.headers.common["Authorization"] = `Bearer ${provider.data.id_token}`;
+        const item = { ...res.user, token: provider.data.id_token };
+        localStorage.setItem("user", JSON.stringify(item));
+        props.history.push("/");
+      }
+    });
   };
 
   return (
@@ -119,17 +144,25 @@ export default function Login(props) {
               <Link className="d-block text-center mb-4" to="register">
                 Create an Account
               </Link>
+
               <div className="social-buttons">
-                <Button color="primary" className="social-button">
-                  <i className="social-icon social-google" />
-                  <p className="social-text">GOOGLE</p>
-                </Button>
-                <Button color="success" className="social-button">
-                  <i className="social-icon social-microsoft" style={{ backgroundImage: `url(${microsoft})` }} />
-                  <p className="social-text" style={{ color: "#fff" }}>
-                    MICROSOFT
-                  </p>
-                </Button>
+                <LoginSocialGoogle
+                  client_id={process.env.REACT_APP_GG_APP_ID}
+                  onLoginStart={() => {}}
+                  onLoginFailure={() => {}}
+                  onLogoutSuccess={() => {}}
+                  onResolve={(provider, data) => {
+                    doSocialLogin(provider);
+                  }}
+                  onReject={(err) => {
+                    console.log(err);
+                  }}
+                >
+                  <Button color="primary" className="social-button" style={{ width: "100%" }}>
+                    <i className="social-icon social-google" />
+                    <p className="social-text">GOOGLE</p>
+                  </Button>
+                </LoginSocialGoogle>
               </div>
             </div>
           </form>

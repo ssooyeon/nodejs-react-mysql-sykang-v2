@@ -236,6 +236,62 @@ exports.authLogin = (req, res) => {
   }
 };
 
+/**
+ * soical 사용자 로그인
+ */
+exports.socialLogin = (req, res) => {
+  const account = req.body.account;
+  const email = req.body.email;
+  const type = req.body.type;
+  const token = req.body.token;
+
+  // 로그인한적이 있는 소셜 사용자 계정인지 확인
+  User.findOne({ where: { account: account, email: email, type: type } })
+    .then((data) => {
+      // 존재하는 소셜 사용자 계정이면
+      if (data !== null) {
+        const user = {
+          token: token,
+          id: data.id,
+          account: data.account,
+          email: data.email,
+          type: data.type,
+          groupId: data.groupId,
+        };
+        Log.create({ status: "SUCCESS", message: `Social user login successfully. User account is: ${account}` });
+        res.send({ user: user });
+      } else {
+        // 존재하지 않는 소셜 사용자 계정이라면 user에 추가 후 return
+        const user = {
+          account: account,
+          email: email,
+          type: type,
+        };
+        User.create(user)
+          .then((createdUser) => {
+            Log.create({ status: "SUCCESS", message: `Social user create successfully. New user account is: ${account}` });
+            const user = {
+              token: token,
+              id: createdUser.id,
+              account: createdUser.account,
+              email: createdUser.email,
+              type: createdUser.type,
+              groupId: createdUser.groupId,
+            };
+            Log.create({ status: "SUCCESS", message: `Social user login successfully. User account is: ${account}` });
+            res.send({ user: user });
+          })
+          .catch((err) => {
+            Log.create({ status: "ERROR", message: `Social user create failed. User is: ${account}` });
+            res.status(500).send({ message: err.message || "Some error occurred while creating the User." });
+          });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({ message: err.message || "Some error occurred retrieving user." });
+    });
+};
+
 /************************************************************ 통계 */
 /**
  * 사용자 월별/일별 조회

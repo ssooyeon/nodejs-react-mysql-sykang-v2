@@ -1,7 +1,9 @@
 import {
   CREATE_USER,
+  CREATE_SOCIAL_USER,
   RETRIEVE_USERS,
   RETRIEVE_USER,
+  RETRIEVE_FOR_CREATE_SOCIAL,
   RETRIEVE_BY_ACCOUNT,
   COMPARE_CURRENT_PASSWORD,
   UPDATE_USER,
@@ -19,12 +21,20 @@ function userReducer(users = initialState, action) {
     case CREATE_USER:
       return [...users, payload];
 
+    // social 사용자 생성
+    case CREATE_SOCIAL_USER:
+      return [...users, payload];
+
     // 사용자 전체 조회
     case RETRIEVE_USERS:
       return payload;
 
     // 사용자 조회
     case RETRIEVE_USER:
+      return payload;
+
+    // social 사용자 생성 전 중복 조회
+    case RETRIEVE_FOR_CREATE_SOCIAL:
       return payload;
 
     // 사용자 계정으로 조회
