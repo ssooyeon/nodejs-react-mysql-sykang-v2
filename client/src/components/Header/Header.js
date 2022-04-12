@@ -45,7 +45,6 @@ function Header(props) {
 
   useEffect(() => {
     if (currentUser) {
-      console.log(currentUser);
       TaskService.getAllByUser(currentUser.id)
         .then((res) => {
           setNotificationList(res.data);

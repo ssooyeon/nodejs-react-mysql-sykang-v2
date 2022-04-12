@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+// import { useStateWithCallbackLazy } from "use-state-with-callback";
 import { useDispatch, useSelector } from "react-redux";
 import Moment from "react-moment";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
@@ -42,7 +43,10 @@ export default function Task() {
   const [columns, setColumns] = useState([]); // 현재 선택된 폴더의 컬럼 리스트
   const [columnLastOrderNum, setColumnLastOrderNum] = useState(0); // 현재 선택된 폴더의 컬럼 리스트의 마지막 정렬 넘버
 
+  const [isFoldersEmpty, setIsFoldersEmpty] = useState(false); // 로그인한 사용자의 폴더가 하나도 없는지의 여부
+
   const [currentFolder, setCurrentFolder] = useLocalStorage("currentFolder", "0"); // 현재 선택된 최상위 폴더
+  const [newFolderId, setNewFolderId] = useState(0); // 최상위 폴더가 새로 생성됐을 경우 폴더의 ID
 
   const [addTaskModalOpen, setAddTaskModalOpen] = useState(false); // 테스크 생성 모달 오픈
   const [addColumnForm, setAddColumnForm] = useState([]); // 새로운 테스크를 추가할 컬럼 정보
@@ -66,6 +70,22 @@ export default function Task() {
   useEffect(() => {
     getParentFolders();
   }, []);
+
+  // 새로운 최상위 폴더가 생성되었을 경우 select option rerendering
+  useEffect(() => {
+    if (newFolderId > 0) {
+      dispatch(retrieveParentFolders(currentUser.id))
+        .then((res) => {
+          setFolders(res);
+          setIsFoldersEmpty(false);
+          setCurrentFolder(newFolderId);
+          getFolder(newFolderId);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
+  }, [newFolderId]);
 
   // 테스크 테마 색상 변경
   const onColorStateChange = (colorState) => {
@@ -172,11 +192,17 @@ export default function Task() {
     dispatch(retrieveParentFolders(currentUser.id))
       .then((res) => {
         setFolders(res);
-        if (currentFolder === undefined || currentFolder === "0") {
-          setCurrentFolder(res[0].id);
-          getFolder(res[0].id);
+        // 폴더가 하나도 없으면
+        if (res.length === 0) {
+          setIsFoldersEmpty(true);
         } else {
-          getFolder(currentFolder);
+          setIsFoldersEmpty(false);
+          if (currentFolder === undefined || currentFolder === "0") {
+            setCurrentFolder(res[0].id);
+            getFolder(res[0].id);
+          } else {
+            getFolder(currentFolder);
+          }
         }
       })
       .catch((e) => {
@@ -244,19 +270,10 @@ export default function Task() {
     const folder = { ...defaultCreatedColumn, ordering: 0, parentId: null };
     const user = currentUser;
     const data = { folder, user };
+
     dispatch(createFolder(data))
       .then((createdFolder) => {
-        // 생성한 folder 보여주기
-        dispatch(retrieveParentFolders(currentUser.id))
-          .then((res) => {
-            setFolders(res);
-            // 폴더 생성 후 생성된 폴더가 제대로 선택되지 않음 (select list가 제대로 반영이 안됨)
-            // setCurrentFolder(createdFolder.id);
-            // getFolder(createdFolder.id);
-          })
-          .catch((e) => {
-            console.log(e);
-          });
+        setNewFolderId(createdFolder.id);
       })
       .catch((e) => {
         console.log(e);
@@ -316,8 +333,13 @@ export default function Task() {
         dispatch(retrieveParentFolders(currentUser.id))
           .then((res) => {
             setFolders(res);
-            setCurrentFolder(res[0].id);
-            getFolder(res[0].id);
+            if (res.length === 0) {
+              setIsFoldersEmpty(true);
+            } else {
+              setIsFoldersEmpty(false);
+              setCurrentFolder(res[0].id);
+              getFolder(res[0].id);
+            }
           })
           .catch((e) => {
             console.log(e);
@@ -525,15 +547,33 @@ export default function Task() {
                 ) : null}
               </InputGroup>
               &nbsp;&nbsp;
-              <Button color="default" className={s.transparentButton} size="xs" onClick={() => editSharedUser(currentFolder)}>
+              <Button
+                color="default"
+                className={isFoldersEmpty ? s.transparentDisabledButton : s.transparentButton}
+                size="xs"
+                onClick={() => editSharedUser(currentFolder)}
+                disabled={isFoldersEmpty}
+              >
                 <i className="fa fa-users"></i> Shared
               </Button>
               &nbsp;&nbsp;
-              <Button color="inverse" className={s.transparentButton} size="xs" onClick={() => editParentFolder(currentFolder)}>
+              <Button
+                color="inverse"
+                className={isFoldersEmpty ? s.transparentDisabledButton : s.transparentButton}
+                size="xs"
+                onClick={() => editParentFolder(currentFolder)}
+                disabled={isFoldersEmpty}
+              >
                 <i className="fa fa-pencil"></i> Edit
               </Button>
               &nbsp;&nbsp;
-              <Button color="inverse" className={s.transparentButton} size="xs" onClick={() => confirmRemoveFolder(currentFolder)}>
+              <Button
+                color="inverse"
+                className={isFoldersEmpty ? s.transparentDisabledButton : s.transparentButton}
+                size="xs"
+                onClick={() => confirmRemoveFolder(currentFolder)}
+                disabled={isFoldersEmpty}
+              >
                 <i className="fa fa-remove"></i> Delete
               </Button>
               <div className={s.themeColorPicker}>
@@ -545,7 +585,13 @@ export default function Task() {
                 <i className="fa fa-plus"></i> Folder
               </Button>
               &nbsp;&nbsp;
-              <Button color="inverse" className={s.transparentButton} size="xs" onClick={addColumn}>
+              <Button
+                color="inverse"
+                className={isFoldersEmpty ? s.transparentDisabledButton : s.transparentButton}
+                size="xs"
+                onClick={addColumn}
+                disabled={isFoldersEmpty}
+              >
                 <i className="fa fa-plus"></i> Column
               </Button>
             </div>
