@@ -250,6 +250,7 @@ exports.socialLogin = (req, res) => {
     .then((data) => {
       // 존재하는 소셜 사용자 계정이면
       if (data !== null) {
+        console.log(data);
         const user = {
           token: token,
           id: data.id,
@@ -258,17 +259,21 @@ exports.socialLogin = (req, res) => {
           type: data.type,
           groupId: data.groupId,
         };
+        console.log(user);
         Log.create({ status: "SUCCESS", message: `Social user login successfully. User account is: ${account}` });
         res.send({ user: user });
       } else {
+        console.log(data);
         // 존재하지 않는 소셜 사용자 계정이라면 user에 추가 후 return
         const user = {
           account: account,
           email: email,
           type: type,
         };
+        console.log(user);
         User.create(user)
           .then((createdUser) => {
+            console.log(createdUser);
             Log.create({ status: "SUCCESS", message: `Social user create successfully. New user account is: ${account}` });
             const user = {
               token: token,
