@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { withRouter } from "react-router-dom";
+import { useIdleTimer } from "react-idle-timer";
 import {
   Navbar,
   Nav,
@@ -71,6 +72,22 @@ function Header(props) {
   const toggleSidebar = () => {
     props.isSidebarOpened ? dispatch(closeSidebar()) : dispatch(openSidebar());
   };
+
+  // auto logout for inactive user using idle
+  const handleOnIdle = () => {
+    console.log("last active: ", getLastActiveTime());
+    if (currentUser) {
+      console.log("auto logout..");
+      doLogout();
+    }
+  };
+  const { getLastActiveTime } = useIdleTimer({
+    timeout: 1000 * 60 * 60,
+    onIdle: handleOnIdle,
+    onActive: () => {},
+    onAction: () => {},
+    debounce: 500,
+  });
 
   return (
     <Navbar className={`d-print-none `}>

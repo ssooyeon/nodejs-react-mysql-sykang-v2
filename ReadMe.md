@@ -8,11 +8,15 @@
 ## client (reactjs)
 
 1. default template
-2. register & login & logout
-3. crud function
-4. system monitoring chart
-5. calendar management
-6. redux & store
+2. register & login & logout & auto logout
+3. social login
+4. crud function
+5. system monitoring chart
+6. statistic monitoring chart
+7. calendar management
+8. redux & store
+9. text formatter
+10. color picker
 
 # setting project
 
