@@ -6,7 +6,7 @@ import { createUser } from "../../../actions/users";
 import UserService from "../../../services/UserService";
 import GroupService from "../../../services/GroupService";
 
-export default function AddUserModal({ open, handleCloseClick, handleResetInput }) {
+export default function AddUserModal({ open, handleCloseClick }) {
   // 초기 user object
   const initialUserState = {
     account: "",

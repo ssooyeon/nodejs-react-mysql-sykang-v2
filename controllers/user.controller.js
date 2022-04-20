@@ -5,6 +5,7 @@ const Log = db.logs;
 const Op = db.Sequelize.Op;
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const mailer = require("../utils/mailer");
 
 /**
  * 사용자 생성
@@ -35,6 +36,22 @@ exports.create = (req, res) => {
         ],
       })
         .then((result) => {
+          let groupName = "N/A";
+          let type = "plain register";
+          if (result.group !== null) {
+            groupName = result.group.name;
+          }
+          if (result.type !== null) {
+            type = result.type;
+          }
+          const content = `<p><span>account: ${result.account}</span></p><p><span>email:  ${result.email}</span></p><p><span>group: ${groupName}</span></p><p><span>type: ${type}</span></p>`;
+          // 사용자가 생성되었으면 메일을 발송
+          mailer.sendGmailToAdmin({
+            subject: "User created!",
+            title: "A user has been created.",
+            content: content,
+          });
+
           Log.create({ status: "SUCCESS", message: `User create successfully. New user account is: ${req.body.account}` });
           res.send(result);
         })
@@ -154,18 +171,49 @@ exports.update = (req, res) => {
  */
 exports.delete = (req, res) => {
   const id = req.params.id;
-  User.destroy({ where: { id: id } })
-    .then((num) => {
-      if (num === 1) {
-        Log.create({ status: "SUCCESS", message: `User delete successfully. User id is: ${id}` });
-        res.send({ message: "User was deleted successfully." });
-      } else {
-        Log.create({ status: "ERROR", message: `User delete failed. User id is: ${id}` });
-        res.send({ message: `Cannot delete User with id=${id}. maybe User was not found.` });
+  // 삭제 완료 메일을 보내기 위해 사용자 삭제 전에 해당 사용자 정보를 조회
+  User.findByPk(id, {
+    include: [
+      {
+        model: Group,
+        as: "group",
+      },
+    ],
+  })
+    .then((deletedUser) => {
+      let groupName = "N/A";
+      let type = "plain register";
+      if (deletedUser.group !== null) {
+        groupName = deletedUser.group.name;
       }
+      if (deletedUser.type !== null) {
+        type = deletedUser.type;
+      }
+      // 사용자 정보를 바탕으로 메일 내용 미리 저장
+      const content = `<p><span>account: ${deletedUser.account}</span></p><p><span>email:  ${deletedUser.email}</span></p><p><span>group: ${groupName}</span></p><p><span>type: ${type}</span></p>`;
+      // 사용자 삭제 수행
+      User.destroy({ where: { id: id } })
+        .then((num) => {
+          if (num === 1) {
+            // 사용자가 삭제되었으면 메일을 발송
+            mailer.sendGmailToAdmin({
+              subject: "User deleted!",
+              title: "A user has been deleted.",
+              content: content,
+            });
+            Log.create({ status: "SUCCESS", message: `User delete successfully. User id is: ${id}` });
+            res.send({ message: "User was deleted successfully." });
+          } else {
+            Log.create({ status: "ERROR", message: `User delete failed. User id is: ${id}` });
+            res.send({ message: `Cannot delete User with id=${id}. maybe User was not found.` });
+          }
+        })
+        .catch((err) => {
+          res.status(500).send({ message: err.message || `Could not delete User with id=${id}` });
+        });
     })
     .catch((err) => {
-      res.status(500).send({ message: err.message || `Could not delete User with id=${id}` });
+      console.log(err);
     });
 };
 

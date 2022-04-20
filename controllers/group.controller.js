@@ -3,6 +3,7 @@ const Group = db.groups;
 const User = db.users;
 const Log = db.logs;
 const Op = db.Sequelize.Op;
+const mailer = require("../utils/mailer");
 
 /**
  * 그룹 생성
@@ -25,6 +26,13 @@ exports.create = (req, res) => {
         ],
       })
         .then((result) => {
+          const content = `<p><span>name: ${result.name}</span></p>`;
+          // 그룹이 생성되었으면 메일을 발송
+          mailer.sendGmailToAdmin({
+            subject: "Group created!",
+            title: "A group has been created.",
+            content: content,
+          });
           Log.create({ status: "SUCCESS", message: `Group create successfully. New Group name is: ${req.body.name}` });
           res.send(result);
         })
@@ -150,18 +158,34 @@ exports.updateMembers = (req, res) => {
  */
 exports.delete = (req, res) => {
   const id = req.params.id;
-  Group.destroy({ where: { id: id } })
-    .then((num) => {
-      if (num === 1) {
-        Log.create({ status: "SUCCESS", message: `Group delete successfully. Group id is: ${id}` });
-        res.send({ message: "Group was deleted successfully." });
-      } else {
-        res.send({ message: `Cannot delete Group with id=${id}. maybe Group was not found.` });
-      }
+  // 삭제 완료 메일을 보내기 위해 그룹 삭제 전에 해당 그룹 정보를 조회
+  Group.findByPk(id)
+    .then((deletedGroup) => {
+      // 그룹 정보를 바탕으로 메일 내용 미리 저장
+      const content = `<p><span>name: ${deletedGroup.name}</span></p>`;
+      // 그룹 삭제 수행
+      Group.destroy({ where: { id: id } })
+        .then((num) => {
+          if (num === 1) {
+            // 그룹이 삭제되었으면 메일을 발송
+            mailer.sendGmailToAdmin({
+              subject: "Group deleted!",
+              title: "A group has been deleted.",
+              content: content,
+            });
+            Log.create({ status: "SUCCESS", message: `Group delete successfully. Group id is: ${id}` });
+            res.send({ message: "Group was deleted successfully." });
+          } else {
+            res.send({ message: `Cannot delete Group with id=${id}. maybe Group was not found.` });
+          }
+        })
+        .catch((err) => {
+          Log.create({ status: "ERROR", message: `Group delete failed. Group id is: ${id}` });
+          res.status(500).send({ message: err.message || `Could not delete Group with id=${id}` });
+        });
     })
     .catch((err) => {
-      Log.create({ status: "ERROR", message: `Group delete failed. Group id is: ${id}` });
-      res.status(500).send({ message: err.message || `Could not delete Group with id=${id}` });
+      console.log(err);
     });
 };
 

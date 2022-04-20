@@ -17,6 +17,7 @@
 8. redux & store
 9. text formatter
 10. color picker
+11. send email
 
 # setting project
 
@@ -26,21 +27,25 @@
 2. in <mark>.env.dev</mark>, enter the following below.
 
 ```
-DB_HOST=localhost
+DB_HOST=          localhost
 DB_USER=root      #your local database username
 DB_PASSWORD=1234  #your local database password
 DB_NAME=my_blog   #your local database name
-DEPLOY_SERVER_URL=
+DEPLOY_SERVER_URL=http://localhost:8083
+MAILER_ADDR=      #gmail address
+MAILER_PASS=      #gmail password
 ```
 
 3. in <mark>.env.prod</mark>, enter the following below.
 
 ```
-DB_HOST=#server database usename
-DB_USER=#server database username
-DB_PASSWORD=#server password
-DB_NAME=#server database name
+DB_HOST=          #server database usename
+DB_USER=          #server database username
+DB_PASSWORD=      #server password
+DB_NAME=          #server database name
 DEPLOY_SERVER_URL=#server url
+MAILER_ADDR=      #gmail address
+MAILER_PASS=      #gmail password
 ```
 
 ## client api url config
