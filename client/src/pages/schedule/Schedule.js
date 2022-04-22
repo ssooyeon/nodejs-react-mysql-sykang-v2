@@ -289,6 +289,7 @@ export default function Schedule(props) {
     data = { ...data, id: id, allDay: allDay, rrule: rrule, duration: duration };
     dispatch(updateSchedule(data.id, data))
       .then(() => {
+        // todo: create alarm: update schedule in my group (6) - resize
         searchSchedule(selectedUserIds, selectedGroup);
       })
       .catch((e) => {

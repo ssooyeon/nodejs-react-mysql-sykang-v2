@@ -5,6 +5,7 @@ import { Alert, Button, FormGroup, InputGroup, InputGroupAddon, InputGroupText, 
 import { createUser } from "../../../actions/users";
 import UserService from "../../../services/UserService";
 import GroupService from "../../../services/GroupService";
+import AlarmService from "../../../services/AlarmService";
 
 export default function AddUserModal({ open, handleCloseClick }) {
   // 초기 user object
@@ -127,6 +128,17 @@ export default function AddUserModal({ open, handleCloseClick }) {
             setIsShowSuccessAlert(true);
             setIsShowErrAlert(false);
             setSuccessMessage("New user added successfully.");
+
+            // todo: create alarm: create user in my group (1)
+            // 사용자 생성 시 그룹이 있다면 그룹 멤버들에게 알람
+            if (userForm.groupId !== null) {
+              const id = { userId: null, groupId: userForm.groupId };
+              const alarm = {
+                message: `A new user(account: ${userForm.account}) has been added to your group.`,
+                status: "INFO",
+              };
+              AlarmService.createWithGroupMembers({ id: id, alarm: alarm });
+            }
 
             setTimeout(() => {
               handleDone();

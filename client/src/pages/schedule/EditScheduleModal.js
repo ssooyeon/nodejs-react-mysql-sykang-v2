@@ -197,6 +197,7 @@ export default function EditScheduleModal({ open, handleCloseClick, schedule }) 
           setIsShowSuccessAlert(true);
           setIsShowErrAlert(false);
           setSuccessMessage("Schedule updated successfully.");
+          // todo: create alarm: update schedule in my group (6)
           setTimeout(() => {
             handleClose();
           }, 500);
@@ -206,22 +207,6 @@ export default function EditScheduleModal({ open, handleCloseClick, schedule }) 
         });
     }
   };
-
-  // 스케줄 삭제 버튼 클릭
-  // const removeScheduleClick = (e) => {
-  //   e.preventDefault();
-  //   alert.show("Are you sure delete this schedule?", {
-  //     title: "",
-  //     closeCopy: "Cancel",
-  //     type: "success",
-  //     actions: [
-  //       {
-  //         copy: "YES",
-  //         onClick: () => removeSchedule(),
-  //       },
-  //     ],
-  //   });
-  // };
 
   // 스케줄 삭제
   const removeSchedule = () => {

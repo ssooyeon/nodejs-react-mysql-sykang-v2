@@ -86,4 +86,12 @@ db.schedules.belongsTo(db.users, {
   onDelete: "CASCADE",
 });
 
+/** alarm with users */
+db.alarms = require("./alarm.model")(sequelize, Sequelize);
+db.alarms.belongsTo(db.users, {
+  foreignKey: "userId",
+  as: "user",
+  onDelete: "CASCADE",
+});
+
 module.exports = db;

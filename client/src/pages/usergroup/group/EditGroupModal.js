@@ -123,7 +123,9 @@ export default function EditGroupModal({ open, handleCloseClick, group }) {
         if (!isSameMember) {
           let data = { ...groupForm, users: selectionRow };
           dispatch(updateGroupMember(data.id, data))
-            .then(() => {})
+            .then(() => {
+              // todo: create alarm: update member in my group (4)
+            })
             .catch((e) => {
               console.log(e);
             });
@@ -131,7 +133,7 @@ export default function EditGroupModal({ open, handleCloseClick, group }) {
         setIsShowSuccessAlert(true);
         setIsShowErrAlert(false);
         setSuccessMessage("Group update with members successfully.");
-
+        // todo: create alarm: update my group (3)
         setTimeout(() => {
           handleDone();
         }, 500);

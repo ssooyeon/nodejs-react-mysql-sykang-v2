@@ -122,7 +122,7 @@ export default function EditTaskModal({ open, handleCloseClick, task }) {
           setIsShowSuccessAlert(true);
           setIsShowErrAlert(false);
           setSuccessMessage("Task updated successfully.");
-
+          // todo: create alarm: update task in my group (8)
           setTimeout(() => {
             handleClose();
           }, 500);

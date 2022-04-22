@@ -181,6 +181,7 @@ export default function AddScheduleModal({ open, handleCloseClick, date }) {
           setIsShowSuccessAlert(true);
           setIsShowErrAlert(false);
           setSuccessMessage("New schedule added successfully.");
+          // todo: create alarm: create schedule in my group (5)
           setTimeout(() => {
             handleDone();
           }, 500);

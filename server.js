@@ -42,6 +42,7 @@ require("./routes/task.routes")(app);
 require("./routes/folder.routes")(app);
 require("./routes/schedule.routes")(app);
 require("./routes/weather.routes")(app);
+require("./routes/alarm.routes")(app);
 
 const PORT = process.env.PORT || 8081;
 app.listen(PORT, () => {

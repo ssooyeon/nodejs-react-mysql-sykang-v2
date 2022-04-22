@@ -181,6 +181,8 @@
   box-shadow: 0 0px 40px 2px rgba(#020202, 0.5);
   border: none;
   color: $white;
+  max-height: 200px;
+  overflow-y: auto;
 
   &.messages {
     left: -50px !important;
@@ -310,6 +312,17 @@
   bottom: 8px;
   right: 5px;
   background: $green;
+  color: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+}
+
+.countRed {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  bottom: 8px;
+  right: 5px;
+  background: $red;
   color: rgba(255, 255, 255, 0.9);
   border-radius: 50%;
 }

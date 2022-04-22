@@ -71,3 +71,12 @@ export const RETRIEVE_TODAY_SCHEDULES = "RETRIEVE_TODAY_SCHEDULES";
 export const UPDATE_SCHEDULE = "UPDATE_SCHEDULE";
 export const DELETE_SCHEDULE = "DELETE_SCHEDULE";
 export const DELETE_ALL_SCHEDULES = "DELETE_ALL_SCHEDULES";
+
+/***************************************************
+ * Alarm
+ ***************************************************/
+export const CREATE_ALARM = "CREATE_ALARM";
+export const RETRIEVE_ALARMS = "RETRIEVE_ALARMS";
+export const RETRIEVE_ALARM = "RETRIEVE_ALARM";
+export const RETRIEVE_ALARMS_BY_USER = "RETRIEVE_ALARMS_BY_USER";
+export const UPDATE_ALARM = "UPDATE_ALARM";

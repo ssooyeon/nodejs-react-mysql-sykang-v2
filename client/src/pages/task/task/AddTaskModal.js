@@ -105,7 +105,7 @@ export default function AddTaskModal({ open, handleCloseClick, column }) {
           setIsShowSuccessAlert(true);
           setIsShowErrAlert(false);
           setSuccessMessage("New task added successfully.");
-
+          // todo: create alarm: create task in my group (7)
           setTimeout(() => {
             handleClose();
           }, 500);

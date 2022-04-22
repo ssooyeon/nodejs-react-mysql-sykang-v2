@@ -17,7 +17,10 @@ import {
   DropdownMenu,
   DropdownItem,
   Badge,
+  Button,
 } from "reactstrap";
+import { FaTasks } from "react-icons/fa";
+import { AiOutlineNotification } from "react-icons/ai";
 import PowerIcon from "../Icons/HeaderIcons/PowerIcon";
 import BellIcon from "../Icons/HeaderIcons/BellIcon";
 import BurgerIcon from "../Icons/HeaderIcons/BurgerIcon";
@@ -29,30 +32,50 @@ import s from "./Header.module.scss";
 import "animate.css";
 
 import { logout } from "../../actions/auth";
+// import { retrieveAlarmByUser } from "../../actions/alarm";
 import TaskService from "../../services/TaskService";
+import AlarmService from "../../services/AlarmService";
 
 const searchOpen = false;
 const labels = ["warning", "success", "info", "danger"];
 const icons = ["fa fa-question-circle", "fa fa-info-circle", "fa fa-plus", "fa fa-tag", "fa fa-question-circle"];
 
 function Header(props) {
-  const [supportOpen, setSupportOpen] = useState(false);
+  const [taskListOpen, setTaskListOpen] = useState(false); // task list window open
+  const [alarmListOpen, setAlarmListOpen] = useState(false); // alarm list window open
   const [searchFocused, setSearchFocused] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
-  const [notificationList, setNotificationList] = useState([]);
+  const [taskList, setTaskList] = useState([]); // task list
+  const [alarmList, setAlarmList] = useState([]); // task list
 
   const dispatch = useDispatch();
   const { user: currentUser } = useSelector((state) => state.auth);
+  const alarms = useSelector((state) => state.alarms || []);
+
+  // useEffect(() => {
+  //   dispatch(retrieveAlarmByUser(1))
+  //     .then((result) => {
+  //       console.log(result);
+  //     })
+  //     .catch((e) => console.log(e));
+  // }, [dispatch]);
 
   useEffect(() => {
     if (currentUser) {
+      // task list
       TaskService.getAllByUser(currentUser.id)
         .then((res) => {
-          setNotificationList(res.data);
+          setTaskList(res.data);
         })
         .catch((e) => {
           console.log(e);
         });
+      // alarm list
+      AlarmService.getAllByUser(currentUser.id)
+        .then((res) => {
+          setAlarmList(res.data);
+        })
+        .catch((e) => console.log(e));
     }
   }, []);
 
@@ -65,8 +88,12 @@ function Header(props) {
     props.history.push("/");
   };
 
-  const toggleSupportDropdown = () => {
-    setSupportOpen(!supportOpen);
+  const toggleTaskDropdown = () => {
+    setTaskListOpen(!taskListOpen);
+  };
+
+  const toggleAlarmDropdown = () => {
+    setAlarmListOpen(!alarmListOpen);
   };
 
   const toggleSidebar = () => {
@@ -147,39 +174,61 @@ function Header(props) {
           </Dropdown>
           <NavItem className={`${s.divider} d-none d-sm-block`} />
           {currentUser ? (
-            <Dropdown className="d-none d-sm-block" nav isOpen={supportOpen} toggle={toggleSupportDropdown}>
-              <DropdownToggle nav className={`${s.navItem} text-white`}>
-                <BellIcon className={s.headerIcon} />
-                {notificationList.length > 0 ? <div className={s.count}></div> : null}
-              </DropdownToggle>
-              <DropdownMenu right className={`${s.dropdownMenu} ${s.support}`}>
-                {notificationList &&
-                  notificationList.map((noti, index) => {
-                    return (
-                      <DropdownItem key={noti.id}>
-                        <Badge color={labels[Math.floor(Math.random() * 4)]}>
-                          <i className={icons[Math.floor(Math.random() * 5)]} />
-                        </Badge>
-                        {noti.isDone ? (
-                          <div className={s.details} style={{ textDecoration: "line-through", color: "rgba(244, 244, 245, 0.6)" }}>
-                            {noti.title.length > 30 ? noti.title.substr(0, 30) + "..." : noti.title}
-                          </div>
-                        ) : (
-                          <div className={s.details}>{noti.title.length > 30 ? noti.title.substr(0, 30) + "..." : noti.title}</div>
-                        )}
-                      </DropdownItem>
-                    );
-                  })}
+            <>
+              <Dropdown className="d-none d-sm-block" nav isOpen={taskListOpen} toggle={toggleTaskDropdown}>
+                <DropdownToggle nav className={`${s.navItem} text-white`}>
+                  <FaTasks size={20} className={s.headerIcon} />
+                  {taskList.length > 0 ? <div className={s.count}></div> : null}
+                </DropdownToggle>
+                <DropdownMenu right className={`${s.dropdownMenu} ${s.support}`}>
+                  {taskList &&
+                    taskList.map((task, index) => {
+                      return (
+                        <DropdownItem key={task.id}>
+                          <Badge color={labels[Math.floor(Math.random() * 4)]}>
+                            <i className={icons[Math.floor(Math.random() * 5)]} />
+                          </Badge>
+                          {task.isDone ? (
+                            <div className={s.details} style={{ textDecoration: "line-through", color: "rgba(244, 244, 245, 0.6)" }}>
+                              {task.title.length > 30 ? task.title.substr(0, 30) + "..." : task.title}
+                            </div>
+                          ) : (
+                            <div className={s.details}>{task.title.length > 30 ? task.title.substr(0, 30) + "..." : task.title}</div>
+                          )}
+                        </DropdownItem>
+                      );
+                    })}
 
-                {notificationList.length > 0 ? (
-                  <DropdownItem>
-                    <a href="/#/app/task" className="text-white">
-                      More <ArrowIcon className={s.headerIcon} maskName="bellArrow" />
-                    </a>
-                  </DropdownItem>
-                ) : null}
-              </DropdownMenu>
-            </Dropdown>
+                  {taskList.length > 0 ? (
+                    <DropdownItem>
+                      <a href="/#/app/task" className="text-white">
+                        More <ArrowIcon className={s.headerIcon} maskName="bellArrow" />
+                      </a>
+                    </DropdownItem>
+                  ) : null}
+                </DropdownMenu>
+              </Dropdown>
+              <Dropdown className="d-none d-sm-block" nav isOpen={alarmListOpen} toggle={toggleAlarmDropdown}>
+                <DropdownToggle nav className={`${s.navItem} text-white`}>
+                  <BellIcon className={s.headerIcon} />
+                  {alarmList && alarmList.length > 0 ? <div className={s.countRed}></div> : null}
+                </DropdownToggle>
+                <DropdownMenu right className={`${s.dropdownMenu} ${s.support}`}>
+                  {alarmList &&
+                    alarmList.map((alarm, index) => {
+                      return (
+                        <DropdownItem key={alarm.id}>
+                          <AiOutlineNotification size={20} className={s.headerIcon} />
+                          <div className={s.details}>{alarm.message > 30 ? alarm.message.substr(0, 30) + "..." : alarm.message}</div>
+                          <Button color="" style={{ padding: "2px 0 0 5px", color: "#e9e3e3" }} onClick={() => {}}>
+                            <i className="fa fa-remove"></i>
+                          </Button>
+                        </DropdownItem>
+                      );
+                    })}
+                </DropdownMenu>
+              </Dropdown>
+            </>
           ) : null}
           <NavItem>
             {currentUser ? (

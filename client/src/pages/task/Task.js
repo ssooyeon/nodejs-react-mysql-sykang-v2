@@ -136,6 +136,7 @@ export default function Task() {
         }
         dispatch(updateTask(data.id, data))
           .then(() => {
+            // todo: create alarm: update task in my group (8) - drag
             // ordering 업데이트가 모두 끝나면 전체 task를 다시 불러오기
             getFolder(currentFolder);
           })
