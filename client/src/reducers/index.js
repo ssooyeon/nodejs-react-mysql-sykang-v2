@@ -6,6 +6,7 @@ import auth from "./auth";
 import folder from "./folders";
 import task from "./tasks";
 import schedules from "./schedules";
+import alarms from "./alarms";
 
 import navigation from "./navigation";
 import alerts from "./alerts";
@@ -18,6 +19,7 @@ export default combineReducers({
   folder,
   task,
   schedules,
+  alarms,
 
   navigation,
   alerts,

@@ -32,7 +32,7 @@ import s from "./Header.module.scss";
 import "animate.css";
 
 import { logout } from "../../actions/auth";
-// import { retrieveAlarmByUser } from "../../actions/alarm";
+import { retrieveAlarmByUser } from "../../actions/alarms";
 import TaskService from "../../services/TaskService";
 import AlarmService from "../../services/AlarmService";
 
@@ -48,17 +48,13 @@ function Header(props) {
   const [taskList, setTaskList] = useState([]); // task list
   const [alarmList, setAlarmList] = useState([]); // task list
 
-  const dispatch = useDispatch();
   const { user: currentUser } = useSelector((state) => state.auth);
   const alarms = useSelector((state) => state.alarms || []);
+  const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   dispatch(retrieveAlarmByUser(1))
-  //     .then((result) => {
-  //       console.log(result);
-  //     })
-  //     .catch((e) => console.log(e));
-  // }, [dispatch]);
+  useEffect(() => {
+    dispatch(retrieveAlarmByUser(currentUser.id));
+  }, [dispatch, currentUser]);
 
   useEffect(() => {
     if (currentUser) {
@@ -66,12 +62,6 @@ function Header(props) {
       TaskService.getAllByUser(currentUser.id)
         .then((res) => {
           setTaskList(res.data);
-        })
-        .catch((e) => console.log(e));
-      // alarm list
-      AlarmService.getAllByUser(currentUser.id)
-        .then((res) => {
-          setAlarmList(res.data);
         })
         .catch((e) => console.log(e));
     }
@@ -209,11 +199,11 @@ function Header(props) {
               <Dropdown className="d-none d-sm-block" nav isOpen={alarmListOpen} toggle={toggleAlarmDropdown}>
                 <DropdownToggle nav className={`${s.navItem} text-white`}>
                   <BellIcon className={s.headerIcon} />
-                  {alarmList && alarmList.length > 0 ? <div className={s.countRed}></div> : null}
+                  {alarms && alarms.length > 0 ? <div className={s.countRed}></div> : null}
                 </DropdownToggle>
                 <DropdownMenu right className={`${s.dropdownMenu} ${s.support}`}>
-                  {alarmList &&
-                    alarmList.map((alarm, index) => {
+                  {alarms &&
+                    alarms.map((alarm, index) => {
                       return (
                         <DropdownItem key={alarm.id}>
                           <AiOutlineNotification size={20} className={s.headerIcon} />

@@ -19,7 +19,6 @@ function alarmReducer(alarms = initialState, action) {
 
     // 알람 사용자별 조회
     case RETRIEVE_ALARMS_BY_USER:
-      console.log(payload);
       return payload;
 
     // 알람 수정

@@ -121,7 +121,6 @@ exports.findAllByUser = (req, res) => {
     // limit: 10,
   })
     .then((data) => {
-      console.log(data);
       res.send(data);
     })
     .catch((err) => {
