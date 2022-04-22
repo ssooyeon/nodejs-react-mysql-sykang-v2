@@ -67,9 +67,7 @@ function Header(props) {
         .then((res) => {
           setTaskList(res.data);
         })
-        .catch((e) => {
-          console.log(e);
-        });
+        .catch((e) => console.log(e));
       // alarm list
       AlarmService.getAllByUser(currentUser.id)
         .then((res) => {

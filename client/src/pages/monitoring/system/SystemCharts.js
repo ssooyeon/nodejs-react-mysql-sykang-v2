@@ -53,9 +53,7 @@ export default function SystemCharts() {
           setCpuStatistic(removeFirstItem);
         }
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   };
 
   // 메모리 통계 5초마다 추가
@@ -69,9 +67,7 @@ export default function SystemCharts() {
           setMemoryStatistic(removeFirstItem);
         }
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   };
 
   // 디스크 통계 5초마다 추가
@@ -85,9 +81,7 @@ export default function SystemCharts() {
           setDiskStatistic(removeFirstItem);
         }
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   };
 
   // 로그 통계

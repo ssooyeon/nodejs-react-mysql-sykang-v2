@@ -47,9 +47,7 @@ export default function AddTaskModal({ open, handleCloseClick, column }) {
         }
         setTaskForm({ ...taskForm, ordering: lastTaskNum, folderId: column.id });
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((e) => console.log(e));
   }, [column]);
 
   // 부모에게 완료사항 전달
@@ -110,9 +108,7 @@ export default function AddTaskModal({ open, handleCloseClick, column }) {
             handleClose();
           }, 500);
         })
-        .catch((e) => {
-          console.log(e);
-        });
+        .catch((e) => console.log(e));
     }
   };
 

@@ -202,9 +202,7 @@ export default function EditScheduleModal({ open, handleCloseClick, schedule }) 
             handleClose();
           }, 500);
         })
-        .catch((e) => {
-          console.log(e);
-        });
+        .catch((e) => console.log(e));
     }
   };
 
@@ -214,9 +212,7 @@ export default function EditScheduleModal({ open, handleCloseClick, schedule }) 
       .then(() => {
         handleClose();
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   };
 
   return (

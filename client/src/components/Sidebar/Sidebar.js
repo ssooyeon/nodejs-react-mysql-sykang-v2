@@ -39,9 +39,7 @@ export default function Sidebar() {
         .then((res) => {
           setTodaySchedules(res.data);
         })
-        .catch((e) => {
-          console.log(e);
-        });
+        .catch((e) => console.log(e));
     }
   };
 
@@ -57,9 +55,7 @@ export default function Sidebar() {
           console.log("temp is null");
         }
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   };
 
   // 현재 습도 가져오기
@@ -72,9 +68,7 @@ export default function Sidebar() {
           console.log("humidity is null");
         }
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   };
 
   return (

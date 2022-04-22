@@ -56,9 +56,7 @@ export default function EditFolderModal({ open, handleCloseClick, folder }) {
           handleClose();
         }, 500);
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   };
 
   return (

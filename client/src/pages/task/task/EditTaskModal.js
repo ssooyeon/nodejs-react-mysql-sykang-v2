@@ -127,9 +127,7 @@ export default function EditTaskModal({ open, handleCloseClick, task }) {
             handleClose();
           }, 500);
         })
-        .catch((e) => {
-          console.log(e);
-        });
+        .catch((e) => console.log(e));
     }
   };
 

@@ -134,9 +134,8 @@ export default function Profile(props) {
           .then((res) => {
             axios.defaults.headers.common["Authorization"] = `Bearer ${res.token}`;
           })
-          .catch((err) => {
-            console.log(err);
-          });
+          .catch((e) => console.log(e));
+
         setIsShowSuccessAlert(true);
         setIsShowErrAlert(false);
         setSuccessMessage("User update successfully.");
@@ -145,9 +144,7 @@ export default function Profile(props) {
           props.history.push("/");
         }, 500);
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   };
 
   return (

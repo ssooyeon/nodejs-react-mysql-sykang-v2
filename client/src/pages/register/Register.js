@@ -60,9 +60,7 @@ export default function Register(props) {
             setCheckDoneAccount(account);
           }
         })
-        .catch((e) => {
-          console.log(e);
-        });
+        .catch((e) => console.log(e));
     }
   };
 
@@ -101,9 +99,7 @@ export default function Register(props) {
               props.history.push("/login");
             }, 500);
           })
-          .catch((e) => {
-            console.log(e);
-          });
+          .catch((e) => console.log(e));
       }
     } else {
       // 중복확인을 완료한 후 다른 계정명을 다시 작성했을 때, 중복확인을 재요청

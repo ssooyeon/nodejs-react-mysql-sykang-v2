@@ -203,9 +203,7 @@ export default function Schedule(props) {
           setEditSchedule(res.data);
           setEditScheduleModalOpen(true);
         })
-        .catch((e) => {
-          console.log(e);
-        });
+        .catch((e) => console.log(e));
     }
   };
 
@@ -292,9 +290,7 @@ export default function Schedule(props) {
         // todo: create alarm: update schedule in my group (6) - resize
         searchSchedule(selectedUserIds, selectedGroup);
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   };
 
   // 스케줄 삭제 후 콜백 함수

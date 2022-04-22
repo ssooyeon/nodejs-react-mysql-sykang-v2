@@ -47,9 +47,7 @@ export default function BoardDetail(props) {
       .then(() => {
         props.history.push("/app/board");
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   };
 
   return (

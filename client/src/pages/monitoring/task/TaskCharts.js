@@ -63,9 +63,7 @@ export default function TaskCharts() {
       .then((res) => {
         setTaskDueDateTop5(res.data);
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   };
 
   // 테스크 duedate 수 pie chart에서 마우스 hover
@@ -157,9 +155,7 @@ export default function TaskCharts() {
       .then((res) => {
         setTaskUserTop5(res.data);
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   };
 
   // 테스크 duedate 수 pie chart에서 마우스 hover

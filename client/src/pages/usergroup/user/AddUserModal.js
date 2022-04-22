@@ -33,9 +33,7 @@ export default function AddUserModal({ open, handleCloseClick }) {
       .then((res) => {
         setGroups(res.data);
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   }, []);
 
   // 닫기 버튼 클릭
@@ -92,9 +90,7 @@ export default function AddUserModal({ open, handleCloseClick }) {
             setCheckDoneAccount(account);
           }
         })
-        .catch((e) => {
-          console.log(e);
-        });
+        .catch((e) => console.log(e));
     }
   };
 
@@ -144,9 +140,7 @@ export default function AddUserModal({ open, handleCloseClick }) {
               handleDone();
             }, 500);
           })
-          .catch((e) => {
-            console.log(e);
-          });
+          .catch((e) => console.log(e));
       }
     } else {
       // 중복확인을 완료한 후 다른 계정명을 다시 작성했을 때, 중복확인을 재요청

@@ -186,9 +186,7 @@ export default function AddScheduleModal({ open, handleCloseClick, date }) {
             handleDone();
           }, 500);
         })
-        .catch((e) => {
-          console.log(e);
-        });
+        .catch((e) => console.log(e));
     }
   };
 

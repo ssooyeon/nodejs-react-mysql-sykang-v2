@@ -31,9 +31,7 @@ export default function MemberModal({ open, handleCloseClick, userFolder }) {
         let currentUserIds = userFolder.users && userFolder.users.map((obj) => obj.id);
         setSelectionModel(currentUserIds);
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   }, [userFolder]);
 
   // 부모에게 완료사항 전달
@@ -81,9 +79,7 @@ export default function MemberModal({ open, handleCloseClick, userFolder }) {
             setSelectionModel([]);
           }, 500);
         })
-        .catch((e) => {
-          console.log(e);
-        });
+        .catch((e) => console.log(e));
     }
   };
 

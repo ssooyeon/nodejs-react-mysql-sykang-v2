@@ -52,9 +52,7 @@ export default function Login(props) {
           props.history.push("/");
         }
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   };
 
   // 소셜 로그인 수행 (구글)
@@ -154,9 +152,7 @@ export default function Login(props) {
                   onResolve={(provider, data) => {
                     doSocialLogin(provider);
                   }}
-                  onReject={(err) => {
-                    console.log(err);
-                  }}
+                  onReject={(err) => console.log(err)}
                 >
                   <Button color="primary" className="social-button" style={{ width: "100%" }}>
                     <i className="social-icon social-google" />

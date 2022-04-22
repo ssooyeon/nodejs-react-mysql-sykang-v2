@@ -81,9 +81,7 @@ export default function Task() {
           setCurrentFolder(newFolderId);
           getFolder(newFolderId);
         })
-        .catch((e) => {
-          console.log(e);
-        });
+        .catch((e) => console.log(e));
     }
   }, [newFolderId]);
 
@@ -140,9 +138,7 @@ export default function Task() {
             // ordering 업데이트가 모두 끝나면 전체 task를 다시 불러오기
             getFolder(currentFolder);
           })
-          .catch((e) => {
-            console.log(e);
-          });
+          .catch((e) => console.log(e));
       } else {
         // 다른 column의 첫 번째가 아닌 다른 위치로 옮기면 해당 column의 tasks들의 ordering을 전부 업데이트
         destItems.forEach((task, i) => {
@@ -157,9 +153,7 @@ export default function Task() {
                 getFolder(currentFolder);
               }
             })
-            .catch((e) => {
-              console.log(e);
-            });
+            .catch((e) => console.log(e));
         });
       }
     } else {
@@ -206,9 +200,7 @@ export default function Task() {
           }
         }
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   };
 
   // 선택된 셀렉트 박스의 폴더에 대한 컬럼 목록(테스크 포함) 조회
@@ -231,9 +223,7 @@ export default function Task() {
         });
         setColumns(resultColumns);
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   };
 
   // 테스크 등록 버튼 클릭 및 AddTaskForm.js 에서 닫기 버튼 클릭
@@ -276,9 +266,7 @@ export default function Task() {
       .then((createdFolder) => {
         setNewFolderId(createdFolder.id);
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   };
 
   // 최상위 폴더의 공유 유저 설정
@@ -288,9 +276,7 @@ export default function Task() {
         setEditUserFolder(res);
         setEditSharedUserModalOpen(true);
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   };
 
   // 최상위 폴더 수정
@@ -300,9 +286,7 @@ export default function Task() {
         setEditFolderForm(res);
         handleEditFolderModalClick(true);
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   };
 
   // 최상위 폴더 삭제 버튼 클릭
@@ -342,13 +326,9 @@ export default function Task() {
               getFolder(res[0].id);
             }
           })
-          .catch((e) => {
-            console.log(e);
-          });
+          .catch((e) => console.log(e));
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   };
 
   // 컬럼 추가
@@ -359,9 +339,7 @@ export default function Task() {
       .then(() => {
         getFolder(currentFolder);
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   };
 
   // 컬럼 이름 수정 버튼 클릭
@@ -397,9 +375,7 @@ export default function Task() {
       .then(() => {
         getFolder(currentFolder);
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   };
 
   // 컬럼 ordering 변경 (back)
@@ -419,13 +395,9 @@ export default function Task() {
             .then(() => {
               getFolder(currentFolder);
             })
-            .catch((e) => {
-              console.log(e);
-            });
+            .catch((e) => console.log(e));
         })
-        .catch((e) => {
-          console.log(e);
-        });
+        .catch((e) => console.log(e));
     }
   };
 
@@ -446,13 +418,9 @@ export default function Task() {
           .then(() => {
             getFolder(currentFolder);
           })
-          .catch((e) => {
-            console.log(e);
-          });
+          .catch((e) => console.log(e));
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   };
 
   // 테스크 추가 버튼 클릭
@@ -490,9 +458,7 @@ export default function Task() {
           .then(() => {
             getFolder(currentFolder);
           })
-          .catch((e) => {
-            console.log(e);
-          });
+          .catch((e) => console.log(e));
       }
     });
   };
@@ -505,9 +471,7 @@ export default function Task() {
       .then(() => {
         getFolder(currentFolder);
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   };
 
   return (

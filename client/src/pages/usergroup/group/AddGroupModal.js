@@ -70,9 +70,7 @@ export default function AddGroupModal({ open, handleCloseClick, handleResetInput
                 handleClose();
               }, 500);
             })
-            .catch((e) => {
-              console.log(e);
-            });
+            .catch((e) => console.log(e));
         }
       });
     }

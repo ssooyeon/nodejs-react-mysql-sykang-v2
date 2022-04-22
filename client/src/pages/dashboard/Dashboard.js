@@ -75,9 +75,7 @@ export default function Dashboard() {
         const cpu = res.data;
         setCpuPercent(parseInt(cpu));
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   };
 
   // memory usage
@@ -87,9 +85,7 @@ export default function Dashboard() {
         const mem = res.data;
         setMemoryPercent(parseInt(mem));
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   };
 
   // disk usage
@@ -99,9 +95,7 @@ export default function Dashboard() {
         const disk = res.data;
         setDiskPercent(parseInt(disk));
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   };
 
   // 모든 날씨 정보 조회
@@ -132,9 +126,7 @@ export default function Dashboard() {
           console.log("1st weather is null");
         }
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   };
 
   // 두번째 블록 날씨 정보 조회 (습도, 강수형태, 강수량)
@@ -158,9 +150,7 @@ export default function Dashboard() {
           console.log("2nd weather is null");
         }
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   };
 
   // 세번째 블록 날씨 정보 조회 (풍향, 풍속)
@@ -183,9 +173,7 @@ export default function Dashboard() {
           console.log("3rd weather is null");
         }
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   };
 
   // 로그 리스트 중 최신 10개 조회
@@ -196,9 +184,7 @@ export default function Dashboard() {
       .then((res) => {
         setLogList(res.data);
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   };
 
   // 로그 생성 날짜가 오늘 날짜인지 확인 (Just Today 문구를 위함)
@@ -217,9 +203,7 @@ export default function Dashboard() {
         .then((res) => {
           setLogList(res.data);
         })
-        .catch((e) => {
-          console.log(e);
-        });
+        .catch((e) => console.log(e));
     }
   };
 

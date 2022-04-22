@@ -50,9 +50,7 @@ export default function EditBoard(props) {
           setEditorState(data);
         }
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   };
 
   // 게시글 input 값 변경 시 currentBoard에 적용
@@ -100,9 +98,7 @@ export default function EditBoard(props) {
             props.history.push(`/app/board/detail/${props.match.params.id}`);
           }, 500);
         })
-        .catch((e) => {
-          console.log(e);
-        });
+        .catch((e) => console.log(e));
     }
   };
 

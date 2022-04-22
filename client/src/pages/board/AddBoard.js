@@ -75,9 +75,7 @@ export default function AddBoard(props) {
             props.history.push("/app/board");
           }, 500);
         })
-        .catch((e) => {
-          console.log(e);
-        });
+        .catch((e) => console.log(e));
     }
   };
 

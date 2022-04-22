@@ -82,9 +82,7 @@ export default function Formatter() {
         }, 2000);
         NotificationManager.success("Copied", null, 2000);
       },
-      (e) => {
-        console.log(e);
-      }
+      (e) => console.log(e)
     );
   };
 
@@ -216,9 +214,7 @@ export default function Formatter() {
                       <JSONPretty
                         data={output}
                         theme={JSONPrettyMon}
-                        onJSONPrettyError={(e) => {
-                          console.log(e);
-                        }}
+                        onJSONPrettyError={(e) => console.log(e)}
                         space="2"
                         style={{ whiteSpace: "pre" }}
                       ></JSONPretty>

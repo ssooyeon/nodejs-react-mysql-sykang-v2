@@ -69,9 +69,7 @@ export default function UserCharts() {
       .then((res) => {
         setUserCreationTop5(res.data);
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   };
 
   // 사용자 생성 수 pie chart에서 마우스 hover
@@ -86,9 +84,7 @@ export default function UserCharts() {
       .then((res) => {
         setUserLoginTop5(res.data);
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   };
 
   // 사용자 로그인 수 pie chart에서 마우스 hover
@@ -125,9 +121,7 @@ export default function UserCharts() {
       .then((res) => {
         setUserGroupTop5(res.data);
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   };
 
   // 그룹 사용자 수 pie chart에서 마우스 hover

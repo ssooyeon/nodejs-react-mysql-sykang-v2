@@ -55,9 +55,7 @@ export default function EditGroupModal({ open, handleCloseClick, group }) {
       .then((res) => {
         setUsers(res.data);
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   }, [group]);
 
   // 사용자 테이블 페이징
@@ -126,9 +124,7 @@ export default function EditGroupModal({ open, handleCloseClick, group }) {
             .then(() => {
               // todo: create alarm: update member in my group (4)
             })
-            .catch((e) => {
-              console.log(e);
-            });
+            .catch((e) => console.log(e));
         }
         setIsShowSuccessAlert(true);
         setIsShowErrAlert(false);
@@ -138,9 +134,7 @@ export default function EditGroupModal({ open, handleCloseClick, group }) {
           handleDone();
         }, 500);
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   };
 
   return (

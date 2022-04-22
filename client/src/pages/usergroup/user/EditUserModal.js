@@ -25,9 +25,7 @@ export default function EditUserModal({ open, handleCloseClick, user }) {
       .then((res) => {
         setGroups(res.data);
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   }, [user]);
 
   // 닫기 버튼 클릭
@@ -127,9 +125,7 @@ export default function EditUserModal({ open, handleCloseClick, user }) {
           handleDone();
         }, 500);
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .catch((e) => console.log(e));
   };
 
   return (
