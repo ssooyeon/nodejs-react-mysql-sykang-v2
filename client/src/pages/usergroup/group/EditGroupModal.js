@@ -21,6 +21,7 @@ import s from "./Group.module.scss";
 import { updateGroup, updateGroupMember } from "../../../actions/groups";
 import UserService from "../../../services/UserService";
 import GroupService from "../../../services/GroupService";
+import AlarmService from "../../../services/AlarmService";
 
 const pageSize = 5;
 
@@ -123,13 +124,29 @@ export default function EditGroupModal({ open, handleCloseClick, group }) {
           dispatch(updateGroupMember(data.id, data))
             .then(() => {
               // todo: create alarm: update member in my group (4)
+              // 그룹 멤버 수정 시 그룹 멤버들에게 알람
+              const id = { userId: null, groupId: groupForm.id };
+              const alarm = {
+                message: `Your group member list has been modified.`,
+                status: "INFO",
+              };
+              AlarmService.createWithGroupMembers({ id: id, alarm: alarm });
             })
             .catch((e) => console.log(e));
+        } else {
+          // todo: create alarm: update my group (3)
+          // 그룹 수정 시 그룹 멤버들에게 알람
+          const id = { userId: null, groupId: groupForm.id };
+          const alarm = {
+            message: `Your group has been modified.(name: ${groupForm.name})`,
+            status: "INFO",
+          };
+          AlarmService.createWithGroupMembers({ id: id, alarm: alarm });
         }
         setIsShowSuccessAlert(true);
         setIsShowErrAlert(false);
         setSuccessMessage("Group update with members successfully.");
-        // todo: create alarm: update my group (3)
+
         setTimeout(() => {
           handleDone();
         }, 500);
