@@ -208,9 +208,9 @@ function Header(props) {
                         <DropdownItem key={alarm.id}>
                           <AiOutlineNotification size={20} className={s.headerIcon} />
                           <div className={s.details}>{alarm.message > 30 ? alarm.message.substr(0, 30) + "..." : alarm.message}</div>
-                          <Button color="" style={{ padding: "2px 0 0 5px", color: "#e9e3e3" }} onClick={() => {}}>
+                          {/* <Button style={{ padding: "2px 0 0 5px", color: "#e9e3e3" }} onClick={() => {}}>
                             <i className="fa fa-remove"></i>
-                          </Button>
+                          </Button> */}
                         </DropdownItem>
                       );
                     })}
