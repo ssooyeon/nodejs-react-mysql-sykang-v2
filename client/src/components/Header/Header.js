@@ -53,7 +53,9 @@ function Header(props) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(retrieveAlarmByUser(currentUser.id));
+    if (currentUser) {
+      dispatch(retrieveAlarmByUser(currentUser.id));
+    }
   }, [dispatch, currentUser]);
 
   useEffect(() => {
