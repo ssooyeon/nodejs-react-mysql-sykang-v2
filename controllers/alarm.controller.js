@@ -43,12 +43,13 @@ exports.createWithGroupMembers = (req, res) => {
                 alarms.push({ ...req.body.alarm, notify: false, userId: id });
               });
               Alarm.bulkCreate(alarms);
+              res.send({ message: "Alarms created done." });
             })
             .catch((err) => {
               console.log(err);
             });
         } else {
-          console.log("The group to which the user belongs does not exist.");
+          res.send({ message: "The group to which the user belongs does not exist." });
         }
       })
       .catch((err) => {
@@ -61,15 +62,13 @@ exports.createWithGroupMembers = (req, res) => {
     })
       .then((group) => {
         // 멤버 리스트 뽑아서 알람 추가
+        let alarms = [];
         const userList = group.users.map((user) => user.id);
         userList.map((id) => {
-          const alarm = { ...req.body.alarm, notify: false, userId: id };
-          Alarm.create(alarm)
-            .then(() => {})
-            .catch((err) => {
-              console.log(err);
-            });
+          alarms.push({ ...req.body.alarm, notify: false, userId: id });
         });
+        Alarm.bulkCreate(alarms);
+        res.send({ message: "Alarms created done." });
       })
       .catch((err) => {
         res.status(500).send({ message: err.message || "Some error occurred retrieving group." });

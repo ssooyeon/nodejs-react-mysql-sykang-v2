@@ -195,7 +195,7 @@ function Header(props) {
                   {alarms &&
                     alarms.map((alarm, index) => {
                       return (
-                        <DropdownItem key={alarm.id}>
+                        <DropdownItem key={index}>
                           <AiOutlineNotification size={20} className={s.headerIcon} />
                           <div className={s.details}>{alarm.message > 30 ? alarm.message.substr(0, 30) + "..." : alarm.message}</div>
                           {/* <Button style={{ padding: "2px 0 0 5px", color: "#e9e3e3" }} onClick={() => {}}>
