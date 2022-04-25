@@ -46,7 +46,6 @@ function Header(props) {
   const [searchFocused, setSearchFocused] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [taskList, setTaskList] = useState([]); // task list
-  const [alarmList, setAlarmList] = useState([]); // task list
 
   const { user: currentUser } = useSelector((state) => state.auth);
   const alarms = useSelector((state) => state.alarms || []);

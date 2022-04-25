@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Alert,
   Button,
@@ -18,6 +18,7 @@ import PaginationComponent from "react-reactstrap-pagination";
 
 import s from "./Group.module.scss";
 
+import { retrieveAlarmByUser } from "../../../actions/alarms";
 import { updateGroup, updateGroupMember } from "../../../actions/groups";
 import UserService from "../../../services/UserService";
 import GroupService from "../../../services/GroupService";
@@ -31,6 +32,8 @@ export default function EditGroupModal({ open, handleCloseClick, group }) {
     description: "",
     users: [],
   };
+
+  const { user: currentUser } = useSelector((state) => state.auth);
 
   const [users, setUsers] = useState([]);
   const [groupForm, setGroupForm] = useState(initialGroupState);
@@ -149,6 +152,8 @@ export default function EditGroupModal({ open, handleCloseClick, group }) {
 
         setTimeout(() => {
           handleDone();
+          // 로그인한 유저의 알람 리스트 재조회
+          dispatch(retrieveAlarmByUser(currentUser.id));
         }, 500);
       })
       .catch((e) => console.log(e));

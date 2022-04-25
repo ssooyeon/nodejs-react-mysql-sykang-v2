@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Alert, Button, FormGroup, InputGroup, InputGroupAddon, InputGroupText, Input, Label, Modal, ModalBody, ModalFooter } from "reactstrap";
 
+import { retrieveAlarmByUser } from "../../../actions/alarms";
 import { updateUser } from "../../../actions/users";
 import GroupService from "../../../services/GroupService";
 import AlarmService from "../../../services/AlarmService";
 
 export default function EditUserModal({ open, handleCloseClick, user }) {
+  const { user: currentUser } = useSelector((state) => state.auth);
+
   const [groups, setGroups] = useState([]); // select option에 표시 될 group list (fix)
   const [userForm, setUserForm] = useState([]);
   const [isPasswordChange, setIsPasswordChange] = useState(false); // 비밀번호를 변경할지에 대한 여부
@@ -123,6 +126,8 @@ export default function EditUserModal({ open, handleCloseClick, user }) {
 
         setTimeout(() => {
           handleDone();
+          // 로그인한 유저의 알람 리스트 재조회
+          dispatch(retrieveAlarmByUser(currentUser.id));
         }, 500);
       })
       .catch((e) => console.log(e));

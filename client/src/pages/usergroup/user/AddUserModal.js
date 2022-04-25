@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Alert, Button, FormGroup, InputGroup, InputGroupAddon, InputGroupText, Input, Label, Modal, ModalBody, ModalFooter } from "reactstrap";
 
+import { retrieveAlarmByUser } from "../../../actions/alarms";
 import { createUser } from "../../../actions/users";
 import UserService from "../../../services/UserService";
 import GroupService from "../../../services/GroupService";
@@ -15,6 +16,8 @@ export default function AddUserModal({ open, handleCloseClick }) {
     password: "",
     passwordCheck: "",
   };
+
+  const { user: currentUser } = useSelector((state) => state.auth);
 
   const [groups, setGroups] = useState([]); // select option에 표시 될 group list (fix)
   const [userForm, setUserForm] = useState(initialUserState);
@@ -138,6 +141,8 @@ export default function AddUserModal({ open, handleCloseClick }) {
 
             setTimeout(() => {
               handleDone();
+              // 로그인한 유저의 알람 리스트 재조회
+              dispatch(retrieveAlarmByUser(currentUser.id));
             }, 500);
           })
           .catch((e) => console.log(e));
