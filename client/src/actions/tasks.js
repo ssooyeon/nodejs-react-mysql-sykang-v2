@@ -1,4 +1,4 @@
-import { CREATE_TASK, RETRIEVE_TASKS, RETRIEVE_TASK, UPDATE_TASK, DELETE_TASK, DELETE_ALL_TASKS } from "./types";
+import { CREATE_TASK, RETRIEVE_TASKS, RETRIEVE_TASK, RETRIEVE_TASKS_BY_USER, UPDATE_TASK, DELETE_TASK, DELETE_ALL_TASKS } from "./types";
 
 import TaskService from "../services/TaskService";
 
@@ -29,6 +29,23 @@ export const retrieveTasks = (params) => async (dispatch) => {
     const res = await TaskService.getAll(params);
     dispatch({
       type: RETRIEVE_TASKS,
+      payload: res.data,
+    });
+    return Promise.resolve(res.data);
+  } catch (err) {
+    console.log(err);
+    return Promise.reject(err);
+  }
+};
+
+/**
+ * 테스크 사용자 별 조회
+ */
+export const retrieveTaskByUser = (userId) => async (dispatch) => {
+  try {
+    const res = await TaskService.getAllByUser(userId);
+    dispatch({
+      type: RETRIEVE_TASKS_BY_USER,
       payload: res.data,
     });
     return Promise.resolve(res.data);

@@ -4,7 +4,7 @@ import users from "./users";
 import groups from "./groups";
 import auth from "./auth";
 import folder from "./folders";
-import task from "./tasks";
+import tasks from "./tasks";
 import schedules from "./schedules";
 import alarms from "./alarms";
 
@@ -17,7 +17,7 @@ export default combineReducers({
   groups,
   auth,
   folder,
-  task,
+  tasks,
   schedules,
   alarms,
 

@@ -11,11 +11,15 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import "./Editor.css";
 import s from "./TaskForm.module.scss";
 
+import { retrieveTaskByUser } from "../../../actions/tasks";
+import { retrieveAlarmByUser } from "../../../actions/alarms";
 import { retrieveFolder } from "../../../actions/folders";
 import { createTask } from "../../../actions/tasks";
+import AlarmService from "../../../services/AlarmService";
 
 export default function AddTaskModal({ open, handleCloseClick, column }) {
   const { user: currentUser } = useSelector((state) => state.auth);
+
   const initialTaskstate = {
     title: "",
     description: "",
@@ -97,15 +101,26 @@ export default function AddTaskModal({ open, handleCloseClick, column }) {
       const rawContentState = convertToRaw(editorState.getCurrentContent());
       const markup = draftToHtml(rawContentState);
       const data = { ...taskForm, description: markup };
-      console.log(data);
+
       dispatch(createTask(data))
         .then(() => {
           setIsShowSuccessAlert(true);
           setIsShowErrAlert(false);
           setSuccessMessage("New task added successfully.");
-          // todo: create alarm: create task in my group (7)
+
+          // 테스크 등록 시 그룹 멤버들에게 알람
+          const id = { userId: taskForm.createrId, groupId: null };
+          const alarm = {
+            message: `Your group's task(title: ${taskForm.title}) has been added.`,
+            status: "INFO",
+          };
+          AlarmService.createWithGroupMembers({ id: id, alarm: alarm });
+
           setTimeout(() => {
             handleClose();
+            // 로그인한 유저의 테스크 및 알람 리스트 재조회 (header)
+            dispatch(retrieveTaskByUser(currentUser.id));
+            dispatch(retrieveAlarmByUser(currentUser.id));
           }, 500);
         })
         .catch((e) => console.log(e));

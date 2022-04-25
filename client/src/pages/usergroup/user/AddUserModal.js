@@ -128,7 +128,6 @@ export default function AddUserModal({ open, handleCloseClick }) {
             setIsShowErrAlert(false);
             setSuccessMessage("New user added successfully.");
 
-            // todo: create alarm: create user in my group (1)
             // 사용자 생성 시 그룹이 있다면 그룹 멤버들에게 알람
             if (userForm.groupId !== null) {
               const id = { userId: null, groupId: userForm.groupId };

@@ -115,7 +115,6 @@ export default function EditUserModal({ open, handleCloseClick, user }) {
         setIsShowErrAlert(false);
         setSuccessMessage("User update successfully.");
 
-        // todo: create alarm: update user in my group (2)
         // 사용자 수정 시 그룹이 있다면 그룹 멤버들에게 알람
         const id = { userId: user.id, groupId: null };
         const alarm = {

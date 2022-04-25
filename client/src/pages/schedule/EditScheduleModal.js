@@ -201,7 +201,6 @@ export default function EditScheduleModal({ open, handleCloseClick, schedule }) 
           setIsShowSuccessAlert(true);
           setIsShowErrAlert(false);
           setSuccessMessage("Schedule updated successfully.");
-          // todo: create alarm: update schedule in my group (6)
           // 스케줄 수정 시 그룹 멤버들에게 알람
           const id = { userId: data.createrId, groupId: null };
           const alarm = {

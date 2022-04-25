@@ -126,7 +126,6 @@ export default function EditGroupModal({ open, handleCloseClick, group }) {
           let data = { ...groupForm, users: selectionRow };
           dispatch(updateGroupMember(data.id, data))
             .then(() => {
-              // todo: create alarm: update member in my group (4)
               // 그룹 멤버 수정 시 그룹 멤버들에게 알람
               const id = { userId: null, groupId: groupForm.id };
               const alarm = {
@@ -137,7 +136,6 @@ export default function EditGroupModal({ open, handleCloseClick, group }) {
             })
             .catch((e) => console.log(e));
         } else {
-          // todo: create alarm: update my group (3)
           // 그룹 수정 시 그룹 멤버들에게 알람
           const id = { userId: null, groupId: groupForm.id };
           const alarm = {

@@ -183,7 +183,6 @@ export default function AddScheduleModal({ open, handleCloseClick, date }) {
           setIsShowSuccessAlert(true);
           setIsShowErrAlert(false);
           setSuccessMessage("New schedule added successfully.");
-          // todo: create alarm: create schedule in my group (5)
           // 스케줄 등록 시 그룹 멤버들에게 알람
           const id = { userId: data.createrId, groupId: null };
           const alarm = {

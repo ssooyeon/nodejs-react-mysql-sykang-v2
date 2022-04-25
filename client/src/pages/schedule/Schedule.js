@@ -292,7 +292,6 @@ export default function Schedule(props) {
     dispatch(updateSchedule(data.id, data))
       .then(() => {
         searchSchedule(selectedUserIds, selectedGroup);
-        // todo: create alarm: update schedule in my group (6) - resize
         // 스케줄 드래그/리사이즈 시 그룹 멤버들에게 알람
         const id = { userId: e.event._def.extendedProps.creater.id, groupId: null };
         const alarm = {

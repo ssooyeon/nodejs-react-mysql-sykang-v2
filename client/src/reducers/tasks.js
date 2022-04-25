@@ -1,4 +1,4 @@
-import { CREATE_TASK, RETRIEVE_TASKS, RETRIEVE_TASK, UPDATE_TASK, DELETE_TASK, DELETE_ALL_TASKS } from "../actions/types";
+import { CREATE_TASK, RETRIEVE_TASKS, RETRIEVE_TASK, RETRIEVE_TASKS_BY_USER, UPDATE_TASK, DELETE_TASK, DELETE_ALL_TASKS } from "../actions/types";
 
 const initialState = [];
 
@@ -13,8 +13,13 @@ function taskReducer(tasks = initialState, action) {
     // 테스크 전체 조회
     case RETRIEVE_TASKS:
       return payload;
+
     // 테스크 조회
     case RETRIEVE_TASK:
+      return payload;
+
+    // 테스크 사용자별 조회
+    case RETRIEVE_TASKS_BY_USER:
       return payload;
 
     // 테스크 수정

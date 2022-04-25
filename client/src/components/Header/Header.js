@@ -32,9 +32,8 @@ import s from "./Header.module.scss";
 import "animate.css";
 
 import { logout } from "../../actions/auth";
+import { retrieveTaskByUser } from "../../actions/tasks";
 import { retrieveAlarmByUser } from "../../actions/alarms";
-import TaskService from "../../services/TaskService";
-import AlarmService from "../../services/AlarmService";
 
 const searchOpen = false;
 const labels = ["warning", "success", "info", "danger"];
@@ -45,28 +44,18 @@ function Header(props) {
   const [alarmListOpen, setAlarmListOpen] = useState(false); // alarm list window open
   const [searchFocused, setSearchFocused] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
-  const [taskList, setTaskList] = useState([]); // task list
 
   const { user: currentUser } = useSelector((state) => state.auth);
+  const tasks = useSelector((state) => state.tasks || []);
   const alarms = useSelector((state) => state.alarms || []);
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (currentUser) {
+      dispatch(retrieveTaskByUser(currentUser.id));
       dispatch(retrieveAlarmByUser(currentUser.id));
     }
   }, [dispatch, currentUser]);
-
-  useEffect(() => {
-    if (currentUser) {
-      // task list
-      TaskService.getAllByUser(currentUser.id)
-        .then((res) => {
-          setTaskList(res.data);
-        })
-        .catch((e) => console.log(e));
-    }
-  }, []);
 
   const toggleNotifications = () => {
     setNotificationsOpen(!notificationsOpen);
@@ -167,11 +156,11 @@ function Header(props) {
               <Dropdown className="d-none d-sm-block" nav isOpen={taskListOpen} toggle={toggleTaskDropdown}>
                 <DropdownToggle nav className={`${s.navItem} text-white`}>
                   <FaTasks size={20} className={s.headerIcon} />
-                  {taskList.length > 0 ? <div className={s.count}></div> : null}
+                  {tasks && tasks.length > 0 ? <div className={s.count}></div> : null}
                 </DropdownToggle>
                 <DropdownMenu right className={`${s.dropdownMenu} ${s.support}`}>
-                  {taskList &&
-                    taskList.map((task, index) => {
+                  {tasks &&
+                    tasks.map((task, index) => {
                       return (
                         <DropdownItem key={task.id}>
                           <Badge color={labels[Math.floor(Math.random() * 4)]}>
@@ -188,7 +177,7 @@ function Header(props) {
                       );
                     })}
 
-                  {taskList.length > 0 ? (
+                  {tasks && tasks.length > 0 ? (
                     <DropdownItem>
                       <a href="/#/app/task" className="text-white">
                         More <ArrowIcon className={s.headerIcon} maskName="bellArrow" />

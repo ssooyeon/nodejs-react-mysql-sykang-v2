@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Alert, Button, FormGroup, InputGroup, Input, Label, Modal, ModalBody, ModalFooter } from "reactstrap";
 import { CirclePicker } from "react-color";
 import DateTimePicker from "react-datetime-picker";
@@ -13,9 +13,14 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import "./Editor.css";
 import s from "./TaskForm.module.scss";
 
+import { retrieveTaskByUser } from "../../../actions/tasks";
+import { retrieveAlarmByUser } from "../../../actions/alarms";
 import { updateTask } from "../../../actions/tasks";
+import AlarmService from "../../../services/AlarmService";
 
 export default function EditTaskModal({ open, handleCloseClick, task }) {
+  const { user: currentUser } = useSelector((state) => state.auth);
+
   const [editorState, setEditorState] = useState(EditorState.createEmpty()); // description editor
   const [taskForm, setTaskForm] = useState([]);
 
@@ -122,9 +127,20 @@ export default function EditTaskModal({ open, handleCloseClick, task }) {
           setIsShowSuccessAlert(true);
           setIsShowErrAlert(false);
           setSuccessMessage("Task updated successfully.");
-          // todo: create alarm: update task in my group (8)
+
+          // 테스크 수정 시 그룹 멤버들에게 알람
+          const id = { userId: taskForm.createrId, groupId: null };
+          const alarm = {
+            message: `Your group's task(title: ${taskForm.title}) has been modified.`,
+            status: "INFO",
+          };
+          AlarmService.createWithGroupMembers({ id: id, alarm: alarm });
+
           setTimeout(() => {
             handleClose();
+            // 로그인한 유저의 테스크 및 알람 리스트 재조회 (header)
+            dispatch(retrieveTaskByUser(currentUser.id));
+            dispatch(retrieveAlarmByUser(currentUser.id));
           }, 500);
         })
         .catch((e) => console.log(e));

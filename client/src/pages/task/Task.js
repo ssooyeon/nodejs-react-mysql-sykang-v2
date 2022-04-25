@@ -19,6 +19,9 @@ import EditFolderModal from "./folder/EditFolderModal";
 import MemberModal from "./member/MemberModal";
 
 import useLocalStorage from "../../utils/useLocalStorage";
+
+import { retrieveTaskByUser } from "../../actions/tasks";
+import { retrieveAlarmByUser } from "../../actions/alarms";
 import {
   retrieveFolders,
   retrieveFolder,
@@ -29,6 +32,8 @@ import {
   deleteFolder,
 } from "../../actions/folders";
 import { updateTask, deleteTask } from "../../actions/tasks";
+
+import AlarmService from "../../services/AlarmService";
 
 const themeColorList = ["#5B475C", "#122833", "#201233", "#2D3040", "#735A37", "#7C728C", "#15111D"];
 const today = new Date().toISOString().slice(0, 10);
@@ -134,9 +139,9 @@ export default function Task() {
         }
         dispatch(updateTask(data.id, data))
           .then(() => {
-            // todo: create alarm: update task in my group (8) - drag
             // ordering 업데이트가 모두 끝나면 전체 task를 다시 불러오기
             getFolder(currentFolder);
+            addAlarmAndRefresh(data);
           })
           .catch((e) => console.log(e));
       } else {
@@ -152,6 +157,7 @@ export default function Task() {
               if (mapLength === destLength) {
                 getFolder(currentFolder);
               }
+              addAlarmAndRefresh(data);
             })
             .catch((e) => console.log(e));
         });
@@ -180,6 +186,22 @@ export default function Task() {
         dispatch(updateTask(data.id, data));
       });
     }
+  };
+
+  // 테스크를 다른 폴더로 드래그 시 그룹 멤버들에게 알람
+  const addAlarmAndRefresh = (data) => {
+    const id = { userId: data.createrId, groupId: null };
+    const alarm = {
+      message: `Your group's task(title: ${data.title}) has been moved in another column.`,
+      status: "INFO",
+    };
+    AlarmService.createWithGroupMembers({ id: id, alarm: alarm });
+
+    setTimeout(() => {
+      // 로그인한 유저의 테스크 및 알람 리스트 재조회 (header)
+      dispatch(retrieveTaskByUser(currentUser.id));
+      dispatch(retrieveAlarmByUser(currentUser.id));
+    }, 500);
   };
 
   // parent가 null인 폴더 조회 (셀렉트박스에 표출)
@@ -470,6 +492,11 @@ export default function Task() {
     dispatch(updateTask(data.id, data))
       .then(() => {
         getFolder(currentFolder);
+
+        setTimeout(() => {
+          // 로그인한 유저의 테스크 리스트 재조회 (header)
+          dispatch(retrieveTaskByUser(currentUser.id));
+        }, 500);
       })
       .catch((e) => console.log(e));
   };
