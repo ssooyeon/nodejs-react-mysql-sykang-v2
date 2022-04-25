@@ -8,7 +8,9 @@ import DateTimePicker from "react-datetime-picker";
 
 import s from "./Schedule.module.scss";
 
+import { retrieveAlarmByUser } from "../../actions/alarms";
 import { createSchedule } from "../../actions/schedules";
+import AlarmService from "../../services/AlarmService";
 
 const colorList = [
   "#456C86",
@@ -182,8 +184,18 @@ export default function AddScheduleModal({ open, handleCloseClick, date }) {
           setIsShowErrAlert(false);
           setSuccessMessage("New schedule added successfully.");
           // todo: create alarm: create schedule in my group (5)
+          // 스케줄 등록 시 그룹 멤버들에게 알람
+          const id = { userId: data.createrId, groupId: null };
+          const alarm = {
+            message: `A new schedule(title: ${data.title}) has been added to your group.`,
+            status: "INFO",
+          };
+          AlarmService.createWithGroupMembers({ id: id, alarm: alarm });
+
           setTimeout(() => {
             handleDone();
+            // 로그인한 유저의 알람 리스트 재조회 (header)
+            dispatch(retrieveAlarmByUser(currentUser.id));
           }, 500);
         })
         .catch((e) => console.log(e));

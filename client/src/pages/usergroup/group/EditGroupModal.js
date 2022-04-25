@@ -152,7 +152,7 @@ export default function EditGroupModal({ open, handleCloseClick, group }) {
 
         setTimeout(() => {
           handleDone();
-          // 로그인한 유저의 알람 리스트 재조회
+          // 로그인한 유저의 알람 리스트 재조회 (header)
           dispatch(retrieveAlarmByUser(currentUser.id));
         }, 500);
       })

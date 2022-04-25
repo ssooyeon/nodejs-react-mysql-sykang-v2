@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Alert, Button, FormGroup, InputGroup, Input, Label, Modal, ModalBody, ModalFooter } from "reactstrap";
 import moment from "moment";
 import { CirclePicker } from "react-color";
@@ -8,7 +8,9 @@ import DateTimePicker from "react-datetime-picker";
 
 import s from "./Schedule.module.scss";
 
+import { retrieveAlarmByUser } from "../../actions/alarms";
 import { updateSchedule, deleteSchedule } from "../../actions/schedules";
+import AlarmService from "../../services/AlarmService";
 
 const colorList = [
   "#456C86",
@@ -42,6 +44,8 @@ export default function EditScheduleModal({ open, handleCloseClick, schedule }) 
     duration: null,
     createrId: "",
   };
+
+  const { user: currentUser } = useSelector((state) => state.auth);
 
   const [scheduleForm, setScheduleForm] = useState(initialScheduleState);
   const [isRepeat, setIsRepeat] = useState(false); // 선택한 스케줄이 반복 일정인지 아닌지의 여부 (체크박스)
@@ -198,8 +202,18 @@ export default function EditScheduleModal({ open, handleCloseClick, schedule }) 
           setIsShowErrAlert(false);
           setSuccessMessage("Schedule updated successfully.");
           // todo: create alarm: update schedule in my group (6)
+          // 스케줄 수정 시 그룹 멤버들에게 알람
+          const id = { userId: data.createrId, groupId: null };
+          const alarm = {
+            message: `Your group's schedule(title: ${data.title}) has been modified.`,
+            status: "INFO",
+          };
+          AlarmService.createWithGroupMembers({ id: id, alarm: alarm });
+
           setTimeout(() => {
             handleClose();
+            // 로그인한 유저의 알람 리스트 재조회 (header)
+            dispatch(retrieveAlarmByUser(currentUser.id));
           }, 500);
         })
         .catch((e) => console.log(e));
@@ -210,7 +224,21 @@ export default function EditScheduleModal({ open, handleCloseClick, schedule }) 
   const removeSchedule = () => {
     dispatch(deleteSchedule(scheduleForm.id))
       .then(() => {
+        console.log(scheduleForm);
+        // todo:
+        // 스케줄 삭제 시 그룹 멤버들에게 알람
+        const id = { userId: scheduleForm.createrId, groupId: null };
+        const alarm = {
+          message: `Your group's schedule(title: ${scheduleForm.title}) has been removed.`,
+          status: "INFO",
+        };
+        AlarmService.createWithGroupMembers({ id: id, alarm: alarm });
         handleClose();
+
+        setTimeout(() => {
+          // 로그인한 유저의 알람 리스트 재조회 (header)
+          dispatch(retrieveAlarmByUser(currentUser.id));
+        }, 500);
       })
       .catch((e) => console.log(e));
   };
