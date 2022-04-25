@@ -2,10 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Alert, Button, FormGroup, InputGroup, InputGroupAddon, InputGroupText, Input, Label, Modal, ModalBody, ModalFooter } from "reactstrap";
 
-import { retrieveAlarmByUser } from "../../../actions/alarms";
+import { createAlarmWithGroup, retrieveAlarmByUser } from "../../../actions/alarms";
 import { updateUser } from "../../../actions/users";
 import GroupService from "../../../services/GroupService";
-import AlarmService from "../../../services/AlarmService";
 
 export default function EditUserModal({ open, handleCloseClick, user }) {
   const { user: currentUser } = useSelector((state) => state.auth);
@@ -121,7 +120,7 @@ export default function EditUserModal({ open, handleCloseClick, user }) {
           message: `Your group member(account: ${user.account}) profile has been modified.`,
           status: "INFO",
         };
-        AlarmService.createWithGroupMembers({ id: id, alarm: alarm });
+        dispatch(createAlarmWithGroup({ id: id, alarm: alarm }));
 
         setTimeout(() => {
           handleDone();

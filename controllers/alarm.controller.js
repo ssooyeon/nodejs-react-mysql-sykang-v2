@@ -37,15 +37,12 @@ exports.createWithGroupMembers = (req, res) => {
           })
             .then((group) => {
               // 멤버 리스트 뽑아서 알람 추가
+              let alarms = [];
               const userList = group.users.map((user) => user.id);
               userList.map((id) => {
-                const alarm = { ...req.body.alarm, notify: false, userId: id };
-                Alarm.create(alarm)
-                  .then(() => {})
-                  .catch((err) => {
-                    console.log(err);
-                  });
+                alarms.push({ ...req.body.alarm, notify: false, userId: id });
               });
+              Alarm.bulkCreate(alarms);
             })
             .catch((err) => {
               console.log(err);

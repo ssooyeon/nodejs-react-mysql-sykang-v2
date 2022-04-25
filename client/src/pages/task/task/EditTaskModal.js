@@ -14,9 +14,8 @@ import "./Editor.css";
 import s from "./TaskForm.module.scss";
 
 import { retrieveTaskByUser } from "../../../actions/tasks";
-import { retrieveAlarmByUser } from "../../../actions/alarms";
+import { createAlarmWithGroup, retrieveAlarmByUser } from "../../../actions/alarms";
 import { updateTask } from "../../../actions/tasks";
-import AlarmService from "../../../services/AlarmService";
 
 export default function EditTaskModal({ open, handleCloseClick, task }) {
   const { user: currentUser } = useSelector((state) => state.auth);
@@ -134,7 +133,7 @@ export default function EditTaskModal({ open, handleCloseClick, task }) {
             message: `Your group's task(title: ${taskForm.title}) has been modified.`,
             status: "INFO",
           };
-          AlarmService.createWithGroupMembers({ id: id, alarm: alarm });
+          dispatch(createAlarmWithGroup({ id: id, alarm: alarm }));
 
           setTimeout(() => {
             handleClose();

@@ -12,10 +12,9 @@ import "./Editor.css";
 import s from "./TaskForm.module.scss";
 
 import { retrieveTaskByUser } from "../../../actions/tasks";
-import { retrieveAlarmByUser } from "../../../actions/alarms";
+import { createAlarmWithGroup, retrieveAlarmByUser } from "../../../actions/alarms";
 import { retrieveFolder } from "../../../actions/folders";
 import { createTask } from "../../../actions/tasks";
-import AlarmService from "../../../services/AlarmService";
 
 export default function AddTaskModal({ open, handleCloseClick, column }) {
   const { user: currentUser } = useSelector((state) => state.auth);
@@ -114,7 +113,7 @@ export default function AddTaskModal({ open, handleCloseClick, column }) {
             message: `Your group's task(title: ${taskForm.title}) has been added.`,
             status: "INFO",
           };
-          AlarmService.createWithGroupMembers({ id: id, alarm: alarm });
+          dispatch(createAlarmWithGroup({ id: id, alarm: alarm }));
 
           setTimeout(() => {
             handleClose();

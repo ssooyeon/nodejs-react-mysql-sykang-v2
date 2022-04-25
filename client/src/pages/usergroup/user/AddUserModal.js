@@ -2,11 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Alert, Button, FormGroup, InputGroup, InputGroupAddon, InputGroupText, Input, Label, Modal, ModalBody, ModalFooter } from "reactstrap";
 
-import { retrieveAlarmByUser } from "../../../actions/alarms";
+import { createAlarmWithGroup, retrieveAlarmByUser } from "../../../actions/alarms";
 import { createUser } from "../../../actions/users";
 import UserService from "../../../services/UserService";
 import GroupService from "../../../services/GroupService";
-import AlarmService from "../../../services/AlarmService";
 
 export default function AddUserModal({ open, handleCloseClick }) {
   // 초기 user object
@@ -135,7 +134,7 @@ export default function AddUserModal({ open, handleCloseClick }) {
                 message: `A new user(account: ${userForm.account}) has been added to your group.`,
                 status: "INFO",
               };
-              AlarmService.createWithGroupMembers({ id: id, alarm: alarm });
+              dispatch(createAlarmWithGroup({ id: id, alarm: alarm }));
             }
 
             setTimeout(() => {

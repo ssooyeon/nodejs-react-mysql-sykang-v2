@@ -1,4 +1,4 @@
-import { CREATE_ALARM, RETRIEVE_ALARMS, RETRIEVE_ALARM, RETRIEVE_ALARMS_BY_USER, UPDATE_ALARM } from "./types";
+import { CREATE_ALARM, CREATE_ALARM_WITH_GROUP, RETRIEVE_ALARMS, RETRIEVE_ALARM, RETRIEVE_ALARMS_BY_USER, UPDATE_ALARM } from "./types";
 
 import AlarmService from "../services/AlarmService";
 
@@ -11,6 +11,25 @@ export const createAlarm = (data) => async (dispatch) => {
 
     dispatch({
       type: CREATE_ALARM,
+      payload: res.data,
+    });
+    return Promise.resolve(res.data);
+  } catch (err) {
+    console.log(err);
+    return Promise.reject(err);
+  }
+};
+
+/**
+ * 그룹 조회 후 알람 생성
+ */
+export const createAlarmWithGroup = (data) => async (dispatch) => {
+  try {
+    const res = await AlarmService.createWithGroupMembers(data);
+    console.log(res);
+
+    dispatch({
+      type: CREATE_ALARM_WITH_GROUP,
       payload: res.data,
     });
     return Promise.resolve(res.data);

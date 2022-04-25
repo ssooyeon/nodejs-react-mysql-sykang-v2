@@ -8,9 +8,8 @@ import DateTimePicker from "react-datetime-picker";
 
 import s from "./Schedule.module.scss";
 
-import { retrieveAlarmByUser } from "../../actions/alarms";
+import { createAlarmWithGroup, retrieveAlarmByUser } from "../../actions/alarms";
 import { createSchedule } from "../../actions/schedules";
-import AlarmService from "../../services/AlarmService";
 
 const colorList = [
   "#456C86",
@@ -189,7 +188,7 @@ export default function AddScheduleModal({ open, handleCloseClick, date }) {
             message: `A new schedule(title: ${data.title}) has been added to your group.`,
             status: "INFO",
           };
-          AlarmService.createWithGroupMembers({ id: id, alarm: alarm });
+          dispatch(createAlarmWithGroup({ id: id, alarm: alarm }));
 
           setTimeout(() => {
             handleDone();

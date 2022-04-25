@@ -18,11 +18,10 @@ import PaginationComponent from "react-reactstrap-pagination";
 
 import s from "./Group.module.scss";
 
-import { retrieveAlarmByUser } from "../../../actions/alarms";
+import { createAlarmWithGroup, retrieveAlarmByUser } from "../../../actions/alarms";
 import { updateGroup, updateGroupMember } from "../../../actions/groups";
 import UserService from "../../../services/UserService";
 import GroupService from "../../../services/GroupService";
-import AlarmService from "../../../services/AlarmService";
 
 const pageSize = 5;
 
@@ -116,7 +115,7 @@ export default function EditGroupModal({ open, handleCloseClick, group }) {
   };
 
   // 그룹 수정
-  const doEdit = (group) => {
+  const doEdit = () => {
     const oldMemberIds = groupForm.users && groupForm.users.map((obj) => obj.id);
     const isSameMember = JSON.stringify(oldMemberIds.sort()) === JSON.stringify(selectionRow.sort());
     dispatch(updateGroup(groupForm.id, groupForm))
@@ -132,7 +131,7 @@ export default function EditGroupModal({ open, handleCloseClick, group }) {
                 message: `Your group member list has been modified.`,
                 status: "INFO",
               };
-              AlarmService.createWithGroupMembers({ id: id, alarm: alarm });
+              dispatch(createAlarmWithGroup({ id: id, alarm: alarm }));
             })
             .catch((e) => console.log(e));
         } else {
@@ -142,7 +141,7 @@ export default function EditGroupModal({ open, handleCloseClick, group }) {
             message: `Your group has been modified.(name: ${groupForm.name})`,
             status: "INFO",
           };
-          AlarmService.createWithGroupMembers({ id: id, alarm: alarm });
+          dispatch(createAlarmWithGroup({ id: id, alarm: alarm }));
         }
         setIsShowSuccessAlert(true);
         setIsShowErrAlert(false);

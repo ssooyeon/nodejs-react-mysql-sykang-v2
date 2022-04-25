@@ -15,12 +15,11 @@ import Toggle from "../../components/Toggle/Toggle";
 import s from "./Schedule.module.scss";
 import "./Schedule.css";
 
-import { retrieveAlarmByUser } from "../../actions/alarms";
+import { createAlarmWithGroup, retrieveAlarmByUser } from "../../actions/alarms";
 import { retrieveSchedules, updateSchedule } from "../../actions/schedules";
 import { retrieveGroups } from "../../actions/groups";
 
 import ScheduleService from "../../services/ScheduleService";
-import AlarmService from "../../services/AlarmService";
 
 import AddScheduleModal from "./AddScheduleModal";
 import EditScheduleModal from "./EditScheduleModal";
@@ -298,7 +297,7 @@ export default function Schedule(props) {
           message: `Your group's schedule(title: ${e.event._def.title}) has been dragged or resized.`,
           status: "INFO",
         };
-        AlarmService.createWithGroupMembers({ id: id, alarm: alarm });
+        dispatch(createAlarmWithGroup({ id: id, alarm: alarm }));
 
         setTimeout(() => {
           // 로그인한 유저의 알람 리스트 재조회 (header)

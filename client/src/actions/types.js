@@ -77,6 +77,7 @@ export const DELETE_ALL_SCHEDULES = "DELETE_ALL_SCHEDULES";
  * Alarm
  ***************************************************/
 export const CREATE_ALARM = "CREATE_ALARM";
+export const CREATE_ALARM_WITH_GROUP = "CREATE_ALARM_WITH_GROUP";
 export const RETRIEVE_ALARMS = "RETRIEVE_ALARMS";
 export const RETRIEVE_ALARM = "RETRIEVE_ALARM";
 export const RETRIEVE_ALARMS_BY_USER = "RETRIEVE_ALARMS_BY_USER";

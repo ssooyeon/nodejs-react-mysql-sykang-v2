@@ -21,7 +21,7 @@ import MemberModal from "./member/MemberModal";
 import useLocalStorage from "../../utils/useLocalStorage";
 
 import { retrieveTaskByUser } from "../../actions/tasks";
-import { retrieveAlarmByUser } from "../../actions/alarms";
+import { createAlarmWithGroup, retrieveAlarmByUser } from "../../actions/alarms";
 import {
   retrieveFolders,
   retrieveFolder,
@@ -32,8 +32,6 @@ import {
   deleteFolder,
 } from "../../actions/folders";
 import { updateTask, deleteTask } from "../../actions/tasks";
-
-import AlarmService from "../../services/AlarmService";
 
 const themeColorList = ["#5B475C", "#122833", "#201233", "#2D3040", "#735A37", "#7C728C", "#15111D"];
 const today = new Date().toISOString().slice(0, 10);
@@ -195,7 +193,7 @@ export default function Task() {
       message: `Your group's task(title: ${data.title}) has been moved in another column.`,
       status: "INFO",
     };
-    AlarmService.createWithGroupMembers({ id: id, alarm: alarm });
+    dispatch(createAlarmWithGroup({ id: id, alarm: alarm }));
 
     setTimeout(() => {
       // 로그인한 유저의 테스크 및 알람 리스트 재조회 (header)

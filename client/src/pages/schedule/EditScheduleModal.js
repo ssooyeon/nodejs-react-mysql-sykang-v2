@@ -8,9 +8,8 @@ import DateTimePicker from "react-datetime-picker";
 
 import s from "./Schedule.module.scss";
 
-import { retrieveAlarmByUser } from "../../actions/alarms";
+import { createAlarmWithGroup, retrieveAlarmByUser } from "../../actions/alarms";
 import { updateSchedule, deleteSchedule } from "../../actions/schedules";
-import AlarmService from "../../services/AlarmService";
 
 const colorList = [
   "#456C86",
@@ -207,7 +206,7 @@ export default function EditScheduleModal({ open, handleCloseClick, schedule }) 
             message: `Your group's schedule(title: ${data.title}) has been modified.`,
             status: "INFO",
           };
-          AlarmService.createWithGroupMembers({ id: id, alarm: alarm });
+          dispatch(createAlarmWithGroup({ id: id, alarm: alarm }));
 
           setTimeout(() => {
             handleClose();
@@ -231,7 +230,7 @@ export default function EditScheduleModal({ open, handleCloseClick, schedule }) 
           message: `Your group's schedule(title: ${scheduleForm.title}) has been removed.`,
           status: "INFO",
         };
-        AlarmService.createWithGroupMembers({ id: id, alarm: alarm });
+        dispatch(createAlarmWithGroup({ id: id, alarm: alarm }));
         handleClose();
 
         setTimeout(() => {
