@@ -2,6 +2,8 @@ const db = require("../models");
 const Alarm = db.alarms;
 const User = db.users;
 const Group = db.groups;
+const Log = db.logs;
+const Op = db.Sequelize.Op;
 
 /**
  * 알람 생성
@@ -111,7 +113,7 @@ exports.findOne = (req, res) => {
 exports.findAllByUser = (req, res) => {
   const userId = req.params.userId;
   Alarm.findAll({
-    where: { userId: userId },
+    where: { userId: userId, notify: false },
     order: [["createdAt", "DESC"]],
     // offset: 0,
     // limit: 10,
@@ -130,13 +132,29 @@ exports.findAllByUser = (req, res) => {
 exports.update = (req, res) => {
   const id = req.params.id;
   Alarm.update(req.body, { where: { id: id } })
-    .then((num) => {
-      Alarm.create({ status: "SUCCESS", message: `Alarm notify update successfully. Alarm id is: ${id}` });
+    .then(() => {
+      Log.create({ status: "SUCCESS", message: `Alarm notify update successfully. Alarm id is: ${id}` });
       res.send({ message: "Alarm notify was updated successfully." });
     })
     .catch((err) => {
-      Alarm.create({ status: "ERROR", message: `Alarm notify update failed. Alarm id is: ${id}` });
+      Log.create({ status: "ERROR", message: `Alarm notify update failed. Alarm id is: ${id}` });
       res.status(500).send({ message: err.message || `Error updating Alarm notify with id=${id}` });
+    });
+};
+
+/**
+ * 사용자 별 알람 전체 수정 (notify)
+ */
+exports.updateAll = (req, res) => {
+  const userId = req.params.id;
+  Alarm.update(req.body, { where: { userId: userId } })
+    .then(() => {
+      Log.create({ status: "SUCCESS", message: `Alarms notify update successfully. User id is: ${userId}` });
+      res.send({ message: "Alarms notify was updated successfully." });
+    })
+    .catch((err) => {
+      Log.create({ status: "ERROR", message: `Alarms notify update failed. User id is: ${userId}` });
+      res.status(500).send({ message: err.message || `Error updating Alarms notify with userId=${userId}` });
     });
 };
 

@@ -8,6 +8,7 @@ module.exports = (app) => {
   router.get("/", alarms.findAll);
   router.get("/:id", alarms.findOne);
   router.put("/:id", alarms.update);
+  router.put("/user/:id", alarms.updateAll);
 
   app.use("/api/alarms", router);
 };

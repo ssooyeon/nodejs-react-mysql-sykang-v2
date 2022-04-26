@@ -30,6 +30,11 @@ class AlarmService {
   update(id, data) {
     return http.put(`/alarms/${id}`, data);
   }
+
+  // 알람 전체 수정 (notify)
+  updateAll(userId, data) {
+    return http.put(`/alarms/user/${userId}`, data);
+  }
 }
 
 export default new AlarmService();

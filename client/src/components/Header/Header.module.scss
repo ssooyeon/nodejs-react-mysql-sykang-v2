@@ -411,3 +411,14 @@
   background: #12142b;
   opacity: 0.8;
 }
+
+.removeBtn {
+  padding: 0 0 0 5px;
+  margin-top: -2px;
+  color: #c4bfbf;
+
+  &:hover,
+  &:focus {
+    color: #fff;
+  }
+}

@@ -1,4 +1,12 @@
-import { CREATE_ALARM, CREATE_ALARM_WITH_GROUP, RETRIEVE_ALARMS, RETRIEVE_ALARM, RETRIEVE_ALARMS_BY_USER, UPDATE_ALARM } from "./types";
+import {
+  CREATE_ALARM,
+  CREATE_ALARM_WITH_GROUP,
+  RETRIEVE_ALARMS,
+  RETRIEVE_ALARM,
+  RETRIEVE_ALARMS_BY_USER,
+  UPDATE_ALARM,
+  UPDATE_ALL_ALARM,
+} from "./types";
 
 import AlarmService from "../services/AlarmService";
 
@@ -98,6 +106,23 @@ export const updateAlarm = (id, data) => async (dispatch) => {
     const res = await AlarmService.update(id, data);
     dispatch({
       type: UPDATE_ALARM,
+      payload: data,
+    });
+    return Promise.resolve(res.data);
+  } catch (err) {
+    console.log(err);
+    return Promise.reject(err);
+  }
+};
+
+/**
+ * 사용자 별 알람 전체 수정
+ */
+export const updateAllAlarm = (userId, data) => async (dispatch) => {
+  try {
+    const res = await AlarmService.updateAll(userId, data);
+    dispatch({
+      type: UPDATE_ALL_ALARM,
       payload: data,
     });
     return Promise.resolve(res.data);

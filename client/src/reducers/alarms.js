@@ -1,4 +1,12 @@
-import { CREATE_ALARM, CREATE_ALARM_WITH_GROUP, RETRIEVE_ALARMS, RETRIEVE_ALARM, RETRIEVE_ALARMS_BY_USER, UPDATE_ALARM } from "../actions/types";
+import {
+  CREATE_ALARM,
+  CREATE_ALARM_WITH_GROUP,
+  RETRIEVE_ALARMS,
+  RETRIEVE_ALARM,
+  RETRIEVE_ALARMS_BY_USER,
+  UPDATE_ALARM,
+  UPDATE_ALL_ALARM,
+} from "../actions/types";
 
 const initialState = [];
 
@@ -35,6 +43,25 @@ function alarmReducer(alarms = initialState, action) {
         results = alarms;
       }
       return results.map((alarm) => {
+        if (alarm.id === payload.id) {
+          return {
+            ...alarm,
+            ...payload,
+          };
+        } else {
+          return alarm;
+        }
+      });
+
+    // 알람 전체 수정
+    case UPDATE_ALL_ALARM:
+      let rst = [];
+      if (alarms.length === undefined) {
+        rst.push(alarms);
+      } else {
+        rst = alarms;
+      }
+      return rst.map((alarm) => {
         if (alarm.id === payload.id) {
           return {
             ...alarm,

@@ -17,7 +17,6 @@ import {
   DropdownMenu,
   DropdownItem,
   Badge,
-  Button,
 } from "reactstrap";
 import { FaTasks } from "react-icons/fa";
 import { AiOutlineNotification } from "react-icons/ai";
@@ -33,7 +32,7 @@ import "animate.css";
 
 import { logout } from "../../actions/auth";
 import { retrieveTaskByUser } from "../../actions/tasks";
-import { retrieveAlarmByUser } from "../../actions/alarms";
+import { retrieveAlarmByUser, updateAlarm, updateAllAlarm } from "../../actions/alarms";
 
 const searchOpen = false;
 const labels = ["warning", "success", "info", "danger"];
@@ -93,6 +92,26 @@ function Header(props) {
     onAction: () => {},
     debounce: 500,
   });
+
+  // alarm list에서 remove button click
+  const confrimAlarm = (alarmId) => {
+    const data = { id: alarmId, notify: true };
+    dispatch(updateAlarm(alarmId, data))
+      .then(() => {
+        dispatch(retrieveAlarmByUser(currentUser.id));
+      })
+      .catch((e) => console.log(e));
+  };
+
+  // 모든 alarm remove
+  const confirmAlarms = () => {
+    const data = { userId: currentUser.id, notify: true };
+    dispatch(updateAllAlarm(currentUser.id, data))
+      .then(() => {
+        dispatch(retrieveAlarmByUser(currentUser.id));
+      })
+      .catch((e) => console.log(e));
+  };
 
   return (
     <Navbar className={`d-print-none `}>
@@ -178,11 +197,11 @@ function Header(props) {
                     })}
 
                   {tasks && tasks.length > 0 ? (
-                    <DropdownItem>
-                      <a href="/#/app/task" className="text-white">
+                    <div style={{ float: "right", padding: "0 10px 5px 0" }}>
+                      <a href="/#/app/task" className="text-white" style={{ fontSize: "12px" }}>
                         More <ArrowIcon className={s.headerIcon} maskName="bellArrow" />
                       </a>
-                    </DropdownItem>
+                    </div>
                   ) : null}
                 </DropdownMenu>
               </Dropdown>
@@ -197,13 +216,21 @@ function Header(props) {
                       return (
                         <DropdownItem key={index}>
                           <AiOutlineNotification size={20} className={s.headerIcon} />
-                          <div className={s.details}>{alarm.message > 30 ? alarm.message.substr(0, 30) + "..." : alarm.message}</div>
-                          {/* <Button style={{ padding: "2px 0 0 5px", color: "#e9e3e3" }} onClick={() => {}}>
+                          <div className={s.details}>{alarm.message.length > 50 ? alarm.message.substr(0, 50) + "..." : alarm.message}</div>
+                          <div className={s.removeBtn} onClick={() => confrimAlarm(alarm.id)}>
                             <i className="fa fa-remove"></i>
-                          </Button> */}
+                          </div>
                         </DropdownItem>
                       );
                     })}
+
+                  {alarms && alarms.length > 0 ? (
+                    <div style={{ float: "right", padding: "0 10px 5px 0" }}>
+                      <a className="text-white" style={{ fontSize: "12px" }} onClick={confirmAlarms}>
+                        <i className="fa fa-trash"></i> remove all
+                      </a>
+                    </div>
+                  ) : null}
                 </DropdownMenu>
               </Dropdown>
             </>
