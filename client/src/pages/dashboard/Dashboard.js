@@ -109,7 +109,6 @@ export default function Dashboard() {
   const get1stWeather = () => {
     WeatherService.getAllCurrent({ type: "first" })
       .then((res) => {
-        console.log(res);
         if (res.data !== null) {
           const weather = {
             baseDateTime: res.data.baseDate + " " + res.data.baseTime, // 발표날짜

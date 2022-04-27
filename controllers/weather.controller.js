@@ -28,7 +28,6 @@ exports.findCurrentWeathers = (req, res) => {
   axios
     .get(CURRENT_API_URL)
     .then((data) => {
-      console.log(CURRENT_API_URL);
       if (data.data.response.body !== undefined) {
         const currentData = data.data.response.body.items;
         const firstData = currentData.item[0];
