@@ -8,17 +8,27 @@ exports.findCurrentWeathers = (req, res) => {
   // get current date (-1hour)
   let now = new Date();
   const hourAgo = now.setHours(now.getHours() - 1);
-  let fmt = dateTime.format(new Date(hourAgo), "YYYYMMDD HHmm");
+  let fmt = dateTime.format(new Date(hourAgo), "YYYYMMDD HH:mm");
   let arr = fmt.split(" ");
 
+  const hourTimeArr = arr[1].split(":");
+  const hour = hourTimeArr[0];
+  const time = hourTimeArr[1];
+
   let base_date = arr[0];
-  let base_time = arr[1];
+  let base_time = "";
+  if (time > 30) {
+    base_time = hour + "30";
+  } else if (time < 30) {
+    base_time = hour + "00";
+  }
 
   const CURRENT_API_URL = BASE_API_URL + `&base_date=${base_date}&base_time=${base_time}&nx=67&ny=101&dataType=JSON`;
 
   axios
     .get(CURRENT_API_URL)
     .then((data) => {
+      console.log(CURRENT_API_URL);
       if (data.data.response.body !== undefined) {
         const currentData = data.data.response.body.items;
         const firstData = currentData.item[0];
@@ -88,8 +98,17 @@ exports.findPastWeathers = (req, res) => {
   const fmt = dateTime.format(new Date(addHour), "YYYYMMDD HHmm");
   const arr = fmt.split(" ");
 
-  const base_date = arr[0];
-  const base_time = arr[1];
+  const hourTimeArr = arr[1].split(":");
+  const hour = hourTimeArr[0];
+  const time = hourTimeArr[1];
+
+  let base_date = arr[0];
+  let base_time = "";
+  if (time > 30) {
+    base_time = hour + "30";
+  } else if (time < 30) {
+    base_time = hour + "00";
+  }
 
   const PAST_API_URL = BASE_API_URL + `&base_date=${base_date}&base_time=${base_time}&nx=67&ny=101&dataType=JSON`;
 

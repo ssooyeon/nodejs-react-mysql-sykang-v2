@@ -34,7 +34,6 @@ export const createAlarm = (data) => async (dispatch) => {
 export const createAlarmWithGroup = (data) => async (dispatch) => {
   try {
     const res = await AlarmService.createWithGroupMembers(data);
-    console.log(res);
 
     dispatch({
       type: CREATE_ALARM_WITH_GROUP,
