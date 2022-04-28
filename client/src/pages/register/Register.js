@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { Container, Alert, Button, FormGroup, InputGroup, InputGroupAddon, InputGroupText, Input, Label } from "reactstrap";
 import Widget from "../../components/Widget";
-import microsoft from "../../assets/microsoft.png";
 
 import { retrieveByAccount, createUser } from "../../actions/users";
 

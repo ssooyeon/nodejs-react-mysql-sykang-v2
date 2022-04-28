@@ -12,10 +12,8 @@ export const DELETE_ALL_BOARDS = "DELETE_ALL_BOARDS";
  * User
  ***************************************************/
 export const CREATE_USER = "CREATE_USER";
-export const CREATE_SOCIAL_USER = "CREATE_SOCIAL_USER";
 export const RETRIEVE_USERS = "RETRIEVE_USERS";
 export const RETRIEVE_USER = "RETRIEVE_USER";
-export const RETRIEVE_FOR_CREATE_SOCIAL = "RETRIEVE_FOR_CREATE_SOCIAL";
 export const COMPARE_CURRENT_PASSWORD = "COMPARE_CURRENT_PASSWORD";
 export const RETRIEVE_BY_ACCOUNT = "RETRIEVE_BY_ACCOUNT";
 export const UPDATE_USER = "UPDATE_USER";
