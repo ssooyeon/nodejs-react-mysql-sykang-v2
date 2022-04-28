@@ -216,7 +216,7 @@ function Header(props) {
                       return (
                         <DropdownItem key={index}>
                           <AiOutlineNotification size={20} className={s.headerIcon} />
-                          <div className={s.details}>{alarm.message.length > 50 ? alarm.message.substr(0, 50) + "..." : alarm.message}</div>
+                          <div className={s.details}>{alarm.message.length > 80 ? alarm.message.substr(0, 80) + "..." : alarm.message}</div>
                           <div className={s.removeBtn} onClick={() => confrimAlarm(alarm.id)}>
                             <i className="fa fa-remove"></i>
                           </div>
