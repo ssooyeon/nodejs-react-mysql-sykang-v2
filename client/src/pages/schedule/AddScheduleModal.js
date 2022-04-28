@@ -188,12 +188,15 @@ export default function AddScheduleModal({ open, handleCloseClick, date }) {
             message: `A new schedule(title: ${data.title}) has been added to your group.`,
             status: "INFO",
           };
-          dispatch(createAlarmWithGroup({ id: id, alarm: alarm }));
+          dispatch(createAlarmWithGroup({ id: id, alarm: alarm }))
+            .then(() => {
+              // 로그인한 유저의 알람 리스트 재조회 (header)
+              dispatch(retrieveAlarmByUser(currentUser.id));
+            })
+            .catch((e) => console.log(e));
 
           setTimeout(() => {
             handleDone();
-            // 로그인한 유저의 알람 리스트 재조회 (header)
-            dispatch(retrieveAlarmByUser(currentUser.id));
           }, 500);
         })
         .catch((e) => console.log(e));

@@ -125,6 +125,7 @@ export default function EditGroupModal({ open, handleCloseClick, group }) {
           let data = { ...groupForm, users: selectionRow };
           dispatch(updateGroupMember(data.id, data))
             .then(() => {
+              // todo
               // 그룹 멤버 수정 시 그룹 멤버들에게 알람
               const id = { userId: null, groupId: groupForm.id };
               const alarm = {
@@ -141,7 +142,12 @@ export default function EditGroupModal({ open, handleCloseClick, group }) {
             message: `Your group has been modified.(name: ${groupForm.name})`,
             status: "INFO",
           };
-          dispatch(createAlarmWithGroup({ id: id, alarm: alarm }));
+          dispatch(createAlarmWithGroup({ id: id, alarm: alarm }))
+            .then(() => {
+              // 로그인한 유저의 알람 리스트 재조회 (header)
+              dispatch(retrieveAlarmByUser(currentUser.id));
+            })
+            .catch((e) => console.log(e));
         }
         setIsShowSuccessAlert(true);
         setIsShowErrAlert(false);
@@ -149,8 +155,6 @@ export default function EditGroupModal({ open, handleCloseClick, group }) {
 
         setTimeout(() => {
           handleDone();
-          // 로그인한 유저의 알람 리스트 재조회 (header)
-          dispatch(retrieveAlarmByUser(currentUser.id));
         }, 500);
       })
       .catch((e) => console.log(e));

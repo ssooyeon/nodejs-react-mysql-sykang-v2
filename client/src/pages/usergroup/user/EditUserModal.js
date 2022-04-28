@@ -120,12 +120,15 @@ export default function EditUserModal({ open, handleCloseClick, user }) {
           message: `Your group member(account: ${user.account}) profile has been modified.`,
           status: "INFO",
         };
-        dispatch(createAlarmWithGroup({ id: id, alarm: alarm }));
+        dispatch(createAlarmWithGroup({ id: id, alarm: alarm }))
+          .then(() => {
+            // 로그인한 유저의 알람 리스트 재조회 (header)
+            dispatch(retrieveAlarmByUser(currentUser.id));
+          })
+          .catch((e) => console.log(e));
 
         setTimeout(() => {
           handleDone();
-          // 로그인한 유저의 알람 리스트 재조회 (header)
-          dispatch(retrieveAlarmByUser(currentUser.id));
         }, 500);
       })
       .catch((e) => console.log(e));

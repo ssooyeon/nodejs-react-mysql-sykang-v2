@@ -193,13 +193,13 @@ export default function Task() {
       message: `Your group's task(title: ${data.title}) has been moved in another column.`,
       status: "INFO",
     };
-    dispatch(createAlarmWithGroup({ id: id, alarm: alarm }));
-
-    setTimeout(() => {
-      // 로그인한 유저의 테스크 및 알람 리스트 재조회 (header)
-      dispatch(retrieveTaskByUser(currentUser.id));
-      dispatch(retrieveAlarmByUser(currentUser.id));
-    }, 500);
+    dispatch(createAlarmWithGroup({ id: id, alarm: alarm }))
+      .then(() => {
+        // 로그인한 유저의 테스크 및 알람 리스트 재조회 (header)
+        dispatch(retrieveTaskByUser(currentUser.id));
+        dispatch(retrieveAlarmByUser(currentUser.id));
+      })
+      .catch((e) => console.log(e));
   };
 
   // parent가 null인 폴더 조회 (셀렉트박스에 표출)

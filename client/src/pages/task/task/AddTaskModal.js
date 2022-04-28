@@ -113,13 +113,16 @@ export default function AddTaskModal({ open, handleCloseClick, column }) {
             message: `Your group's task(title: ${taskForm.title}) has been added.`,
             status: "INFO",
           };
-          dispatch(createAlarmWithGroup({ id: id, alarm: alarm }));
+          dispatch(createAlarmWithGroup({ id: id, alarm: alarm }))
+            .then(() => {
+              // 로그인한 유저의 테스크 및 알람 리스트 재조회 (header)
+              dispatch(retrieveTaskByUser(currentUser.id));
+              dispatch(retrieveAlarmByUser(currentUser.id));
+            })
+            .catch((e) => console.log(e));
 
           setTimeout(() => {
             handleClose();
-            // 로그인한 유저의 테스크 및 알람 리스트 재조회 (header)
-            dispatch(retrieveTaskByUser(currentUser.id));
-            dispatch(retrieveAlarmByUser(currentUser.id));
           }, 500);
         })
         .catch((e) => console.log(e));

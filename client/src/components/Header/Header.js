@@ -86,7 +86,7 @@ function Header(props) {
     }
   };
   const { getLastActiveTime } = useIdleTimer({
-    timeout: 1000 * 60 * 60,
+    timeout: 1000 * 60 * 180,
     onIdle: handleOnIdle,
     onActive: () => {},
     onAction: () => {},

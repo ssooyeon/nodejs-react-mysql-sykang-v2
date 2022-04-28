@@ -297,12 +297,12 @@ export default function Schedule(props) {
           message: `Your group's schedule(title: ${e.event._def.title}) has been dragged or resized.`,
           status: "INFO",
         };
-        dispatch(createAlarmWithGroup({ id: id, alarm: alarm }));
-
-        setTimeout(() => {
-          // 로그인한 유저의 알람 리스트 재조회 (header)
-          dispatch(retrieveAlarmByUser(currentUser.id));
-        }, 500);
+        dispatch(createAlarmWithGroup({ id: id, alarm: alarm }))
+          .then(() => {
+            // 로그인한 유저의 알람 리스트 재조회 (header)
+            dispatch(retrieveAlarmByUser(currentUser.id));
+          })
+          .catch((e) => console.log(e));
       })
       .catch((e) => console.log(e));
   };

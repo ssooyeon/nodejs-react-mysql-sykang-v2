@@ -206,12 +206,15 @@ export default function EditScheduleModal({ open, handleCloseClick, schedule }) 
             message: `Your group's schedule(title: ${data.title}) has been modified.`,
             status: "INFO",
           };
-          dispatch(createAlarmWithGroup({ id: id, alarm: alarm }));
+          dispatch(createAlarmWithGroup({ id: id, alarm: alarm }))
+            .then(() => {
+              // 로그인한 유저의 알람 리스트 재조회 (header)
+              dispatch(retrieveAlarmByUser(currentUser.id));
+            })
+            .catch((e) => console.log(e));
 
           setTimeout(() => {
             handleClose();
-            // 로그인한 유저의 알람 리스트 재조회 (header)
-            dispatch(retrieveAlarmByUser(currentUser.id));
           }, 500);
         })
         .catch((e) => console.log(e));
@@ -222,21 +225,19 @@ export default function EditScheduleModal({ open, handleCloseClick, schedule }) 
   const removeSchedule = () => {
     dispatch(deleteSchedule(scheduleForm.id))
       .then(() => {
-        console.log(scheduleForm);
-        // todo:
         // 스케줄 삭제 시 그룹 멤버들에게 알람
         const id = { userId: scheduleForm.createrId, groupId: null };
         const alarm = {
           message: `Your group's schedule(title: ${scheduleForm.title}) has been removed.`,
           status: "INFO",
         };
-        dispatch(createAlarmWithGroup({ id: id, alarm: alarm }));
+        dispatch(createAlarmWithGroup({ id: id, alarm: alarm }))
+          .then(() => {
+            // 로그인한 유저의 알람 리스트 재조회 (header)
+            dispatch(retrieveAlarmByUser(currentUser.id));
+          })
+          .catch((e) => console.log(e));
         handleClose();
-
-        setTimeout(() => {
-          // 로그인한 유저의 알람 리스트 재조회 (header)
-          dispatch(retrieveAlarmByUser(currentUser.id));
-        }, 500);
       })
       .catch((e) => console.log(e));
   };
