@@ -24,6 +24,7 @@ const colorList = [
   "#1fc31f",
   "#0101c3",
   "#c301c3",
+  "#2b3162",
 ];
 const weekList = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const weekAbbr = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
