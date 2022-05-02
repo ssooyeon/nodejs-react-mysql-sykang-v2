@@ -25,6 +25,7 @@ const colorList = [
   "#0101c3",
   "#c301c3",
   "#2b3162",
+  "#11195a",
 ];
 const weekList = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const weekAbbr = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
@@ -367,7 +368,7 @@ export default function AddScheduleModal({ open, handleCloseClick, date }) {
               <CirclePicker
                 className={s.colorPicker}
                 colors={colorList}
-                circleSize={25}
+                circleSize={20}
                 onChangeComplete={(colore) => onBackgroundColorStateChange(colore.hex)}
               />
             </InputGroup>
