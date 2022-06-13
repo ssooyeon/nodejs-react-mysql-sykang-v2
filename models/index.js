@@ -94,4 +94,15 @@ db.alarms.belongsTo(db.users, {
   onDelete: "CASCADE",
 });
 
+/** inboxs with users */
+db.inboxs = require("./inbox.model")(sequelize, Sequelize);
+db.inboxs.belongsTo(db.users, {
+  foreignKey: "senderId",
+  as: "sender",
+});
+db.inboxs.belongsTo(db.users, {
+  foreignKey: "receiverId",
+  as: "receiver",
+});
+
 module.exports = db;

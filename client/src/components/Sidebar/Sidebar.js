@@ -7,7 +7,7 @@ import { MdDashboard, MdTaskAlt, MdColorLens } from "react-icons/md";
 import { RiUserSettingsFill } from "react-icons/ri";
 import { FaUserEdit } from "react-icons/fa";
 import { BsTable, BsFillCalendarCheckFill, BsCodeSlash } from "react-icons/bs";
-import { AiOutlineLineChart } from "react-icons/ai";
+import { AiOutlineLineChart, AiOutlineMail } from "react-icons/ai";
 
 import s from "./Sidebar.module.scss";
 import LinksGroup from "./LinksGroup";
@@ -164,6 +164,15 @@ export default function Sidebar() {
               iconName={<MdTaskAlt size={20} className={s.menuIcon} />}
               link="/app/task"
               index="Task"
+            />
+            <LinksGroup
+              onActiveSidebarItemChange={(activeItem) => dispatch(changeActiveSidebarItem(activeItem))}
+              activeItem={activeItem}
+              header="Inbox"
+              isHeader
+              iconName={<AiOutlineMail size={20} className={s.menuIcon} />}
+              link="/app/inbox"
+              index="inbox"
             />
           </>
         ) : null}

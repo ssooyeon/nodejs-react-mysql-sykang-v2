@@ -81,3 +81,13 @@ export const RETRIEVE_ALARM = "RETRIEVE_ALARM";
 export const RETRIEVE_ALARMS_BY_USER = "RETRIEVE_ALARMS_BY_USER";
 export const UPDATE_ALARM = "UPDATE_ALARM";
 export const UPDATE_ALL_ALARM = "UPDATE_ALL_ALARM";
+
+/***************************************************
+ * Inbox
+ ***************************************************/
+export const CREATE_INBOX = "CREATE_INBOX";
+export const RETRIEVE_INBOXS = "RETRIEVE_INBOXS";
+export const RETRIEVE_INBOX = "RETRIEVE_INBOX";
+export const UPDATE_INBOX = "UPDATE_INBOX";
+export const DELETE_INBOX = "DELETE_INBOX";
+export const DELETE_ALL_INBOXS = "DELETE_ALL_INBOXS";

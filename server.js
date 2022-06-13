@@ -41,6 +41,7 @@ require("./routes/log.routes")(app);
 require("./routes/task.routes")(app);
 require("./routes/folder.routes")(app);
 require("./routes/schedule.routes")(app);
+require("./routes/inbox.routes")(app);
 require("./routes/weather.routes")(app);
 require("./routes/alarm.routes")(app);
 
