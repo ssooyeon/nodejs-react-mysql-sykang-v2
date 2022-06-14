@@ -133,12 +133,24 @@ $sidebar-width: 200px;
 		background: #181922;
 		border-bottom: 1px solid #252525;
 		cursor: pointer;
-		padding: 10px 15px;
-		position: relative;
-		
+		padding: 10px 10px;
+		position: relative;		
+    width: 100%;
+
 		&.selected {
 			color: #009fc4;
 		}
+
+    &__checkbox_div {
+      width: 23px;
+      background: #181922;
+      border-bottom: 1px solid #252525;
+    }
+
+    &__checkbox {
+      margin-left: 5px;
+      height: 100%;
+    }
 		
 		&__subject {
 			margin-bottom: 8px;
@@ -250,4 +262,8 @@ $sidebar-width: 200px;
 	padding: 10px;
 	text-align: center;
 	width: 100%;
+}
+
+.item_btn {
+  margin-bottom: 1px;
 }

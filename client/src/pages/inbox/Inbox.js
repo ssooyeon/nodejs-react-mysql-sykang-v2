@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Row, Col, Button, FormGroup, InputGroup } from "reactstrap";
+import { Row, Col, Button } from "reactstrap";
 import Swal from "sweetalert2";
 import Moment from "react-moment";
-import moment from "moment";
 
 import Widget from "../../components/Widget";
 import s from "./Inbox.module.scss";
@@ -17,15 +16,16 @@ export default function Inbox() {
   const { user: currentUser } = useSelector((state) => state.auth);
   const inboxs = useSelector((state) => state.inboxs || []);
 
-  const [section, setSection] = useState("inbox");
-  const [counts, setCounts] = useState(null);
+  const [section, setSection] = useState("inbox"); // sidebar clicked section
+  const [counts, setCounts] = useState(null); // sidebar folder's inbox count
+  const [selectedRowIds, setSelectedRowIds] = useState([]); // selected checkbox in inbox list
 
   const inboxRef = useRef(null);
   const sentRef = useRef(null);
   const draftsRef = useRef(null);
   const trashRef = useRef(null);
 
-  const [selectedInbox, setSelectedInbox] = useState(null);
+  const [selectedInbox, setSelectedInbox] = useState(null); // selected mail
 
   const dispatch = useDispatch();
 
@@ -37,7 +37,14 @@ export default function Inbox() {
     const params = { receiverId: currentUser.id, folderName: "inbox" };
     dispatch(retrieveInboxs(params));
 
-    // isConfirmed count 조회
+    readConfirmedCount();
+  }, [currentUser, dispatch]);
+
+  /*********************************** */
+  /* sidebar */
+  /*********************************** */
+  // isConfirmed count 조회
+  const readConfirmedCount = () => {
     const param = { receiverId: currentUser.id };
     InboxService.getCount(param)
       .then((data) => {
@@ -49,10 +56,11 @@ export default function Inbox() {
       .catch((e) => {
         console.log(e);
       });
-  }, [currentUser, dispatch]);
+  };
 
   // sidebar folder 클릭
   const loadSection = (section, ref) => {
+    setSelectedRowIds([]);
     setSection(section);
     inboxRef.current.classList.remove("selected");
     sentRef.current.classList.remove("selected");
@@ -60,7 +68,7 @@ export default function Inbox() {
     trashRef.current.classList.remove("selected");
     ref.current.classList.add("selected");
 
-    // 클릭한 folder의 inbox list 가져오기
+    // 클릭한 sidebar folder의 inbox list 가져오기
     const params = { receiverId: currentUser.id, folderName: section };
     dispatch(retrieveInboxs(params))
       .then(() => {
@@ -71,11 +79,70 @@ export default function Inbox() {
       });
   };
 
+  /*********************************** */
+  /* inbox mail list */
+  /*********************************** */
+  // inbox mail list의 checkbox 클릭
+  const handleCheckbox = (e, inboxId) => {
+    if (e.target.checked) {
+      setSelectedRowIds([...selectedRowIds, inboxId]);
+    } else {
+      setSelectedRowIds(selectedRowIds.filter((d) => d !== inboxId));
+    }
+  };
+
+  // select all 클릭
+  const handleSelectAll = () => {
+    const ids = inboxs.map((inbox) => inbox.id);
+    setSelectedRowIds(ids);
+  };
+  // deselect all 클릭
+  const handleDeselectAll = () => {
+    setSelectedRowIds([]);
+  };
+
+  // mark read 클릭
+  const handleMarkRead = () => {
+    const ids = selectedRowIds;
+    ids.forEach((id) => {
+      const data = { id: id, isConfirmed: true };
+      modifyInbox(data);
+    });
+  };
+
+  // to trash 클릭
+  const handleToTrash = () => {
+    const ids = selectedRowIds;
+    ids.forEach((id) => {
+      const data = { id: id, folderName: "trash" };
+      modifyFolder(data);
+    });
+  };
+
+  // remove 클릭
+  const handleRemove = () => {
+    const ids = selectedRowIds;
+    ids.forEach((id) => {
+      dispatch(deleteInbox(id))
+        .then(() => {
+          setSelectedInbox(null);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    });
+  };
+
   // inbox 클릭
   const handleInboxClick = (inbox) => {
     setSelectedInbox(inbox);
     // isConfirmed=true
     const data = { ...inbox, isConfirmed: true };
+    modifyInbox(data);
+  };
+
+  // inbox 실제 업데이트 수행
+  const modifyInbox = (data) => {
     dispatch(updateInbox(data.id, data))
       .then(() => {
         // isConfirmed count 재조회
@@ -94,6 +161,91 @@ export default function Inbox() {
       .catch((e) => {
         console.log(e);
       });
+  };
+
+  /*********************************** */
+  /* inbox mail detail */
+  /*********************************** */
+  // inbox mail 삭제
+  const confirmDeleteInbox = (id) => {
+    Swal.fire({
+      text: "Are you sure this mail to the trash? or to delete it completely?",
+      icon: "warning",
+      backdrop: false,
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: "trash",
+      denyButtonText: "delete",
+      confirmButtonColor: "#db7329",
+      denyButtonColor: "#da2837",
+      cancelButtonColor: "#30324d",
+      showClass: {
+        backdrop: "swal2-noanimation",
+        icon: "",
+      },
+    }).then((result) => {
+      // go to trash
+      if (result.isConfirmed) {
+        const data = { ...selectedInbox, isConfirmed: true, folderName: "trash" };
+        modifyFolder(data);
+      }
+      // delete completely
+      else if (result.isDenied) {
+        dispatch(deleteInbox(id))
+          .then(() => {
+            setSelectedInbox(null);
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      }
+    });
+  };
+
+  // inbox mail을 다른 폴더로 이동
+  const modifyFolder = (data) => {
+    dispatch(updateInbox(data.id, data))
+      .then(() => {
+        const params = { receiverId: currentUser.id, folderName: section };
+        dispatch(retrieveInboxs(params))
+          .then(() => {
+            setSelectedInbox(null);
+            readConfirmedCount();
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  // trash의 inbox mail detail에서 inbox mail 완전 삭제
+  const confirmCompletelyDeleteInbox = (id) => {
+    Swal.fire({
+      text: "Are you sure this mail to delete it completely?",
+      icon: "warning",
+      backdrop: false,
+      showCancelButton: true,
+      confirmButtonText: "OK",
+      confirmButtonColor: "#da2837",
+      cancelButtonColor: "#30324d",
+      showClass: {
+        backdrop: "swal2-noanimation",
+        icon: "",
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(deleteInbox(id))
+          .then(() => {
+            setSelectedInbox(null);
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      }
+    });
   };
 
   return (
@@ -166,16 +318,62 @@ export default function Inbox() {
 
                 <div className={s.inbox_container}>
                   <div className={s.email_list}>
+                    <div>
+                      {selectedRowIds.length === inboxs.length ? (
+                        <Button color="inverse" className={s.item_btn} size="xs" onClick={() => handleDeselectAll()}>
+                          deselect all
+                        </Button>
+                      ) : (
+                        <Button color="inverse" className={s.item_btn} size="xs" onClick={() => handleSelectAll()}>
+                          select all
+                        </Button>
+                      )}
+                      &nbsp;
+                      <Button color="inverse" className={s.item_btn} size="xs" onClick={() => handleMarkRead()}>
+                        mark read
+                      </Button>
+                      &nbsp;
+                      {section !== "trash" ? (
+                        <>
+                          <Button color="inverse" className={s.item_btn} size="xs" onClick={() => handleToTrash()}>
+                            to trash
+                          </Button>
+                          &nbsp;
+                        </>
+                      ) : null}
+                      <Button color="inverse" className={s.item_btn} size="xs" onClick={() => handleRemove()}>
+                        remove
+                      </Button>
+                    </div>
                     {inboxs.map((inbox) => {
                       return (
-                        <div onClick={() => handleInboxClick(inbox)} className={s.email_item} key={inbox.id}>
-                          <div className={s.email_item__unread_dot} data-read={inbox.isConfirmed}></div>
-                          <div className={s.email_item__subject + s.truncate}>{inbox.title}</div>
-                          <div className={s.email_item__details}>
-                            <span className={s.email_item__from + s.truncate}>{inbox.sender.account}</span>
-                            <span className={s.email_item__time + s.truncate} style={{ float: "right" }}>
-                              <Moment format="YYYY-MM-DD HH:mm">{inbox.createdAt}</Moment>
-                            </span>
+                        <div key={inbox.id}>
+                          <div style={{ display: "flex" }}>
+                            <div className={s.email_item__checkbox_div}>
+                              <input
+                                type="checkbox"
+                                className={s.email_item__checkbox}
+                                onChange={(e) => handleCheckbox(e, inbox.id)}
+                                checked={selectedRowIds.includes(inbox.id) ? true : false}
+                              />
+                            </div>
+                            <div onClick={() => handleInboxClick(inbox)} className={s.email_item}>
+                              <div className={s.email_item__unread_dot} data-read={inbox.isConfirmed}></div>
+                              <div className={s.email_item__subject + s.truncate} style={{ color: !inbox.isConfirmed ? "#fff" : null }}>
+                                {inbox.title}
+                              </div>
+                              <div className={s.email_item__details}>
+                                <span className={s.email_item__from + s.truncate} style={{ color: !inbox.isConfirmed ? "#fff" : null }}>
+                                  {inbox.sender.account}
+                                </span>
+                                <span
+                                  className={s.email_item__time + s.truncate}
+                                  style={{ float: "right", color: !inbox.isConfirmed ? "#fff" : null }}
+                                >
+                                  <Moment format="YYYY-MM-DD HH:mm">{inbox.createdAt}</Moment>
+                                </span>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       );
@@ -188,8 +386,19 @@ export default function Inbox() {
                         <div className={s.email_content__header}>
                           <h3 className={s.email_content__subject}>
                             {selectedInbox.title}
-                            <Button color="inverse" className={s.email_content__remove_btn} size="xs" onClick={() => {}}>
-                              <i className="fa fa-remove"></i>
+                            <Button
+                              color="inverse"
+                              className={s.email_content__remove_btn}
+                              size="xs"
+                              onClick={
+                                selectedInbox.folderName === "trash"
+                                  ? () => {
+                                      confirmCompletelyDeleteInbox(selectedInbox.id);
+                                    }
+                                  : () => confirmDeleteInbox(selectedInbox.id)
+                              }
+                            >
+                              <i className="fa fa-trash"></i>
                             </Button>
                           </h3>
                           <div className={s.email_content__time}>

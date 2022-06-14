@@ -91,10 +91,10 @@ exports.findOne = (req, res) => {
  * Inbox 수정
  */
 exports.update = (req, res) => {
-  if (!req.body.title) {
-    res.status(400).send({ message: "title cannot be empty." });
-    return;
-  }
+  // if (!req.body.title) {
+  //   res.status(400).send({ message: "title cannot be empty." });
+  //   return;
+  // }
 
   const id = req.params.id;
   const inbox = req.body;
@@ -142,5 +142,32 @@ exports.deleteAll = (req, res) => {
     .catch((err) => {
       Log.create({ status: "ERROR", message: "All inboxs delete failed" });
       res.status(500).send({ message: err.message || "Some error occurred while deleting all inboxs." });
+    });
+};
+
+/**
+ * folderName 별 Inbox 전체 삭제
+ */
+exports.deleteAllInFolder = (req, res) => {
+  if (!req.query.receiverId && req.query.folderName) {
+    res.status(400).send({ message: "receiverId and folderName cannot be empty." });
+    return;
+  }
+
+  const { receiverId, folderName } = req.query;
+  Inbox.destroy({
+    where: {
+      receiverId: receiverId,
+      folderName: folderName,
+    },
+    truncate: false,
+  })
+    .then((nums) => {
+      Log.create({ status: "SUCCESS", message: "All inboxs in specific folder delete successfully." });
+      res.send({ message: `${nums} inboxs in specific folder were deleted successfully.` });
+    })
+    .catch((err) => {
+      Log.create({ status: "ERROR", message: "All inboxs in specific folder delete failed" });
+      res.status(500).send({ message: err.message || "Some error occurred while deleting all inboxs in specific folder." });
     });
 };

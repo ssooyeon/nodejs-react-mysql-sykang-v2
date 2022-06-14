@@ -9,6 +9,7 @@ module.exports = (app) => {
   router.put("/:id", inboxs.update);
   router.delete("/:id", inboxs.delete);
   router.delete("/", inboxs.deleteAll);
+  router.delete("/folder", inboxs.deleteAllInFolder);
 
   app.use("/api/inboxs", router);
 };

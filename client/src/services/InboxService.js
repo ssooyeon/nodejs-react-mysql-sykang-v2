@@ -35,6 +35,11 @@ class InboxService {
   deleteAll() {
     return http.delete("/inboxs");
   }
+
+  // Folder 별 Inbox 전체 삭제
+  deleteAllInFolder(params) {
+    return http.delete("/inboxs/folder", { params });
+  }
 }
 
 export default new InboxService();
