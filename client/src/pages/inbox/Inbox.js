@@ -11,6 +11,7 @@ import "./Inbox.css";
 import { retrieveInboxs, updateInbox, deleteInbox } from "../../actions/inboxs";
 
 import InboxService from "../../services/InboxService";
+import AddInboxModal from "./inbox/AddInboxModal";
 
 export default function Inbox() {
   const { user: currentUser } = useSelector((state) => state.auth);
@@ -22,10 +23,11 @@ export default function Inbox() {
 
   const inboxRef = useRef(null);
   const sentRef = useRef(null);
-  const draftsRef = useRef(null);
   const trashRef = useRef(null);
 
   const [selectedInbox, setSelectedInbox] = useState(null); // selected mail
+
+  const [addInboxModalOpen, setAddInboxModalOpen] = useState(false); // Inbox 생성 모달 오픈
 
   const dispatch = useDispatch();
 
@@ -34,10 +36,14 @@ export default function Inbox() {
     inboxRef.current.classList.add("selected");
 
     // inbox의 mail list 조회
-    const params = { receiverId: currentUser.id, folderName: "inbox" };
-    dispatch(retrieveInboxs(params));
-
-    readConfirmedCount();
+    const params = { ownerId: currentUser.id, folderName: "inbox" };
+    dispatch(retrieveInboxs(params))
+      .then(() => {
+        readConfirmedCount();
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   }, [currentUser, dispatch]);
 
   /*********************************** */
@@ -45,7 +51,7 @@ export default function Inbox() {
   /*********************************** */
   // isConfirmed count 조회
   const readConfirmedCount = () => {
-    const param = { receiverId: currentUser.id };
+    const param = { ownerId: currentUser.id };
     InboxService.getCount(param)
       .then((data) => {
         if (data !== null) {
@@ -64,12 +70,11 @@ export default function Inbox() {
     setSection(section);
     inboxRef.current.classList.remove("selected");
     sentRef.current.classList.remove("selected");
-    draftsRef.current.classList.remove("selected");
     trashRef.current.classList.remove("selected");
     ref.current.classList.add("selected");
 
     // 클릭한 sidebar folder의 inbox list 가져오기
-    const params = { receiverId: currentUser.id, folderName: section };
+    const params = { ownerId: currentUser.id, folderName: section };
     dispatch(retrieveInboxs(params))
       .then(() => {
         setSelectedInbox(null);
@@ -146,7 +151,7 @@ export default function Inbox() {
     dispatch(updateInbox(data.id, data))
       .then(() => {
         // isConfirmed count 재조회
-        const params = { receiverId: currentUser.id };
+        const params = { ownerId: currentUser.id };
         InboxService.getCount(params)
           .then((data) => {
             if (data !== null) {
@@ -206,7 +211,7 @@ export default function Inbox() {
   const modifyFolder = (data) => {
     dispatch(updateInbox(data.id, data))
       .then(() => {
-        const params = { receiverId: currentUser.id, folderName: section };
+        const params = { ownerId: currentUser.id, folderName: section };
         dispatch(retrieveInboxs(params))
           .then(() => {
             setSelectedInbox(null);
@@ -248,6 +253,27 @@ export default function Inbox() {
     });
   };
 
+  /*********************************** */
+  /* inbox create */
+  /*********************************** */
+
+  const addInbox = () => {
+    handleAddInboxModalClick(true);
+  };
+
+  // Inbox 등록 버튼 클릭 및 AddInboxForm.js 에서 닫기 버튼 클릭
+  const handleAddInboxModalClick = (value) => {
+    setAddInboxModalOpen(value);
+    const params = { ownerId: currentUser.id, folderName: section };
+    dispatch(retrieveInboxs(params))
+      .then(() => {
+        readConfirmedCount();
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
   return (
     <div className={s.root}>
       <h2 className="page-title">
@@ -268,7 +294,7 @@ export default function Inbox() {
               <div>
                 <div className={s.inbox_sidebar}>
                   <div className={s.sidebar__compose}>
-                    <Button color="warning" className={s.new_button} size="xs" onClick={() => {}}>
+                    <Button color="warning" className={s.new_button} size="xs" onClick={addInbox}>
                       New &nbsp;<i className="fa fa-pencil"></i>
                     </Button>
                   </div>
@@ -289,16 +315,6 @@ export default function Inbox() {
                         <span className={s.item_count}>
                           {counts && counts.filter((x) => x.folderName === "sent")[0] !== undefined
                             ? counts.filter((x) => x.folderName === "sent")[0].count
-                            : 0}
-                        </span>
-                      </div>
-                    </li>
-                    <li ref={draftsRef} onClick={() => loadSection("drafts", draftsRef)}>
-                      <div>
-                        <span className="fa fa-pencil-square-o"></span> Drafts
-                        <span className={s.item_count}>
-                          {counts && counts.filter((x) => x.folderName === "drafts")[0] !== undefined
-                            ? counts.filter((x) => x.folderName === "drafts")[0].count
                             : 0}
                         </span>
                       </div>
@@ -357,14 +373,18 @@ export default function Inbox() {
                                 checked={selectedRowIds.includes(inbox.id) ? true : false}
                               />
                             </div>
-                            <div onClick={() => handleInboxClick(inbox)} className={s.email_item}>
+                            <div
+                              onClick={() => handleInboxClick(inbox)}
+                              className={s.email_item}
+                              style={{ background: selectedInbox !== null && inbox.id === selectedInbox.id ? "#11121a" : null }}
+                            >
                               <div className={s.email_item__unread_dot} data-read={inbox.isConfirmed}></div>
                               <div className={s.email_item__subject + s.truncate} style={{ color: !inbox.isConfirmed ? "#fff" : null }}>
                                 {inbox.title}
                               </div>
                               <div className={s.email_item__details}>
                                 <span className={s.email_item__from + s.truncate} style={{ color: !inbox.isConfirmed ? "#fff" : null }}>
-                                  {inbox.sender.account}
+                                  {inbox.sender ? inbox.sender.account : null}
                                 </span>
                                 <span
                                   className={s.email_item__time + s.truncate}
@@ -404,7 +424,8 @@ export default function Inbox() {
                           <div className={s.email_content__time}>
                             <Moment format="YYYY-MM-DD HH:mm">{selectedInbox.createdAt}</Moment>
                           </div>
-                          <div className={s.email_content__from}>sender: {selectedInbox.sender.account}</div>
+                          <div className={s.email_content__from}>from: {selectedInbox.sender.account}</div>
+                          <div className={s.email_content__from}>to: {selectedInbox.receiver !== null ? selectedInbox.receiver.account : "-"}</div>
                         </div>
                         <div className={s.email_content__message}>{selectedInbox.content}</div>
                       </>
@@ -416,6 +437,7 @@ export default function Inbox() {
           </Widget>
         </Col>
       </Row>
+      <AddInboxModal open={addInboxModalOpen} handleCloseClick={handleAddInboxModalClick} />
     </div>
   );
 }

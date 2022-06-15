@@ -104,5 +104,9 @@ db.inboxs.belongsTo(db.users, {
   foreignKey: "receiverId",
   as: "receiver",
 });
+db.inboxs.belongsTo(db.users, {
+  foreignKey: "ownerId",
+  as: "owner",
+});
 
 module.exports = db;

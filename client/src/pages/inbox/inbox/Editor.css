@@ -1,0 +1,13 @@
+.public-DraftStyleDefault-block {
+  margin: 0;
+}
+
+figure {
+  margin: 0;
+}
+
+.rdw-fontsize-dropdown,
+.rdw-colorpicker-modal-header,
+.rdw-image-modal {
+  color: #495057;
+}

@@ -6,11 +6,14 @@ module.exports = (sequelize, Sequelize) => {
     content: {
       type: Sequelize.TEXT,
     },
+    folderName: {
+      type: Sequelize.TEXT,
+    },
     isConfirmed: {
       type: Sequelize.BOOLEAN,
     },
-    folderName: {
-      type: Sequelize.TEXT,
+    isSend: {
+      type: Sequelize.BOOLEAN,
     },
   });
 

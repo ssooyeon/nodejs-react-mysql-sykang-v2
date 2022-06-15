@@ -1,0 +1,78 @@
+@import "../../../styles/app";
+
+.errorText {
+  color: red;
+  margin: auto;
+  font-size: 14px;
+}
+.modalContentWrapper {
+  height: 650px;
+}
+.labelText {
+  display: flex;
+  font-size: 14px;
+}
+.labelDiv {
+  width: 10px;
+  height: 10px;
+  margin-top: 2px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.textField {
+  width: 100%;
+  margin-top: 10px;
+}
+.iconButton {
+  background: none !important;
+  box-shadow: none !important;
+  width: 20px !important;
+  min-width: 20px !important;
+  height: 20px !important;
+}
+.icon {
+  width: 20px !important;
+  height: 20px !important;
+  margin-bottom: 10px !important;
+  color: #000;
+}
+.labelDeleteIcon {
+  padding: 0px !important;
+  height: auto !important;
+}
+
+.userTableWrapper {
+  width: 100%;
+  text-align: center;
+  border: 1px solid #787474;
+
+  table tr {
+    height: 10px;
+  }
+  
+  table tr td {
+    padding: 5px;
+    height: auto !important;
+  }
+}
+
+.userPaging {
+  display: flex;
+  nav {
+    margin: auto;
+    ul {
+      li {
+        &.page-item {
+          &.active {
+            opacity: 0.5 !important;
+          }
+        }
+      }
+    }
+  }
+  button {
+    background: #1e213f !important;
+    border: #1e213f !important;
+    color: #fff !important;
+  }
+}

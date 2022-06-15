@@ -3,6 +3,7 @@ const Inbox = db.inboxs;
 const User = db.users;
 const Log = db.logs;
 const Op = db.Sequelize.Op;
+const mailer = require("../utils/mailer");
 
 /**
  * Inbox 생성
@@ -28,8 +29,8 @@ exports.create = (req, res) => {
  * Inbox 전체 조회 또는 사용자 별 검색
  */
 exports.findAll = (req, res) => {
-  const { receiverId, folderName } = req.query;
-  const condition = receiverId ? { receiverId: receiverId } : null;
+  const { ownerId, folderName } = req.query;
+  const condition = ownerId ? { ownerId: ownerId } : null;
   const condition2 = folderName ? { folderName: folderName } : null;
   Inbox.findAll({
     where: {
@@ -39,6 +40,10 @@ exports.findAll = (req, res) => {
       {
         model: User,
         as: "sender",
+      },
+      {
+        model: User,
+        as: "receiver",
       },
     ],
     order: [["createdAt", "DESC"]],
@@ -55,8 +60,8 @@ exports.findAll = (req, res) => {
  * Inbox folderName 별 isConfirmed count 개수 확인
  */
 exports.findIsConfirmedCount = (req, res) => {
-  const { receiverId } = req.query;
-  const condition = receiverId ? { receiverId: receiverId } : null;
+  const { ownerId } = req.query;
+  const condition = ownerId ? { ownerId: ownerId } : null;
 
   Inbox.findAll({
     where: {
@@ -149,15 +154,15 @@ exports.deleteAll = (req, res) => {
  * folderName 별 Inbox 전체 삭제
  */
 exports.deleteAllInFolder = (req, res) => {
-  if (!req.query.receiverId && req.query.folderName) {
-    res.status(400).send({ message: "receiverId and folderName cannot be empty." });
+  if (!req.query.ownerId && req.query.folderName) {
+    res.status(400).send({ message: "ownerId and folderName cannot be empty." });
     return;
   }
 
-  const { receiverId, folderName } = req.query;
+  const { ownerId, folderName } = req.query;
   Inbox.destroy({
     where: {
-      receiverId: receiverId,
+      ownerId: ownerId,
       folderName: folderName,
     },
     truncate: false,

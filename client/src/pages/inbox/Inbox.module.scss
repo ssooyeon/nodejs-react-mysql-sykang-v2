@@ -236,6 +236,12 @@ $sidebar-width: 200px;
     float: right;
     font-size: 10px;
   }
+
+  &__update_btn {
+    float: right;
+    font-size: 10px;
+    margin-right: 5px;
+  }
 	
 	.delete_btn {
 		cursor: pointer;

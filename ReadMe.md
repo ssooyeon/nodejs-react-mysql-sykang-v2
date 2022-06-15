@@ -18,6 +18,7 @@
 9. text formatter
 10. color picker
 11. send email
+12. inbox
 
 # setting project
 
