@@ -427,7 +427,7 @@ export default function Inbox() {
                           <div className={s.email_content__from}>from: {selectedInbox.sender.account}</div>
                           <div className={s.email_content__from}>to: {selectedInbox.receiver !== null ? selectedInbox.receiver.account : "-"}</div>
                         </div>
-                        <div className={s.email_content__message}>{selectedInbox.content}</div>
+                        <div className={s.email_content__message} dangerouslySetInnerHTML={{ __html: selectedInbox.content }}></div>
                       </>
                     ) : null}
                   </div>
