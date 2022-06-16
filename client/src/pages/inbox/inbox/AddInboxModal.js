@@ -10,6 +10,7 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import "./Editor.css";
 import s from "./InboxForm.module.scss";
 
+import { createAlarm, retrieveAlarmByUser } from "../../../actions/alarms";
 import { createInbox } from "../../../actions/inboxs";
 import UserService from "../../../services/UserService";
 
@@ -109,11 +110,25 @@ export default function AddInboxModal({ open, handleCloseClick }) {
       const rawContentState = convertToRaw(editorState.getCurrentContent());
       const markup = draftToHtml(rawContentState);
 
+      // owner=receiver인 데이터와 owner=sender인 데이터를 함께 생성
       selectionUsers.forEach((userId) => {
         const sentData = { ...inboxForm, content: markup, folderName: "sent", receiverId: userId, ownerId: currentUser.id };
         const recvData = { ...inboxForm, content: markup, folderName: "inbox", receiverId: userId, ownerId: userId };
         dispatch(createInbox(sentData)).then(() => {
           dispatch(createInbox(recvData));
+          // Inbox 등록 시 receiver에게 알람
+          const alarm = {
+            message: `A new inbox(title: ${recvData.title}) has arrived by '${currentUser.account}'.`,
+            status: "INFO",
+            notify: false,
+            userId: recvData.ownerId,
+          };
+          dispatch(createAlarm(alarm))
+            .then(() => {
+              // 로그인한 유저의 알람 리스트 재조회 (header)
+              dispatch(retrieveAlarmByUser(currentUser.id));
+            })
+            .catch((e) => console.log(e));
         });
       });
 
