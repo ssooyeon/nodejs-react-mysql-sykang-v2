@@ -9,18 +9,19 @@ const mailer = require("../utils/mailer");
  * Inbox 생성
  */
 exports.create = (req, res) => {
-  if (!req.body.title) {
-    res.status(400).send({ message: "title cannot be empty." });
+  if (req.body.length === 0) {
+    res.status(400).send({ message: "data cannot be empty." });
     return;
   }
-  const inbox = req.body;
-  Inbox.create(inbox)
+
+  const inboxs = req.body;
+  Inbox.bulkCreate(inboxs)
     .then((data) => {
-      Log.create({ status: "SUCCESS", message: `Inbox create successfully. New Inbox title is: ${req.body.title}` });
+      Log.create({ status: "SUCCESS", message: "Inboxs create successfully." });
       res.send(data);
     })
     .catch((err) => {
-      Log.create({ status: "ERROR", message: `Inbox create failed. Inbox title is: ${req.body.title}` });
+      Log.create({ status: "ERROR", message: "Inbox create failed." });
       res.status(500).send({ message: err.message || "Some error occurred while creating the Inbox." });
     });
 };
