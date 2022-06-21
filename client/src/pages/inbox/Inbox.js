@@ -106,11 +106,11 @@ export default function Inbox() {
     setSelectedRowIds([]);
   };
 
-  // mark read 클릭
-  const handleMarkRead = () => {
+  // mark read / unmark read 클릭
+  const handleMarkRead = (isConfirmed) => {
     const ids = selectedRowIds;
     ids.forEach((id) => {
-      const data = { id: id, isConfirmed: true };
+      const data = { id: id, isConfirmed: isConfirmed };
       modifyInbox(data);
     });
   };
@@ -126,15 +126,31 @@ export default function Inbox() {
 
   // remove 클릭
   const handleRemove = () => {
-    const ids = selectedRowIds;
-    ids.forEach((id) => {
-      dispatch(deleteInbox(id))
-        .then(() => {
-          setSelectedInbox(null);
-        })
-        .catch((e) => {
-          console.log(e);
+    Swal.fire({
+      text: "Are you sure selected mails to delete it completely?",
+      icon: "warning",
+      backdrop: false,
+      showCancelButton: true,
+      confirmButtonText: "OK",
+      confirmButtonColor: "#da2837",
+      cancelButtonColor: "#30324d",
+      showClass: {
+        backdrop: "swal2-noanimation",
+        icon: "",
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const ids = selectedRowIds;
+        ids.forEach((id) => {
+          dispatch(deleteInbox(id))
+            .then(() => {
+              setSelectedInbox(null);
+            })
+            .catch((e) => {
+              console.log(e);
+            });
         });
+      }
     });
   };
 
@@ -345,8 +361,12 @@ export default function Inbox() {
                         </Button>
                       )}
                       &nbsp;
-                      <Button color="inverse" className={s.item_btn} size="xs" onClick={() => handleMarkRead()}>
+                      <Button color="inverse" className={s.item_btn} size="xs" onClick={() => handleMarkRead(true)}>
                         mark read
+                      </Button>
+                      &nbsp;
+                      <Button color="inverse" className={s.item_btn} size="xs" onClick={() => handleMarkRead(false)}>
+                        unmark read
                       </Button>
                       &nbsp;
                       {section !== "trash" ? (
