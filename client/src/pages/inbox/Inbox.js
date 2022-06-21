@@ -366,7 +366,7 @@ export default function Inbox() {
                       </Button>
                       &nbsp;
                       <Button color="inverse" className={s.item_btn} size="xs" onClick={() => handleMarkRead(false)}>
-                        unmark read
+                        mark unread
                       </Button>
                       &nbsp;
                       {section !== "trash" ? (
