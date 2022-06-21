@@ -126,32 +126,34 @@ export default function Inbox() {
 
   // remove 클릭
   const handleRemove = () => {
-    Swal.fire({
-      text: "Are you sure selected mails to delete it completely?",
-      icon: "warning",
-      backdrop: false,
-      showCancelButton: true,
-      confirmButtonText: "OK",
-      confirmButtonColor: "#da2837",
-      cancelButtonColor: "#30324d",
-      showClass: {
-        backdrop: "swal2-noanimation",
-        icon: "",
-      },
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const ids = selectedRowIds;
-        ids.forEach((id) => {
-          dispatch(deleteInbox(id))
-            .then(() => {
-              setSelectedInbox(null);
-            })
-            .catch((e) => {
-              console.log(e);
-            });
-        });
-      }
-    });
+    if (selectedRowIds.length > 0) {
+      Swal.fire({
+        text: "Are you sure selected mails to delete it completely?",
+        icon: "warning",
+        backdrop: false,
+        showCancelButton: true,
+        confirmButtonText: "OK",
+        confirmButtonColor: "#da2837",
+        cancelButtonColor: "#30324d",
+        showClass: {
+          backdrop: "swal2-noanimation",
+          icon: "",
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const ids = selectedRowIds;
+          ids.forEach((id) => {
+            dispatch(deleteInbox(id))
+              .then(() => {
+                setSelectedInbox(null);
+              })
+              .catch((e) => {
+                console.log(e);
+              });
+          });
+        }
+      });
+    }
   };
 
   // inbox 클릭
