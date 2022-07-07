@@ -19,18 +19,34 @@ import WeatherService from "../../services/WeatherService";
 export default function Sidebar() {
   const { user: currentUser } = useSelector((state) => state.auth);
   const activeItem = useSelector((store) => store.navigation.activeItem);
+  const sidebarOpened = useSelector((state) => state.navigation.sidebarOpened);
   const dispatch = useDispatch();
 
   const [todaySchedules, setTodaySchedules] = useState([]);
   const [date, setDate] = useState("");
   const [temp, setTemp] = useState("");
   const [humidity, setHumidity] = useState("");
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   useEffect(() => {
     getSchedule();
     getTemp();
     getHumidity();
   }, []);
+
+  useEffect(() => {
+    function handleWindowResize() {
+      setWindowWidth(getWindowWidth());
+    }
+    window.addEventListener("resize", handleWindowResize);
+    return () => {
+      window.removeEventListener("resize", handleWindowResize);
+    };
+  }, []);
+
+  const getWindowWidth = () => {
+    return window.innerWidth;
+  };
 
   // 오늘 날짜 스케줄 가져오기
   const getSchedule = () => {
@@ -72,12 +88,8 @@ export default function Sidebar() {
   };
 
   return (
-    <nav
-      className={cx(s.root)}
-      // ref={(nav) => {
-      //   this.element = nav;
-      // }}
-    >
+    <nav className={cx(s.root)} style={{ height: windowWidth < 768 ? (sidebarOpened ? "auto" : "0") : "auto" }}>
+      {/* <nav className={cx(s.root)}> */}
       <header className={s.logo}>
         <a href="/">
           🌚 <span className="fw-bold"></span>

@@ -47,6 +47,7 @@ function Header(props) {
   const { user: currentUser } = useSelector((state) => state.auth);
   const tasks = useSelector((state) => state.tasks || []);
   const alarms = useSelector((state) => state.alarms || []);
+  const sidebarOpened = useSelector((state) => state.navigation.sidebarOpened);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -74,7 +75,7 @@ function Header(props) {
   };
 
   const toggleSidebar = () => {
-    props.isSidebarOpened ? dispatch(closeSidebar()) : dispatch(openSidebar());
+    sidebarOpened ? dispatch(closeSidebar()) : dispatch(openSidebar());
   };
 
   // auto logout for inactive user using idle
@@ -115,12 +116,12 @@ function Header(props) {
 
   return (
     <Navbar className={`d-print-none `}>
-      <div className={s.burger}>
-        <NavLink onClick={toggleSidebar} className={`d-md-none ${s.navItem} text-white`} href="#">
-          <BurgerIcon className={s.headerIcon} />
-        </NavLink>
-      </div>
       <div className={`d-print-none ${s.root}`}>
+        <div className={s.burger}>
+          <NavLink onClick={toggleSidebar} className={`d-md-none ${s.navItem} text-white`} href="#">
+            <BurgerIcon className={s.headerIcon} />
+          </NavLink>
+        </div>
         <Collapse className={`${s.searchCollapse} ml-lg-0 mr-md-3`} isOpen={searchOpen}>
           <InputGroup className={`${s.navbarForm} ${searchFocused ? s.navbarFormFocused : ""}`}>
             <InputGroupAddon addonType="prepend" className={s.inputAddon}>

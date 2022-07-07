@@ -32,6 +32,9 @@
   
   @include scroll-bar($sidebar-scrollbar-bg);
 
+  @media (max-width: breakpoint-max(lg)) {
+    height: auto;
+  }
 
   @media (max-width: breakpoint-max(sm)) {
     position: static !important;

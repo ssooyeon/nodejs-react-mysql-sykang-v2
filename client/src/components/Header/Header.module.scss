@@ -1,7 +1,8 @@
 @import "../../styles/app";
 
 .root {
-  display: flex;
+  // display: flex;
+  display: contents;
   justify-content: flex-end !important;
   @media (max-width: breakpoint-max(sm)) {
     margin-bottom: 50px;
