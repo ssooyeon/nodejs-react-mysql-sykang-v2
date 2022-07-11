@@ -91,3 +91,33 @@ export const RETRIEVE_INBOX = "RETRIEVE_INBOX";
 export const UPDATE_INBOX = "UPDATE_INBOX";
 export const DELETE_INBOX = "DELETE_INBOX";
 export const DELETE_ALL_INBOXS = "DELETE_ALL_INBOXS";
+
+/***************************************************
+ * PAY
+ ***************************************************/
+export const CREATE_PAY = "CREATE_PAY";
+export const RETRIEVE_PAYS = "RETRIEVE_PAYS";
+export const RETRIEVE_PAY = "RETRIEVE_PAY";
+export const UPDATE_PAY = "UPDATE_PAY";
+export const DELETE_PAY = "DELETE_PAY";
+export const DELETE_ALL_PAYS = "DELETE_ALL_PAYS";
+
+/***************************************************
+ * PAY ASSERT
+ ***************************************************/
+export const CREATE_ASSERT = "CREATE_ASSERT";
+export const RETRIEVE_ASSERTS = "RETRIEVE_ASSERTS";
+export const RETRIEVE_ASSERT = "RETRIEVE_ASSERT";
+export const UPDATE_ASSERT = "UPDATE_ASSERT";
+export const DELETE_ASSERT = "DELETE_ASSERT";
+export const DELETE_ALL_ASSERTS = "DELETE_ALL_ASSERTS";
+
+/***************************************************
+ * PAY CAT
+ ***************************************************/
+export const CREATE_CAT = "CREATE_CAT";
+export const RETRIEVE_CATS = "RETRIEVE_CATS";
+export const RETRIEVE_CAT = "RETRIEVE_CAT";
+export const UPDATE_CAT = "UPDATE_CAT";
+export const DELETE_CAT = "DELETE_CAT";
+export const DELETE_ALL_CATS = "DELETE_ALL_CATS";

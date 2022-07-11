@@ -44,6 +44,9 @@ require("./routes/schedule.routes")(app);
 require("./routes/inbox.routes")(app);
 require("./routes/weather.routes")(app);
 require("./routes/alarm.routes")(app);
+require("./routes/pay.routes")(app);
+require("./routes/payassert.routes")(app);
+require("./routes/paycat.routes")(app);
 
 const PORT = process.env.PORT || 8081;
 app.listen(PORT, () => {

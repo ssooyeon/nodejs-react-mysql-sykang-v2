@@ -162,6 +162,15 @@ export default function Sidebar() {
             <LinksGroup
               onActiveSidebarItemChange={(activeItem) => dispatch(changeActiveSidebarItem(activeItem))}
               activeItem={activeItem}
+              header="Pay"
+              isHeader
+              iconName={<BsFillCalendarCheckFill size={20} className={s.menuIcon} />}
+              link="/app/pay"
+              index="Pay"
+            />
+            <LinksGroup
+              onActiveSidebarItemChange={(activeItem) => dispatch(changeActiveSidebarItem(activeItem))}
+              activeItem={activeItem}
               header="Schedule"
               isHeader
               iconName={<BsFillCalendarCheckFill size={20} className={s.menuIcon} />}

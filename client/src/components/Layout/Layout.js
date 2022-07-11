@@ -20,6 +20,7 @@ import Dashboard from "../../pages/dashboard";
 import Formatter from "../../pages/formatter/Formatter";
 import ColorPicker from "../../pages/colorpicker/ColorPicker";
 import Inbox from "../../pages/inbox/Inbox";
+import Pay from "../../pages/pay/Pay";
 
 import Header from "../Header";
 import Sidebar from "../Sidebar";
@@ -90,6 +91,7 @@ class Layout extends React.Component {
                     <Route path="/app/formatter" exact component={Formatter} />
                     <Route path="/app/colorpicker" exact component={ColorPicker} />
                     <Route path="/app/inbox" exact component={Inbox} />
+                    <Route path="/app/pay" exact component={Pay} />
                   </Switch>
                 </CSSTransition>
               </TransitionGroup>

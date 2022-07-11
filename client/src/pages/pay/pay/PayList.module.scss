@@ -1,0 +1,30 @@
+@import "../../../styles/app";
+
+.overFlow {
+  table {
+    td {
+      padding: 0.35rem;
+    }
+  }
+}
+
+.payPaging {
+  display: flex;
+  nav {
+    margin: auto;
+    ul {
+      li {
+        &.page-item {
+          &.active {
+            opacity: 0.5 !important;
+          }
+        }
+      }
+    }
+  }
+  button {
+    background: #1e213f !important;
+    border: #1e213f !important;
+    color: #fff !important;
+  }
+}

@@ -8,6 +8,9 @@ import tasks from "./tasks";
 import schedules from "./schedules";
 import alarms from "./alarms";
 import inboxs from "./inboxs";
+import pays from "./pays";
+import asserts from "./payasserts";
+import cats from "./paycats";
 
 import navigation from "./navigation";
 import alerts from "./alerts";
@@ -22,6 +25,9 @@ export default combineReducers({
   schedules,
   alarms,
   inboxs,
+  pays,
+  asserts,
+  cats,
 
   navigation,
   alerts,

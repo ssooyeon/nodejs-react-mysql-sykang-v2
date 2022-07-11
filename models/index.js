@@ -109,4 +109,35 @@ db.inboxs.belongsTo(db.users, {
   as: "owner",
 });
 
+/** pay with user,assert,cat */
+db.pays = require("./pay.model")(sequelize, Sequelize);
+db.payasserts = require("./payassert.model")(sequelize, Sequelize);
+db.paycats = require("./paycat.model")(sequelize, Sequelize);
+db.pays.belongsTo(db.users, {
+  foreignKey: "createrId",
+  as: "creater",
+});
+db.pays.belongsTo(db.payasserts, {
+  foreignKey: "assertId",
+  as: "assert",
+  onDelete: "CASCADE",
+});
+db.pays.belongsTo(db.paycats, {
+  foreignKey: "catId",
+  as: "cat",
+  onDelete: "CASCADE",
+});
+
+/** payassert with users */
+db.payasserts.belongsTo(db.users, {
+  foreignKey: "createrId",
+  as: "creater",
+});
+
+/** paycat with users */
+db.paycats.belongsTo(db.users, {
+  foreignKey: "createrId",
+  as: "creater",
+});
+
 module.exports = db;
