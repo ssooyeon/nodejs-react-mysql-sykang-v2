@@ -213,6 +213,41 @@ exports.monthAmount = (req, res) => {
       res.send(data);
     })
     .catch((err) => {
-      res.status(500).send({ message: err.message || "Some error occurred while retrieving today total amount." });
+      res.status(500).send({ message: err.message || "Some error occurred while retrieving month total amount." });
+    });
+};
+
+/**
+ * 카테고리별 지출 내역 조회
+ */
+exports.findSpendingByCat = (req, res) => {
+  Pay.findAll({
+    include: [
+      {
+        model: Cat,
+        as: "cat",
+      },
+    ],
+    group: ["catId"],
+    attributes: [
+      [db.Sequelize.col("cat.name"), "name"],
+      [db.Sequelize.fn("count", "*"), "count"],
+      [
+        db.Sequelize.fn(
+          "SUM",
+          db.Sequelize.literal(
+            "CASE WHEN amount<0 AND DATE_FORMAT(date, '%Y-%m-01') = DATE_FORMAT(CURDATE(), '%Y-%m-01') THEN ABS(amount) ELSE 0 END"
+          )
+        ),
+        "thismonth_spending",
+      ],
+    ],
+    order: [[db.Sequelize.literal("thismonth_spending"), "DESC"]],
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({ message: err.message || "Some error occurred while retrieving payment category statistic." });
     });
 };

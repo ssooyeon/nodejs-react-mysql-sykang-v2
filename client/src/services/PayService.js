@@ -41,6 +41,11 @@ class PayService {
   getMonthAmount(params) {
     return http.get("/pays/month/amount", { params });
   }
+
+  // this month cat count 조회
+  getSpendingByCat(params) {
+    return http.get("/pays/month/cat", { params });
+  }
 }
 
 export default new PayService();

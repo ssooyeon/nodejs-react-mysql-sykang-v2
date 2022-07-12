@@ -22,6 +22,9 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
     acquire: 30000,
     idle: 10000,
   },
+  dialectOptions: {
+    decimalNumbers: true,
+  },
 });
 
 const db = {};

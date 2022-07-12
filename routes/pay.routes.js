@@ -11,6 +11,7 @@ module.exports = (app) => {
   /************************************************************ 통계 */
   router.get("/today/amount", pays.todayAmount);
   router.get("/month/amount", pays.monthAmount);
+  router.get("/month/cat", pays.findSpendingByCat);
 
   app.use("/api/pays", router);
 };
