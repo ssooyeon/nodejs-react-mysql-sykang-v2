@@ -221,7 +221,17 @@ exports.monthAmount = (req, res) => {
  * 카테고리별 지출 내역 조회
  */
 exports.findSpendingByCat = (req, res) => {
+  const { userId, date } = req.query;
+  console.log(date);
+  const condition = userId ? { createrId: userId } : null;
+
+  if (!date || date === null) {
+    res.status(400).send({ message: "Date cannot be empty." });
+    return;
+  }
+
   Pay.findAll({
+    where: condition,
     include: [
       {
         model: Cat,
@@ -236,7 +246,7 @@ exports.findSpendingByCat = (req, res) => {
         db.Sequelize.fn(
           "SUM",
           db.Sequelize.literal(
-            "CASE WHEN amount<0 AND DATE_FORMAT(date, '%Y-%m-01') = DATE_FORMAT(CURDATE(), '%Y-%m-01') THEN ABS(amount) ELSE 0 END"
+            `CASE WHEN amount<0 AND DATE_FORMAT(date, '%Y-%m-01') = DATE_FORMAT('${date}', '%Y-%m-01') THEN ABS(amount) ELSE 0 END`
           )
         ),
         "thismonth_spending",

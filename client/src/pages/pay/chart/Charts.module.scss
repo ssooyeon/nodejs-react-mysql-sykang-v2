@@ -88,6 +88,10 @@
   }
 }
 
+.subTitle {
+  margin-top: 10px;
+}
+
 .toggleLabel {
   // float: right;
   display: contents;
@@ -95,4 +99,12 @@
   label {
     display: block;
   }
+}
+
+.dateWrapper {
+  float: right;
+}
+
+.monthPicker {
+  margin-left: -74px !important;
 }

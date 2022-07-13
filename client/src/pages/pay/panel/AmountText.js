@@ -58,6 +58,7 @@ export default function AmountText({ user, isListUpdated }) {
   return (
     <>
       <Widget
+        style={{ height: "180px" }}
         title={
           <h6>
             Today&nbsp;&nbsp;
@@ -99,6 +100,7 @@ export default function AmountText({ user, isListUpdated }) {
         </p>
       </Widget>
       <Widget
+        style={{ height: "180px" }}
         title={
           <h6>
             This month&nbsp;&nbsp;

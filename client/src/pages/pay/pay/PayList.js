@@ -92,7 +92,7 @@ export default function PayList({ user, someUpdate }) {
 
   return (
     <>
-      <Widget>
+      <Widget style={{ height: "400px" }}>
         <h3>
           <span className="fw-semi-bold">Daily</span>
           <div className="float-right">
