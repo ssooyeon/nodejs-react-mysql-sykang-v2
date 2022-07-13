@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import cx from "classnames";
 import { Progress, Alert } from "reactstrap";
 import Moment from "react-moment";
-import { MdDashboard, MdTaskAlt, MdColorLens } from "react-icons/md";
+import { MdDashboard, MdTaskAlt, MdColorLens, MdPayment } from "react-icons/md";
 import { RiUserSettingsFill } from "react-icons/ri";
 import { FaUserEdit } from "react-icons/fa";
 import { BsTable, BsFillCalendarCheckFill, BsCodeSlash } from "react-icons/bs";
@@ -164,7 +164,7 @@ export default function Sidebar() {
               activeItem={activeItem}
               header="Pay"
               isHeader
-              iconName={<BsFillCalendarCheckFill size={20} className={s.menuIcon} />}
+              iconName={<MdPayment size={20} className={s.menuIcon} />}
               link="/app/pay"
               index="Pay"
             />
