@@ -6,6 +6,7 @@ import s from "./Pay.module.scss";
 import PayList from "./pay/PayList";
 import AmountText from "./panel/AmountText";
 import CatChart from "./chart/CatChart";
+import AssertList from "./assert/AssertList";
 
 export default function Pay() {
   const { user: currentUser } = useSelector((state) => state.auth);
@@ -22,13 +23,24 @@ export default function Pay() {
       </h2>
       <Row>
         <Col lg={6} md={12} sm={12}>
-          <PayList user={currentUser} someUpdate={handleSomeUpdate} />
+          <PayList user={currentUser} someUpdate={handleSomeUpdate} isListUpdated={isListUpdated} />
         </Col>
         <Col lg={3} md={12} sm={12}>
           <AmountText user={currentUser} isListUpdated={isListUpdated} />
         </Col>
         <Col lg={3} md={12} sm={12}>
           <CatChart user={currentUser} isListUpdated={isListUpdated} />
+        </Col>
+      </Row>
+      <Row>
+        <Col lg={6} md={12} sm={12}>
+          Cal
+        </Col>
+        <Col lg={3} md={12} sm={12}>
+          <AssertList user={currentUser} someUpdate={handleSomeUpdate} />
+        </Col>
+        <Col lg={3} md={12} sm={12}>
+          Cat
         </Col>
       </Row>
     </div>

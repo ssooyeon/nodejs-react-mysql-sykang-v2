@@ -123,8 +123,8 @@ db.pays.belongsTo(db.users, {
 db.pays.belongsTo(db.payasserts, {
   foreignKey: "assertId",
   as: "assert",
-  onDelete: "CASCADE",
 });
+
 db.pays.belongsTo(db.paycats, {
   foreignKey: "catId",
   as: "cat",
@@ -141,6 +141,11 @@ db.payasserts.belongsTo(db.users, {
 db.paycats.belongsTo(db.users, {
   foreignKey: "createrId",
   as: "creater",
+});
+db.paycats.belongsTo(db.paycats, {
+  foreignKey: "parentId",
+  as: "parent",
+  onDelete: "CASCADE",
 });
 
 module.exports = db;

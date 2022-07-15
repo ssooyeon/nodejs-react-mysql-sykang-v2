@@ -51,6 +51,7 @@ exports.findAll = (req, res) => {
     order: [["date", "DESC"]],
   })
     .then((data) => {
+      console.log(data);
       res.send(data);
     })
     .catch((err) => {
@@ -222,7 +223,6 @@ exports.monthAmount = (req, res) => {
  */
 exports.findSpendingByCat = (req, res) => {
   const { userId, date } = req.query;
-  console.log(date);
   const condition = userId ? { createrId: userId } : null;
 
   if (!date || date === null) {

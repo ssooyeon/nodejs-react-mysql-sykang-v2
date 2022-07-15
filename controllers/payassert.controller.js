@@ -13,6 +13,7 @@ exports.create = (req, res) => {
     return;
   }
   const assert = req.body;
+  console.log(assert);
   Assert.create(assert)
     .then((data) => {
       Log.create({ status: "SUCCESS", message: `Assert create successfully. New Assert name is: ${req.body.name}` });
@@ -38,7 +39,7 @@ exports.findAll = (req, res) => {
         as: "creater",
       },
     ],
-    order: [["ordering", "DESC"]],
+    order: [["ordering", "ASC"]],
   })
     .then((data) => {
       res.send(data);
@@ -90,7 +91,7 @@ exports.update = (req, res) => {
  */
 exports.delete = (req, res) => {
   const id = req.params.id;
-  Assert.destroy({ where: { id: id } })
+  Assert.destroy({ where: { id: id }, force: true })
     .then((num) => {
       if (num === 1) {
         Log.create({ status: "SUCCESS", message: `Assert delete successfully. New Assert id is: ${id}` });

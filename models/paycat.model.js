@@ -6,6 +6,9 @@ module.exports = (sequelize, Sequelize) => {
     ordering: {
       type: Sequelize.INTEGER,
     },
+    type: {
+      type: Sequelize.STRING,
+    },
   });
 
   return Paycat;

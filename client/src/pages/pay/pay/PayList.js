@@ -17,7 +17,7 @@ import EditPayModal from "./EditPayModal";
 
 const pageSize = 5;
 
-export default function PayList({ user, someUpdate }) {
+export default function PayList({ user, someUpdate, isListUpdated }) {
   const pays = useSelector((state) => state.pays || []);
   const asserts = useSelector((state) => state.asserts || []);
   const cats = useSelector((state) => state.cats || []);
@@ -34,7 +34,7 @@ export default function PayList({ user, someUpdate }) {
     dispatch(retrievePays({ userId: user.id }));
     dispatch(retrieveAsserts({ userId: user.id }));
     dispatch(retrieveCats({ userId: user.id }));
-  }, [user, dispatch]);
+  }, [user, dispatch, isListUpdated]);
 
   // payment 테이블 페이징
   const handlePayTablePaging = (selectedPage) => {
