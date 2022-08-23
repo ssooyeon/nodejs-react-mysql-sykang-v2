@@ -13,7 +13,6 @@ exports.create = (req, res) => {
     return;
   }
   const assert = req.body;
-  console.log(assert);
   Assert.create(assert)
     .then((data) => {
       Log.create({ status: "SUCCESS", message: `Assert create successfully. New Assert name is: ${req.body.name}` });

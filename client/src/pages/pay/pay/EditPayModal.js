@@ -21,7 +21,7 @@ export default function EditPayModal({ open, handleCloseClick, asserts, cats, pa
 
   const [payForm, setPayForm] = useState(initialPayState);
   const [amount, setAmount] = useState(0);
-  const [isIncome, setIsIncome] = useState(false);
+  const [payType, setPayType] = useState("spending");
 
   const [isShowSuccessAlert, setIsShowSuccessAlert] = useState(false); // 수정에 성공했는지의 여부
   const [successMessage, setSuccessMessage] = useState(""); // 수정에 성공했을 때의 메세지
@@ -34,7 +34,7 @@ export default function EditPayModal({ open, handleCloseClick, asserts, cats, pa
   useEffect(() => {
     setPayForm({ ...pay, assertId: pay.assertId === null ? "" : pay.assertId, catId: pay.catId === null ? "" : pay.catId });
     if (pay.amount > 0) {
-      setIsIncome(true);
+      setPayType("income");
     }
     setAmount(Math.abs(pay.amount).toLocaleString());
   }, [pay]);
@@ -44,7 +44,7 @@ export default function EditPayModal({ open, handleCloseClick, asserts, cats, pa
     handleCloseClick(false);
     setPayForm(initialPayState);
     setAmount(0);
-    setIsIncome(false);
+    setPayType("spending");
     setIsShowSuccessAlert(false);
     setIsShowErrAlert(false);
   };
@@ -54,7 +54,7 @@ export default function EditPayModal({ open, handleCloseClick, asserts, cats, pa
     handleCloseClick(false, isDone);
     setPayForm(initialPayState);
     setAmount(0);
-    setIsIncome(false);
+    setPayType("spending");
     setIsShowSuccessAlert(false);
     setIsShowErrAlert(false);
   };
@@ -101,7 +101,7 @@ export default function EditPayModal({ open, handleCloseClick, asserts, cats, pa
       const withoutComma = amount.split(",").reduce((curr, acc) => curr + acc, "");
       const data = {
         ...payForm,
-        amount: isIncome ? withoutComma : -withoutComma,
+        amount: payType === "income" ? withoutComma : -withoutComma,
         assertId: payForm.assertId === "" ? null : payForm.assertId,
         catId: payForm.catId === "" ? null : payForm.catId,
       };
@@ -142,8 +142,11 @@ export default function EditPayModal({ open, handleCloseClick, asserts, cats, pa
                 color="inverse"
                 className="mr-2"
                 size="sm"
-                style={{ width: "48%", background: isIncome ? "#9d702c" : "" }}
-                onClick={() => setIsIncome(true)}
+                style={{ width: "48%", background: payType === "income" ? "#9d702c" : "" }}
+                onClick={() => {
+                  setPayType("income");
+                  setPayForm({ ...payForm, catId: "" });
+                }}
               >
                 Income
               </Button>
@@ -151,8 +154,11 @@ export default function EditPayModal({ open, handleCloseClick, asserts, cats, pa
                 color="inverse"
                 className="mr-2"
                 size="sm"
-                style={{ width: "49%", background: isIncome ? "" : "#9d702c" }}
-                onClick={() => setIsIncome(false)}
+                style={{ width: "49%", background: payType === "income" ? "" : "#9d702c" }}
+                onClick={() => {
+                  setPayType("spending");
+                  setPayForm({ ...payForm, catId: "" });
+                }}
               >
                 Spending
               </Button>
@@ -243,13 +249,22 @@ export default function EditPayModal({ open, handleCloseClick, asserts, cats, pa
               >
                 <option value="">NONE</option>
                 {cats &&
-                  cats.map((cat, index) => {
-                    return (
-                      <option value={cat.id} key={cat.id}>
-                        {cat.name}
-                      </option>
-                    );
-                  })}
+                  cats
+                    .filter((x) => x.type === payType)
+                    .map((cat, index) => {
+                      return (
+                        <optgroup label={cat.name} key={cat.id}>
+                          {cat.children &&
+                            cat.children.map((c, index) => {
+                              return (
+                                <option value={c.id} key={c.id}>
+                                  {c.name}
+                                </option>
+                              );
+                            })}
+                        </optgroup>
+                      );
+                    })}
               </Input>
             </InputGroup>
           </FormGroup>

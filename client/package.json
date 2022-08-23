@@ -136,6 +136,8 @@
     "react-animate-height": "^2.0.21",
     "react-animated-number": "^0.4.4",
     "react-beautiful-dnd": "^13.1.0",
+    "react-bootstrap-table-next": "^4.0.3",
+    "react-bootstrap-table2-editor": "^1.4.0",
     "react-color": "^2.19.3",
     "react-custom-scrollbars": "^4.2.1",
     "react-date-picker": "^8.4.0",

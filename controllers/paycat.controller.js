@@ -28,17 +28,25 @@ exports.create = (req, res) => {
  * 사용자별 cat 전체 조회
  */
 exports.findAll = (req, res) => {
-  const { userId } = req.query;
-  const condition = userId ? { createrId: userId } : null;
+  const { userId, type } = req.query;
+  const condition1 = userId ? { createrId: userId } : null;
+  const condition2 = type ? { type: type } : null;
+  const condition3 = { parentId: { [Op.eq]: null } };
   Cat.findAll({
-    where: condition,
+    where: {
+      [Op.and]: [condition1, condition2, condition3],
+    },
     include: [
       {
         model: User,
         as: "creater",
       },
+      {
+        model: Cat,
+        as: "children",
+      },
     ],
-    order: [["ordering", "DESC"]],
+    order: [["ordering", "ASC"]],
   })
     .then((data) => {
       res.send(data);
@@ -58,6 +66,10 @@ exports.findOne = (req, res) => {
       {
         model: User,
         as: "creater",
+      },
+      {
+        model: Cat,
+        as: "children",
       },
     ],
   })

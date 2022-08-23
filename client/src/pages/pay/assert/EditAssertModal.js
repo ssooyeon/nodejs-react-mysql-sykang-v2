@@ -60,7 +60,7 @@ export default function EditAssertModal({ open, handleCloseClick, assert }) {
         .then(() => {
           setIsShowSuccessAlert(true);
           setIsShowErrAlert(false);
-          setSuccessMessage("New assert added successfully.");
+          setSuccessMessage("Assert updated successfully.");
 
           setTimeout(() => {
             handleDone();

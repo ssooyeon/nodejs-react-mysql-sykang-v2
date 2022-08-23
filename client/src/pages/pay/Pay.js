@@ -7,6 +7,7 @@ import PayList from "./pay/PayList";
 import AmountText from "./panel/AmountText";
 import CatChart from "./chart/CatChart";
 import AssertList from "./assert/AssertList";
+import CatList from "./cat/CatList";
 
 export default function Pay() {
   const { user: currentUser } = useSelector((state) => state.auth);
@@ -40,7 +41,7 @@ export default function Pay() {
           <AssertList user={currentUser} someUpdate={handleSomeUpdate} />
         </Col>
         <Col lg={3} md={12} sm={12}>
-          Cat
+          <CatList user={currentUser} someUpdate={handleSomeUpdate} />
         </Col>
       </Row>
     </div>

@@ -51,7 +51,6 @@ exports.findAll = (req, res) => {
     order: [["date", "DESC"]],
   })
     .then((data) => {
-      console.log(data);
       res.send(data);
     })
     .catch((err) => {

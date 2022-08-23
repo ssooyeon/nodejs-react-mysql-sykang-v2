@@ -128,7 +128,6 @@ db.pays.belongsTo(db.payasserts, {
 db.pays.belongsTo(db.paycats, {
   foreignKey: "catId",
   as: "cat",
-  onDelete: "CASCADE",
 });
 
 /** payassert with users */
@@ -141,6 +140,10 @@ db.payasserts.belongsTo(db.users, {
 db.paycats.belongsTo(db.users, {
   foreignKey: "createrId",
   as: "creater",
+});
+db.paycats.hasMany(db.paycats, {
+  foreignKey: "parentId",
+  as: "children",
 });
 db.paycats.belongsTo(db.paycats, {
   foreignKey: "parentId",
