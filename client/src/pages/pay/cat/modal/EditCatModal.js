@@ -200,6 +200,7 @@ export default function EditCatModal({ open, handleCloseClick, cat }) {
                   {
                     dataField: "remove",
                     text: "Del",
+                    editable: false,
                     headerAttrs: { hidden: true },
                     align: "right",
                     formatter: (cellContent, row) => {
@@ -213,9 +214,11 @@ export default function EditCatModal({ open, handleCloseClick, cat }) {
                 ]}
                 cellEdit={cellEditFactory({
                   mode: "click",
+                  autoSelectText: true,
                   afterSaveCell: (oldVal, newVal, row, col) => afterSaveCell(oldVal, newVal, row, col),
                 })}
                 bordered={false}
+                rowStyle={{ height: "10px" }}
               />
             </InputGroup>
           </FormGroup>

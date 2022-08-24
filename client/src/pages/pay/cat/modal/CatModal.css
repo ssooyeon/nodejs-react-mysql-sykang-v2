@@ -5,4 +5,5 @@
 
 .react-bootstrap-table table tbody tr td {
   padding: 0.3rem !important; 
+  vertical-align: middle;
 }
