@@ -8,7 +8,6 @@ import { retrieveCats, updateCat, deleteCat } from "../../../../actions/paycats"
 
 import PayCatService from "../../../../services/PayCatService";
 
-import s from "./CatModal.module.scss";
 import "./CatModal.css";
 
 export default function EditCatModal({ open, handleCloseClick, cat }) {
@@ -177,11 +176,13 @@ export default function EditCatModal({ open, handleCloseClick, cat }) {
             </InputGroup>
           </FormGroup>
           <FormGroup>
-            <Label for="name">Item</Label>
-            <div className="float-right" style={{ marginRight: "8px" }}>
-              <Button color="default" className="mr-2" size="xs" onClick={handleCatChildAdd}>
-                Add
-              </Button>
+            <div style={{ marginBottom: "5px" }}>
+              <Label for="name">Item</Label>
+              <div className="float-right" style={{ marginRight: "3px" }}>
+                <Button color="default" className="mr-2" size="xs" onClick={handleCatChildAdd}>
+                  Add
+                </Button>
+              </div>
             </div>
             <InputGroup className="input-group-no-border">
               <BootstrapTable
@@ -204,7 +205,7 @@ export default function EditCatModal({ open, handleCloseClick, cat }) {
                     formatter: (cellContent, row) => {
                       return (
                         <Button color="inverse" className="mr-2" size="xs" onClick={() => deleteCatChild(row.id)}>
-                          Del
+                          D
                         </Button>
                       );
                     },

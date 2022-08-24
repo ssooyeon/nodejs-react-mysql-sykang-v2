@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 import Widget from "../../../components/Widget";
 import s from "./AssertList.module.scss";
 
-import { retrieveAsserts, deleteAssert } from "../../../actions/payasserts";
+import { retrieveAsserts, updateAssert, deleteAssert } from "../../../actions/payasserts";
 
 import AddAssertModal from "./AddAssertModal";
 import EditAssertModal from "./EditAssertModal";
@@ -34,6 +34,12 @@ export default function AssertList({ user, someUpdate }) {
   const handleAssertAddModalClick = (value, isDone) => {
     setAssertAddModalOpen(value);
     if (isDone) {
+      dispatch(retrieveAsserts({ userId: user.id })).then((res) => {
+        if (res.length > 0) {
+          const num = res[res.length - 1].ordering;
+          setAssertLastOrderNum(num);
+        }
+      });
       someUpdate();
     }
   };
@@ -75,6 +81,36 @@ export default function AssertList({ user, someUpdate }) {
           .catch((e) => console.log(e));
       }
     });
+  };
+
+  // assert up ordering
+  const handleAssertOrderUp = (assert) => {
+    const upData = { id: assert.id, ordering: assert.ordering - 1 };
+    dispatch(updateAssert(upData.id, upData))
+      .then(() => {
+        const idx = asserts.indexOf(assert);
+        const prev = asserts[idx - 1];
+        const downData = { id: prev.id, ordering: prev.ordering + 1 };
+        dispatch(updateAssert(downData.id, downData)).then(() => {
+          dispatch(retrieveAsserts({ userId: user.id }));
+        });
+      })
+      .catch((e) => console.log(e));
+  };
+
+  // assert down ordering
+  const handleAssertOrderDown = (assert) => {
+    const downData = { id: assert.id, ordering: assert.ordering + 1 };
+    dispatch(updateAssert(downData.id, downData))
+      .then(() => {
+        const idx = asserts.indexOf(assert);
+        const next = asserts[idx + 1];
+        const upData = { id: next.id, ordering: next.ordering - 1 };
+        dispatch(updateAssert(upData.id, upData)).then(() => {
+          dispatch(retrieveAsserts({ userId: user.id }));
+        });
+      })
+      .catch((e) => console.log(e));
   };
 
   return (
@@ -119,12 +155,12 @@ export default function AssertList({ user, someUpdate }) {
                       <td>
                         <>
                           {idx > 0 ? (
-                            <Button color="" className={s.transparentButton} size="xs" onClick={() => {}}>
+                            <Button color="" className={s.transparentButton} size="xs" onClick={() => handleAssertOrderUp(assert)}>
                               <i className="fa fa-angle-up"></i>
                             </Button>
                           ) : null}
                           {idx + 1 === row.length ? null : (
-                            <Button color="" className={s.transparentButton} size="xs" onClick={() => {}}>
+                            <Button color="" className={s.transparentButton} size="xs" onClick={() => handleAssertOrderDown(assert)}>
                               <i className="fa fa-angle-down"></i>
                             </Button>
                           )}

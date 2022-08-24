@@ -102,14 +102,16 @@ exports.update = (req, res) => {
  */
 exports.delete = (req, res) => {
   const id = req.params.id;
-  Cat.destroy({ where: { id: id } })
-    .then((num) => {
-      if (num === 1) {
-        Log.create({ status: "SUCCESS", message: `Cat delete successfully. New Cat id is: ${id}` });
-        res.send({ message: "Cat was deleted successfully." });
-      } else {
-        res.send({ message: `Cannot delete Cat with id=${id}. maybe Cat was not found.` });
-      }
+  Cat.destroy({ where: { parentId: id } })
+    .then(() => {
+      Cat.destroy({ where: { id: id } }).then((num) => {
+        if (num === 1) {
+          Log.create({ status: "SUCCESS", message: `Cat with children delete successfully.` });
+          res.send({ message: "Cat was deleted successfully." });
+        } else {
+          res.send({ message: `Cannot delete Cat with id=${id}. maybe Cat was not found.` });
+        }
+      });
     })
     .catch((err) => {
       Log.create({ status: "ERROR", message: `Cat delete failed. Cat id is: ${id}` });

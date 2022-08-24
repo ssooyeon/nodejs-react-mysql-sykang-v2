@@ -144,6 +144,7 @@ db.paycats.belongsTo(db.users, {
 db.paycats.hasMany(db.paycats, {
   foreignKey: "parentId",
   as: "children",
+  onDelete: "CASCADE",
 });
 db.paycats.belongsTo(db.paycats, {
   foreignKey: "parentId",

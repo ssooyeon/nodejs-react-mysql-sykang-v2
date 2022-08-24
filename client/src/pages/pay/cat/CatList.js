@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 import Widget from "../../../components/Widget";
 import s from "./CatList.module.scss";
 
-import { retrieveCats, deleteCat } from "../../../actions/paycats";
+import { retrieveCats, updateCat, deleteCat } from "../../../actions/paycats";
 
 import AddCatModal from "./modal/AddCatModal";
 import EditCatModal from "./modal/EditCatModal";
@@ -34,6 +34,12 @@ export default function CatList({ user, someUpdate }) {
   const handleCatAddModalClick = (value, isDone) => {
     setCatAddModalOpen(value);
     if (isDone) {
+      dispatch(retrieveCats({ userId: user.id })).then((res) => {
+        if (res.length > 0) {
+          const num = res[res.length - 1].ordering;
+          setCatLastOrderNum(num);
+        }
+      });
       someUpdate();
     }
   };
@@ -75,6 +81,36 @@ export default function CatList({ user, someUpdate }) {
           .catch((e) => console.log(e));
       }
     });
+  };
+
+  // cat up ordering
+  const handleCatOrderUp = (cat) => {
+    const upData = { id: cat.id, ordering: cat.ordering - 1 };
+    dispatch(updateCat(upData.id, upData))
+      .then(() => {
+        const idx = cats.indexOf(cat);
+        const prev = cats[idx - 1];
+        const downData = { id: prev.id, ordering: prev.ordering + 1 };
+        dispatch(updateCat(downData.id, downData)).then(() => {
+          dispatch(retrieveCats({ userId: user.id }));
+        });
+      })
+      .catch((e) => console.log(e));
+  };
+
+  // cat down ordering
+  const handleCatOrderDown = (cat) => {
+    const downData = { id: cat.id, ordering: cat.ordering + 1 };
+    dispatch(updateCat(downData.id, downData))
+      .then(() => {
+        const idx = cats.indexOf(cat);
+        const next = cats[idx + 1];
+        const upData = { id: next.id, ordering: next.ordering - 1 };
+        dispatch(updateCat(upData.id, upData)).then(() => {
+          dispatch(retrieveCats({ userId: user.id }));
+        });
+      })
+      .catch((e) => console.log(e));
   };
 
   return (
@@ -123,12 +159,12 @@ export default function CatList({ user, someUpdate }) {
                       <td>
                         <>
                           {idx > 0 ? (
-                            <Button color="" className={s.transparentButton} size="xs" onClick={() => {}}>
+                            <Button color="" className={s.transparentButton} size="xs" onClick={() => handleCatOrderUp(cat)}>
                               <i className="fa fa-angle-up"></i>
                             </Button>
                           ) : null}
                           {idx + 1 === row.length ? null : (
-                            <Button color="" className={s.transparentButton} size="xs" onClick={() => {}}>
+                            <Button color="" className={s.transparentButton} size="xs" onClick={() => handleCatOrderDown(cat)}>
                               <i className="fa fa-angle-down"></i>
                             </Button>
                           )}
