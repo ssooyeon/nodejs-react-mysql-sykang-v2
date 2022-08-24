@@ -12,8 +12,8 @@ import { retrievePays, deletePay } from "../../../actions/pays";
 import { retrieveAsserts } from "../../../actions/payasserts";
 import { retrieveCats } from "../../../actions/paycats";
 
-import AddPayModal from "./AddPayModal";
-import EditPayModal from "./EditPayModal";
+import AddPayModal from "./modal/AddPayModal";
+import EditPayModal from "./modal/EditPayModal";
 
 const pageSize = 5;
 

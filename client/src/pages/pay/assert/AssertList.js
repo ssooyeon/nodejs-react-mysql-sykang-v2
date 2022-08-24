@@ -8,8 +8,8 @@ import s from "./AssertList.module.scss";
 
 import { retrieveAsserts, updateAssert, deleteAssert } from "../../../actions/payasserts";
 
-import AddAssertModal from "./AddAssertModal";
-import EditAssertModal from "./EditAssertModal";
+import AddAssertModal from "./modal/AddAssertModal";
+import EditAssertModal from "./modal/EditAssertModal";
 
 export default function AssertList({ user, someUpdate }) {
   const asserts = useSelector((state) => state.asserts || []);

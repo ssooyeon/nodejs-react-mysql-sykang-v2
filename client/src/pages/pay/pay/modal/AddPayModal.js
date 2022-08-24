@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { Alert, Button, FormGroup, InputGroup, Input, Label, Modal, ModalBody, ModalFooter } from "reactstrap";
 import DateTimePicker from "react-datetime-picker";
 
-import s from "../Modal.module.scss";
+import s from "./Modal.module.scss";
 
-import { createPay } from "../../../actions/pays";
+import { createPay } from "../../../../actions/pays";
 
 export default function AddPayModal({ open, handleCloseClick, asserts, cats }) {
   const { user: currentUser } = useSelector((state) => state.auth);

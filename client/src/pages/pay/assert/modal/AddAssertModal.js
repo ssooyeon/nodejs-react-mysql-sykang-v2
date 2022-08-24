@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Alert, Button, FormGroup, InputGroup, Input, Label, Modal, ModalBody, ModalFooter } from "reactstrap";
 
-import { createAssert } from "../../../actions/payasserts";
+import { createAssert } from "../../../../actions/payasserts";
 
 export default function AddAssertModal({ open, handleCloseClick, assertLastOrderNum }) {
   const { user: currentUser } = useSelector((state) => state.auth);
