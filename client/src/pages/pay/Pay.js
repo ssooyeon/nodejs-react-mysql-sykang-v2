@@ -6,6 +6,7 @@ import s from "./Pay.module.scss";
 import PayList from "./pay/PayList";
 import AmountText from "./panel/AmountText";
 import CatChart from "./chart/CatChart";
+import Calendar from "./calendar/Calendar";
 import AssertList from "./assert/AssertList";
 import CatList from "./cat/CatList";
 
@@ -35,7 +36,7 @@ export default function Pay() {
       </Row>
       <Row>
         <Col lg={6} md={12} sm={12}>
-          Cal
+          <Calendar user={currentUser} someUpdate={handleSomeUpdate} isListUpdated={isListUpdated} />
         </Col>
         <Col lg={3} md={12} sm={12}>
           <AssertList user={currentUser} someUpdate={handleSomeUpdate} />

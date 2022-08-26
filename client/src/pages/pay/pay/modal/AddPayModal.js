@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Alert, Button, FormGroup, InputGroup, Input, Label, Modal, ModalBody, ModalFooter } from "reactstrap";
 import DateTimePicker from "react-datetime-picker";
@@ -7,7 +7,7 @@ import s from "./Modal.module.scss";
 
 import { createPay } from "../../../../actions/pays";
 
-export default function AddPayModal({ open, handleCloseClick, asserts, cats }) {
+export default function AddPayModal({ open, handleCloseClick, asserts, cats, date }) {
   const { user: currentUser } = useSelector((state) => state.auth);
 
   const initialPayState = {
@@ -30,6 +30,13 @@ export default function AddPayModal({ open, handleCloseClick, asserts, cats }) {
   const [errMessage, setErrMessage] = useState(""); // 등록에 실패했을 때의 에러 메시지
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (date !== undefined) {
+      const dt = new Date(date).setHours(9, 0, 0, 0);
+      setPayForm({ ...payForm, date: dt });
+    }
+  }, [date]);
 
   // 부모에게 완료사항 전달
   const handleClose = () => {

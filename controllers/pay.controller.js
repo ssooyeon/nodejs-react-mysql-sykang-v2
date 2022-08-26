@@ -30,10 +30,19 @@ exports.create = (req, res) => {
  * 사용자별 payment 전체 조회
  */
 exports.findAll = (req, res) => {
-  const { userId } = req.query;
-  const condition = userId ? { createrId: userId } : null;
+  const { userId, date } = req.query;
+  const condition1 = userId ? { createrId: userId } : null;
+  const condition2 = date
+    ? {
+        date: {
+          [Op.gt]: new Date(date).setHours(0, 0, 0, 0),
+          [Op.lt]: new Date(date).setHours(23, 59, 59, 59),
+        },
+      }
+    : null;
+
   Pay.findAll({
-    where: condition,
+    where: [condition1, condition2],
     include: [
       {
         model: User,

@@ -1,0 +1,15 @@
+.payment_calendar .fc-daygrid-day-events {
+  line-height: 10px;
+}
+
+.payment_calendar .fc-daygrid-day-top {
+  float: right;
+}
+
+.payment_calendar .fc-daygrid-day-events {
+  padding-top: 5px;
+}
+
+.payment_calendar .fc-event {
+  font-size: 10px !important;
+}
