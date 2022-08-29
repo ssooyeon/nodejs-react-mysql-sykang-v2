@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Table, Button } from "reactstrap";
+import { Table, Button, FormGroup } from "reactstrap";
 import PaginationComponent from "react-reactstrap-pagination";
 import Swal from "sweetalert2";
+import DatePicker from "react-date-picker";
 import Moment from "react-moment";
+import moment from "moment/moment";
 
 import Widget from "../../../components/Widget";
 import s from "./PayList.module.scss";
 
-import { retrievePays, deletePay } from "../../../actions/pays";
+import { deletePay } from "../../../actions/pays";
 import { retrieveAsserts } from "../../../actions/payasserts";
 import { retrieveCats } from "../../../actions/paycats";
+
+import PayService from "../../../services/PayService";
 
 import AddPayModal from "./modal/AddPayModal";
 import EditPayModal from "./modal/EditPayModal";
@@ -18,20 +22,22 @@ import EditPayModal from "./modal/EditPayModal";
 const pageSize = 5;
 
 export default function PayList({ user, someUpdate, isListUpdated }) {
-  const pays = useSelector((state) => state.pays || []);
   const asserts = useSelector((state) => state.asserts || []);
   const cats = useSelector((state) => state.cats || []);
 
   const dispatch = useDispatch();
 
+  const [pays, setPays] = useState([]);
   const [paysCurrentPage, setPaysCurrentPage] = useState(0);
 
   const [payAddModalOpen, setPayAddModalOpen] = useState(false);
   const [payEditModalOpen, setPayEditModalOpen] = useState(false);
   const [editPay, setEditPay] = useState([]);
+  const [startDate, setStartDate] = useState(new Date().setMonth(new Date().getMonth() - 1));
+  const [endDate, setEndDate] = useState(new Date());
 
   useEffect(() => {
-    dispatch(retrievePays({ userId: user.id }));
+    getData();
     dispatch(retrieveAsserts({ userId: user.id }));
     dispatch(retrieveCats({ userId: user.id }));
   }, [user, dispatch, isListUpdated]);
@@ -45,7 +51,7 @@ export default function PayList({ user, someUpdate, isListUpdated }) {
   const handlePayAddModalClick = (value, isDone) => {
     setPayAddModalOpen(value);
     if (isDone) {
-      dispatch(retrievePays({ userId: user.id }));
+      getData();
       someUpdate();
     }
   };
@@ -54,7 +60,7 @@ export default function PayList({ user, someUpdate, isListUpdated }) {
   const handlePayEditModalClick = (value, isDone) => {
     setPayEditModalOpen(value);
     if (isDone) {
-      dispatch(retrievePays({ userId: user.id }));
+      getData();
       someUpdate();
     }
   };
@@ -83,11 +89,28 @@ export default function PayList({ user, someUpdate, isListUpdated }) {
       if (result.isConfirmed) {
         dispatch(deletePay(payId))
           .then(() => {
+            getData();
             someUpdate();
           })
           .catch((e) => console.log(e));
       }
     });
+  };
+
+  // payment 테이블 날짜 검색
+  const onPaySearchClick = () => {
+    getData();
+  };
+
+  const getData = () => {
+    const sdt = moment(startDate).format("YYYY-MM-DD");
+    const edt = moment(endDate).format("YYYY-MM-DD");
+    const params = { userId: user.id, start: sdt, end: edt };
+    PayService.getAllByDate(params)
+      .then((res) => {
+        setPays(res.data);
+      })
+      .catch((e) => console.log(e));
   };
 
   return (
@@ -101,10 +124,39 @@ export default function PayList({ user, someUpdate, isListUpdated }) {
             </Button>
           </div>
         </h3>
-        <p>
-          {"Indicates a list of "}
-          <code>daily payment</code> in row.
-        </p>
+        <FormGroup className={s.dateWrapper}>
+          <div>
+            <DatePicker
+              locale="en"
+              format="yyyy-MM-dd"
+              dayPlaceholder="dd"
+              monthPlaceholder="MM"
+              yearPlaceholder="yyyy"
+              className={s.datePicker}
+              clearIcon={null}
+              onChange={(d) => setStartDate(d)}
+              value={startDate ? new Date(startDate) : null}
+            />
+          </div>
+          &nbsp;&nbsp;&nbsp;
+          <div>
+            <DatePicker
+              locale="en"
+              format="yyyy-MM-dd"
+              dayPlaceholder="dd"
+              monthPlaceholder="MM"
+              yearPlaceholder="yyyy"
+              className={s.datePicker}
+              clearIcon={null}
+              onChange={(d) => setEndDate(d)}
+              value={endDate ? new Date(endDate) : null}
+            />
+          </div>
+          &nbsp;&nbsp;
+          <Button color="inverse" className="mr-2" size="xs" onClick={onPaySearchClick}>
+            <i className="fa fa-search" />
+          </Button>
+        </FormGroup>
         <br />
         <div className={s.overFlow}>
           <Table className="table-hover">

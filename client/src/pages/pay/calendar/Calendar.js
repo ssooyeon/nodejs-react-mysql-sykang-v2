@@ -122,10 +122,6 @@ export default function Calendar({ user, someUpdate, isListUpdated }) {
         <h3>
           <span className="fw-semi-bold">Calendar</span>
         </h3>
-        <p>
-          {"Indicates a list of "}
-          <code>monthly payment</code> in calendar.
-        </p>
         <br />
         <div className="payment_calendar">
           <FullCalendar

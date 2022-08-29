@@ -6,6 +6,11 @@ class PayService {
     return http.get("/pays", { params });
   }
 
+  // payment 날짜별 전체 조회
+  getAllByDate(params) {
+    return http.get("/pays/date", { params });
+  }
+
   // payment 조회
   get(id) {
     return http.get(`/pays/${id}`);

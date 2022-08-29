@@ -27,7 +27,7 @@ exports.create = (req, res) => {
 };
 
 /**
- * 사용자별 payment 전체 조회
+ * 사용자별 payment 전체 조회 및 일별 조회
  */
 exports.findAll = (req, res) => {
   const { userId, date } = req.query;
@@ -37,6 +37,47 @@ exports.findAll = (req, res) => {
         date: {
           [Op.gt]: new Date(date).setHours(0, 0, 0, 0),
           [Op.lt]: new Date(date).setHours(23, 59, 59, 59),
+        },
+      }
+    : null;
+
+  Pay.findAll({
+    where: [condition1, condition2],
+    include: [
+      {
+        model: User,
+        as: "creater",
+      },
+      {
+        model: Assert,
+        as: "assert",
+      },
+      {
+        model: Cat,
+        as: "cat",
+      },
+    ],
+    order: [["date", "DESC"]],
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({ message: err.message || "Some error occurred while retrieving pays." });
+    });
+};
+
+/**
+ * 사용자별 payment 날짜별 조회
+ */
+exports.findAllByDate = (req, res) => {
+  const { userId, start, end } = req.query;
+  const condition1 = userId ? { createrId: userId } : null;
+  const condition2 = start
+    ? {
+        date: {
+          [Op.gt]: new Date(start).setHours(0, 0, 0, 0),
+          [Op.lt]: new Date(end).setHours(23, 59, 59, 59),
         },
       }
     : null;
