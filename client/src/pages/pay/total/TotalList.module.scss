@@ -1,0 +1,22 @@
+@import "../../../styles/app";
+
+.overFlow {
+}
+
+.listGroupItems {
+  display: flex;
+  justify-content: space-between;
+  padding: 2px;
+}
+
+.date {
+  color:rgba(244, 244, 245, 0.6);
+}
+
+.income {
+  color: #7676fb;
+}
+
+.spending {
+  color: #dd2222;
+}

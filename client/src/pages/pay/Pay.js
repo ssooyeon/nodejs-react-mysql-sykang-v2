@@ -6,6 +6,8 @@ import s from "./Pay.module.scss";
 import PayList from "./pay/PayList";
 import AmountText from "./panel/AmountText";
 import CatChart from "./chart/CatChart";
+import WeeklyList from "./total/WeeklyList";
+import MonthlyList from "./total/MonthlyList";
 import Calendar from "./calendar/Calendar";
 import AssertList from "./assert/AssertList";
 import CatList from "./cat/CatList";
@@ -32,6 +34,14 @@ export default function Pay() {
         </Col>
         <Col lg={3} md={12} sm={12}>
           <CatChart user={currentUser} isListUpdated={isListUpdated} />
+        </Col>
+      </Row>
+      <Row>
+        <Col lg={6} md={12} sm={12}>
+          <WeeklyList user={currentUser} isListUpdated={isListUpdated} />
+        </Col>
+        <Col lg={6} md={12} sm={12}>
+          <MonthlyList user={currentUser} isListUpdated={isListUpdated} />
         </Col>
       </Row>
       <Row>

@@ -310,3 +310,88 @@ exports.findSpendingByCat = (req, res) => {
       res.status(500).send({ message: err.message || "Some error occurred while retrieving payment category statistic." });
     });
 };
+
+/**
+ * 최근 6개월 income/spending 조회
+ */
+exports.sixMonthlySpending = (req, res) => {
+  const { userId } = req.query;
+  const condition1 = userId ? { createrId: userId } : null;
+
+  const start = new Date(new Date().setMonth(new Date().getMonth() - 6));
+  const end = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
+
+  const condition2 = {
+    date: {
+      [Op.gt]: new Date(start).setHours(0, 0, 0, 0),
+      [Op.lt]: new Date(end).setHours(23, 59, 59, 59),
+    },
+  };
+
+  Pay.findAll({
+    where: [condition1, condition2],
+    attributes: [
+      [db.Sequelize.fn("date_format", db.Sequelize.col("date"), "%Y-%m"), "date"],
+      [db.Sequelize.fn("SUM", db.Sequelize.literal("CASE WHEN amount>0 THEN amount ELSE 0 END")), "income"],
+      [db.Sequelize.fn("SUM", db.Sequelize.literal("CASE WHEN amount<0 THEN amount ELSE 0 END")), "spending"],
+    ],
+    group: [db.Sequelize.fn("date_format", db.Sequelize.col("date"), "%Y-%m")],
+    order: [["date", "ASC"]],
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({ message: err.message || "Some error occurred while retrieving 6 monthly spending." });
+    });
+};
+
+/**
+ * 최근 6주 income/spending 조회
+ */
+exports.sixWeeklySpending = (req, res) => {
+  const { userId } = req.query;
+  const condition1 = userId ? { createrId: userId } : null;
+
+  // get monday of the 5 week ago
+  const weeksAgo = new Date(new Date().setDate(new Date().getDate() - 7 * 5));
+  const mon = weeksAgo.getDate() - weeksAgo.getDay() + 1;
+  const start = new Date(weeksAgo.setDate(mon));
+
+  // get sunday of the current week
+  const first = new Date().getDate() - new Date().getDay() + 1;
+  const sun = first + 6;
+  const end = new Date(new Date().setDate(sun));
+
+  const condition2 = {
+    date: {
+      [Op.gt]: new Date(start).setHours(0, 0, 0, 0),
+      [Op.lt]: new Date(end).setHours(23, 59, 59, 59),
+    },
+  };
+
+  Pay.findAll({
+    where: [condition1, condition2],
+    attributes: [
+      [
+        db.Sequelize.fn(
+          "concat",
+          db.Sequelize.literal("DATE_FORMAT(DATE_ADD(date, INTERVAL (WEEKDAY(date)) * -1 DAY), '%Y-%m-%d')"),
+          " ~ ",
+          db.Sequelize.literal("DATE_FORMAT(DATE_ADD(date, INTERVAL (6 - WEEKDAY(date)) * +1 DAY), '%Y-%m-%d')")
+        ),
+        "week",
+      ],
+      [db.Sequelize.fn("SUM", db.Sequelize.literal("CASE WHEN amount>0 THEN amount ELSE 0 END")), "income"],
+      [db.Sequelize.fn("SUM", db.Sequelize.literal("CASE WHEN amount<0 THEN amount ELSE 0 END")), "spending"],
+    ],
+    group: "week",
+    order: [[db.Sequelize.literal("week"), "ASC"]],
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({ message: err.message || "Some error occurred while retrieving 6 weekly spending." });
+    });
+};

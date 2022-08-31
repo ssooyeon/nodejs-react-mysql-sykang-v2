@@ -13,6 +13,8 @@ module.exports = (app) => {
   router.get("/today/amount", pays.todayAmount);
   router.get("/month/amount", pays.monthAmount);
   router.get("/month/cat", pays.findSpendingByCat);
+  router.get("/month/six", pays.sixMonthlySpending);
+  router.get("/week/six", pays.sixWeeklySpending);
 
   app.use("/api/pays", router);
 };

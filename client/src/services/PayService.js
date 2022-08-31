@@ -51,6 +51,16 @@ class PayService {
   getSpendingByCat(params) {
     return http.get("/pays/month/cat", { params });
   }
+
+  // 6 month amount 조회
+  getSixMonthlySpending(params) {
+    return http.get("/pays/month/six", { params });
+  }
+
+  // 6 week amount 조회
+  getSixWeeklySpending(params) {
+    return http.get("/pays/week/six", { params });
+  }
 }
 
 export default new PayService();
