@@ -172,7 +172,14 @@ export default function WeeklyList({ user, isListUpdated }) {
                   data.slice(0, Math.ceil(data.length / 2)).map((d, idx, row) => {
                     return (
                       <ListGroupItem className={s.listGroupItems} key={idx}>
-                        <div className={s.date}>{d.week}</div>
+                        <div
+                          className={s.date}
+                          style={{
+                            color: d.week && moment() >= moment(d.week.split(" ~ ")[0]) && moment() <= moment(d.week.split(" ~ ")[1]) ? "#fff" : null,
+                          }}
+                        >
+                          {d.week}
+                        </div>
                         <div className={s.income}>{d.income.toLocaleString()}</div>
                         <div className={s.spending}>{d.spending.toLocaleString()}</div>
                       </ListGroupItem>
@@ -186,7 +193,14 @@ export default function WeeklyList({ user, isListUpdated }) {
                   data.slice(Math.ceil(data.length / 2)).map((d, idx, row) => {
                     return (
                       <ListGroupItem className={s.listGroupItems} key={idx}>
-                        <div className={s.date}>{d.week}</div>
+                        <div
+                          className={s.date}
+                          style={{
+                            color: d.week && moment() >= moment(d.week.split(" ~ ")[0]) && moment() <= moment(d.week.split(" ~ ")[1]) ? "#fff" : null,
+                          }}
+                        >
+                          {d.week}
+                        </div>
                         <div className={s.income}>{d.income.toLocaleString()}</div>
                         <div className={s.spending}>{d.spending.toLocaleString()}</div>
                       </ListGroupItem>

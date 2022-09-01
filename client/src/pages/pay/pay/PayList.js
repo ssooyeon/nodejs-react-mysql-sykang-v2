@@ -33,7 +33,7 @@ export default function PayList({ user, someUpdate, isListUpdated }) {
   const [payAddModalOpen, setPayAddModalOpen] = useState(false);
   const [payEditModalOpen, setPayEditModalOpen] = useState(false);
   const [editPay, setEditPay] = useState([]);
-  const [startDate, setStartDate] = useState(new Date().setMonth(new Date().getMonth() - 1));
+  const [startDate, setStartDate] = useState(new Date().setMonth(new Date().getMonth() - 3));
   const [endDate, setEndDate] = useState(new Date());
 
   useEffect(() => {
