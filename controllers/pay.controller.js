@@ -315,11 +315,8 @@ exports.findSpendingByCat = (req, res) => {
  * 최근 6개월 income/spending 조회
  */
 exports.sixMonthlySpending = (req, res) => {
-  const { userId } = req.query;
+  const { userId, start, end } = req.query;
   const condition1 = userId ? { createrId: userId } : null;
-
-  const start = new Date(new Date().setMonth(new Date().getMonth() - 6));
-  const end = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
 
   const condition2 = {
     date: {
@@ -350,18 +347,8 @@ exports.sixMonthlySpending = (req, res) => {
  * 최근 6주 income/spending 조회
  */
 exports.sixWeeklySpending = (req, res) => {
-  const { userId } = req.query;
+  const { userId, start, end } = req.query;
   const condition1 = userId ? { createrId: userId } : null;
-
-  // get monday of the 5 week ago
-  const weeksAgo = new Date(new Date().setDate(new Date().getDate() - 7 * 5));
-  const mon = weeksAgo.getDate() - weeksAgo.getDay() + 1;
-  const start = new Date(weeksAgo.setDate(mon));
-
-  // get sunday of the current week
-  const first = new Date().getDate() - new Date().getDay() + 1;
-  const sun = first + 6;
-  const end = new Date(new Date().setDate(sun));
 
   const condition2 = {
     date: {

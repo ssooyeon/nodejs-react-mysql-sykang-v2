@@ -1,6 +1,14 @@
 @import "../../../styles/app";
 
-.overFlow {
+.transparentButton {  
+  color: rgba(244, 244, 245, 0.6);
+  &:hover,
+  &:focus {
+    color: #fff;
+  }
+  i {
+    font-size: 18px;
+  }
 }
 
 .listGroupItems {

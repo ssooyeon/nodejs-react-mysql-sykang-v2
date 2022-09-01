@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, ListGroup, ListGroupItem } from "reactstrap";
+import { Row, Col, ListGroup, ListGroupItem, Button } from "reactstrap";
 import moment from "moment/moment";
 
 import Widget from "../../../components/Widget";
@@ -13,31 +13,42 @@ moment.updateLocale("en", {
   },
 });
 
+const sixWeeksAgo = () => {
+  // get monday of the 5 week ago, 5주 전 월요일
+  const weeksAgo = new Date(new Date().setDate(new Date().getDate() - 7 * 5));
+  const mon = weeksAgo.getDate() - weeksAgo.getDay() + 1;
+  const start = new Date(weeksAgo.setDate(mon));
+  return start;
+};
+const lastDayOfCurrentWeek = () => {
+  // get sunday of the current week, 이번주 일요일
+  const first = new Date().getDate() - new Date().getDay() + 1;
+  const sun = first + 6;
+  const end = new Date(new Date().setDate(sun));
+  return end;
+};
+
 export default function WeeklyList({ user, isListUpdated }) {
   const [data, setData] = useState([]);
+  const [sdt, setSdt] = useState(sixWeeksAgo);
+  const [edt, setEdt] = useState(lastDayOfCurrentWeek);
+  const [isUpdateData, setIsUpdateData] = useState(0);
 
   useEffect(() => {
-    PayService.getSixWeeklySpending({ userId: user.id })
+    const params = { userId: user.id, start: sdt, end: edt };
+    getWeeklySpending(params);
+  }, [user, isListUpdated]);
+
+  const getWeeklySpending = (params) => {
+    PayService.getSixWeeklySpending(params)
       .then((res) => {
-        if (res.data.length > 0) {
-          // get monday of the 5 week ago
-          const weeksAgo = new Date(new Date().setDate(new Date().getDate() - 7 * 5));
-          const mon = weeksAgo.getDate() - weeksAgo.getDay() + 1;
-          const start = new Date(weeksAgo.setDate(mon));
-
-          // get sunday of the current week
-          const first = new Date().getDate() - new Date().getDay() + 1;
-          const sun = first + 6;
-          const end = new Date(new Date().setDate(sun));
-
-          const sdt = moment(start).format("YYYY-MM-DD");
-          const edt = moment(end).format("YYYY-MM-DD");
-          const result = getData(res.data, sdt, edt);
-          setData(result);
-        }
+        const sdt = moment(params.start).format("YYYY-MM-DD");
+        const edt = moment(params.end).format("YYYY-MM-DD");
+        const result = getData(res.data, sdt, edt);
+        setData(result);
       })
       .catch((e) => console.log(e));
-  }, [user, isListUpdated]);
+  };
 
   // amount가 없는 주도 포함하여 결과 생성
   const getData = (data, start, end) => {
@@ -74,9 +85,85 @@ export default function WeeklyList({ user, isListUpdated }) {
     return result;
   };
 
+  const handleLeftWeek = () => {
+    if (isUpdateData === 1) {
+      setIsUpdateData(0);
+      const params = { userId: user.id, start: sdt, end: edt };
+      getWeeklySpending(params);
+    } else {
+      setIsUpdateData(-1);
+      // get monday of the 8 week ago, 8주 전 월요일
+      const eightWeeksAgo = new Date(new Date().setDate(new Date().getDate() - 7 * 8));
+      const mon = eightWeeksAgo.getDate() - eightWeeksAgo.getDay() + 1;
+      const start = new Date(eightWeeksAgo.setDate(mon));
+
+      // get sunday of the current week, 3주 전 일요일
+      const threeWeeksAgo = new Date(new Date().setDate(new Date().getDate() - 7 * 3));
+
+      const first = threeWeeksAgo.getDate() - threeWeeksAgo.getDay() + 1;
+      const sun = first + 6;
+      const end = new Date(threeWeeksAgo.setDate(sun));
+
+      const params = { userId: user.id, start: start, end: end };
+      getWeeklySpending(params);
+    }
+  };
+
+  const handleRightWeek = () => {
+    if (isUpdateData === -1) {
+      setIsUpdateData(0);
+      const params = { userId: user.id, start: sdt, end: edt };
+      getWeeklySpending(params);
+    } else {
+      setIsUpdateData(1);
+      // get monday of the 3 week ago, 3주 전 월요일
+      const threeWeeksAgo = new Date(new Date().setDate(new Date().getDate() - 7 * 2));
+      const mon = threeWeeksAgo.getDate() - threeWeeksAgo.getDay() + 1;
+      const start = new Date(threeWeeksAgo.setDate(mon));
+
+      // get sunday of the 3 weeks after, 3주 후 일요일
+      const threeWeeksAfter = new Date(new Date().setDate(new Date().getDate() + 7 * 3));
+      const first = threeWeeksAfter.getDate() - threeWeeksAfter.getDay() + 1;
+      const sun = first + 6;
+      const end = new Date(threeWeeksAfter.setDate(sun));
+
+      const params = { userId: user.id, start: start, end: end };
+      getWeeklySpending(params);
+    }
+  };
+
   return (
     <>
-      <Widget style={{ minHeight: "150px" }} title={<h6>Weekly</h6>}>
+      <Widget
+        style={{ minHeight: "150px" }}
+        title={
+          <h6>
+            Weekly
+            <div className="float-right">
+              <Button
+                color=""
+                className={s.transparentButton}
+                size="xs"
+                onClick={handleLeftWeek}
+                style={{ cursor: isUpdateData === -1 ? "not-allowed" : null }}
+                disabled={isUpdateData === -1 ? true : false}
+              >
+                <i className="fa fa-caret-left"></i>
+              </Button>
+              <Button
+                color=""
+                className={s.transparentButton}
+                size="xs"
+                onClick={handleRightWeek}
+                style={{ cursor: isUpdateData === 1 ? "not-allowed" : null }}
+                disabled={isUpdateData === 1 ? true : false}
+              >
+                <i className="fa fa-caret-right"></i>
+              </Button>
+            </div>
+          </h6>
+        }
+      >
         <div className={s.overFlow}>
           <Row>
             <Col lg={6} md={12} sm={12}>
