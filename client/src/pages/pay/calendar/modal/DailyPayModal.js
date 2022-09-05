@@ -148,6 +148,7 @@ export default function DailyPayModal({ open, someUpdate, handleCloseClick, user
                 <th>Amount</th>
                 <th>Assert</th>
                 <th>Cat</th>
+                <th>Descripion</th>
                 <th>Date</th>
                 {type === "daily" ? <th>Action</th> : null}
               </tr>
@@ -161,6 +162,7 @@ export default function DailyPayModal({ open, someUpdate, handleCloseClick, user
                       <td style={{ color: pay.amount < 0 ? "#dd2222" : "#7676fb" }}>{pay.amount.toLocaleString()}</td>
                       <td>{pay.assert ? pay.assert.name : "-"}</td>
                       <td>{pay.cat ? pay.cat.name : "-"}</td>
+                      <td>{pay.description ? (pay.description.length > 15 ? pay.description.substr(0, 15) + "..." : pay.description) : "-"}</td>
                       <td>{<Moment format="YYYY-MM-DD HH:mm">{pay.date}</Moment>}</td>
                       {type === "daily" ? (
                         <td>
