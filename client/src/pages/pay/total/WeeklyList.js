@@ -5,6 +5,8 @@ import moment from "moment/moment";
 import Widget from "../../../components/Widget";
 import s from "./TotalList.module.scss";
 
+import DailyPayModal from "../calendar/modal/DailyPayModal";
+
 import PayService from "../../../services/PayService";
 
 moment.updateLocale("en", {
@@ -28,11 +30,14 @@ const lastDayOfCurrentWeek = () => {
   return end;
 };
 
-export default function WeeklyList({ user, isListUpdated }) {
+export default function WeeklyList({ user, someUpdate, isListUpdated }) {
   const [data, setData] = useState([]);
   const [sdt, setSdt] = useState(sixWeeksAgo);
   const [edt, setEdt] = useState(lastDayOfCurrentWeek);
   const [isUpdateData, setIsUpdateData] = useState(0);
+
+  const [dailyPayModalOpen, setDailyPayModalOpen] = useState(false);
+  const [dailyPayDate, setDailyPayDate] = useState(new Date());
 
   useEffect(() => {
     const params = { userId: user.id, start: sdt, end: edt };
@@ -132,6 +137,17 @@ export default function WeeklyList({ user, isListUpdated }) {
     }
   };
 
+  // 주 클릭 시 해당 주의 list 모두 표출
+  const handleWeekItemClick = (week) => {
+    setDailyPayDate(week);
+    setDailyPayModalOpen(true);
+  };
+
+  // DailyPayModal.js에서 닫기 버튼 클릭
+  const handleDailyPayModalClick = (value) => {
+    setDailyPayModalOpen(value);
+  };
+
   return (
     <>
       <Widget
@@ -171,7 +187,7 @@ export default function WeeklyList({ user, isListUpdated }) {
                 {data &&
                   data.slice(0, Math.ceil(data.length / 2)).map((d, idx, row) => {
                     return (
-                      <ListGroupItem className={s.listGroupItems} key={idx}>
+                      <ListGroupItem className={s.listGroupItems} key={idx} onClick={() => handleWeekItemClick(d.week)}>
                         <div
                           className={s.date}
                           style={{
@@ -192,7 +208,7 @@ export default function WeeklyList({ user, isListUpdated }) {
                 {data &&
                   data.slice(Math.ceil(data.length / 2)).map((d, idx, row) => {
                     return (
-                      <ListGroupItem className={s.listGroupItems} key={idx}>
+                      <ListGroupItem className={s.listGroupItems} key={idx} onClick={() => handleWeekItemClick(d.week)}>
                         <div
                           className={s.date}
                           style={{
@@ -211,6 +227,15 @@ export default function WeeklyList({ user, isListUpdated }) {
           </Row>
         </div>
       </Widget>
+
+      <DailyPayModal
+        open={dailyPayModalOpen}
+        someUpdate={someUpdate}
+        handleCloseClick={handleDailyPayModalClick}
+        user={user}
+        date={dailyPayDate}
+        type="weekly"
+      />
     </>
   );
 }

@@ -5,15 +5,19 @@ import moment from "moment/moment";
 import Widget from "../../../components/Widget";
 import s from "./TotalList.module.scss";
 
-import PayService from "../../../services/PayService";
+import DailyPayModal from "../calendar/modal/DailyPayModal";
 
+import PayService from "../../../services/PayService";
 const today = new Date();
 const sixMonthAgo = new Date(today.getFullYear(), today.getMonth() - 5, 1); // 6달 전 1일
 const lastDayOfCurrentMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0); // 이번 달 마지막일
 
-export default function MonthlyList({ user, isListUpdated }) {
+export default function MonthlyList({ user, someUpdate, isListUpdated }) {
   const [data, setData] = useState([]);
   const [isUpdateData, setIsUpdateData] = useState(0);
+
+  const [dailyPayModalOpen, setDailyPayModalOpen] = useState(false);
+  const [dailyPayDate, setDailyPayDate] = useState(new Date());
 
   useEffect(() => {
     const params = { userId: user.id, start: sixMonthAgo, end: lastDayOfCurrentMonth };
@@ -92,6 +96,17 @@ export default function MonthlyList({ user, isListUpdated }) {
     }
   };
 
+  // 달 클릭 시 해당 달의 list 모두 표출
+  const handleMonthItemClick = (date) => {
+    setDailyPayDate(date);
+    setDailyPayModalOpen(true);
+  };
+
+  // DailyPayModal.js에서 닫기 버튼 클릭
+  const handleDailyPayModalClick = (value) => {
+    setDailyPayModalOpen(value);
+  };
+
   return (
     <>
       <Widget
@@ -131,7 +146,7 @@ export default function MonthlyList({ user, isListUpdated }) {
                 {data &&
                   data.slice(0, Math.ceil(data.length / 2)).map((d, idx, row) => {
                     return (
-                      <ListGroupItem className={s.listGroupItems} key={idx}>
+                      <ListGroupItem className={s.listGroupItems} key={idx} onClick={() => handleMonthItemClick(d.date)}>
                         <div
                           className={s.date}
                           style={{
@@ -152,7 +167,7 @@ export default function MonthlyList({ user, isListUpdated }) {
                 {data &&
                   data.slice(Math.ceil(data.length / 2)).map((d, idx, row) => {
                     return (
-                      <ListGroupItem className={s.listGroupItems} key={idx}>
+                      <ListGroupItem className={s.listGroupItems} key={idx} onClick={() => handleMonthItemClick(d.date)}>
                         <div
                           className={s.date}
                           style={{
@@ -171,6 +186,15 @@ export default function MonthlyList({ user, isListUpdated }) {
           </Row>
         </div>
       </Widget>
+
+      <DailyPayModal
+        open={dailyPayModalOpen}
+        someUpdate={someUpdate}
+        handleCloseClick={handleDailyPayModalClick}
+        user={user}
+        date={dailyPayDate}
+        type="monthly"
+      />
     </>
   );
 }

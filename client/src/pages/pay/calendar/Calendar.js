@@ -149,7 +149,14 @@ export default function Calendar({ user, someUpdate, isListUpdated }) {
         </div>
       </Widget>
 
-      <DailyPayModal open={dailyPayModalOpen} someUpdate={someUpdate} handleCloseClick={handleDailyPayModalClick} user={user} date={dailyPayDate} />
+      <DailyPayModal
+        open={dailyPayModalOpen}
+        someUpdate={someUpdate}
+        handleCloseClick={handleDailyPayModalClick}
+        user={user}
+        date={dailyPayDate}
+        type="daily"
+      />
       <AddPayModal open={payAddModalOpen} handleCloseClick={handlePayAddModalClick} asserts={asserts} cats={cats} date={payAddDate} />
     </>
   );

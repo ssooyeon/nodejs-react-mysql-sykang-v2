@@ -14,7 +14,7 @@ import PayService from "../../../../services/PayService";
 import AddPayModal from "../../pay/modal/AddPayModal";
 import EditPayModal from "../../pay/modal/EditPayModal";
 
-export default function DailyPayModal({ open, someUpdate, handleCloseClick, user, date }) {
+export default function DailyPayModal({ open, someUpdate, handleCloseClick, user, date, type }) {
   const asserts = useSelector((state) => state.asserts || []);
   const cats = useSelector((state) => state.cats || []);
 
@@ -26,14 +26,42 @@ export default function DailyPayModal({ open, someUpdate, handleCloseClick, user
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const ymd = moment(date).format("YYYY-MM-DD");
-    const params = { userId: user.id, date: ymd };
-    PayService.getAll(params)
-      .then((res) => {
-        setData(res.data);
-      })
-      .catch((e) => console.log(e));
-  }, [user, date]);
+    // calendar에서 날짜 클릭
+    if (type === "daily") {
+      const ymd = moment(date).format("YYYY-MM-DD");
+      const params = { userId: user.id, date: ymd };
+      PayService.getAll(params)
+        .then((res) => {
+          setData(res.data);
+        })
+        .catch((e) => console.log(e));
+    }
+    // monthly 클릭
+    else if (type === "monthly") {
+      const start = date + "-01";
+      const dt = new Date(date);
+      const end = new Date(dt.getFullYear(), dt.getMonth() + 1, 0);
+
+      const params = { userId: user.id, start: start, end: moment(end).format("YYYY-MM-DD") };
+      PayService.getAllByDate(params)
+        .then((res) => {
+          setData(res.data);
+        })
+        .catch((e) => console.log(e));
+    }
+    // weekly 클릭
+    else if (type === "weekly") {
+      if (typeof date === "string") {
+        const weeks = date.split(" ~ ");
+        const params = { userId: user.id, start: weeks[0], end: weeks[1] };
+        PayService.getAllByDate(params)
+          .then((res) => {
+            setData(res.data);
+          })
+          .catch((e) => console.log(e));
+      }
+    }
+  }, [user, date, type]);
 
   // 부모에게 완료사항 전달
   const handleClose = () => {
@@ -104,14 +132,16 @@ export default function DailyPayModal({ open, someUpdate, handleCloseClick, user
 
   return (
     <>
-      <Modal isOpen={open} toggle={handleClose} backdrop={false} centered>
+      <Modal size="lg" isOpen={open} toggle={handleClose} backdrop={false} centered>
         <ModalBody>
           <span className="fw-semi-bold">Daily payment</span>
-          <div className="float-right">
-            <Button color="default" className="mr-2" size="sm" onClick={() => handlePayAddModalClick(true)}>
-              Add
-            </Button>
-          </div>
+          {type === "daily" ? (
+            <div className="float-right">
+              <Button color="default" className="mr-2" size="sm" onClick={() => handlePayAddModalClick(true)}>
+                Add
+              </Button>
+            </div>
+          ) : null}
           <Table className="table-hover daily-payment-table">
             <thead>
               <tr>
@@ -119,7 +149,7 @@ export default function DailyPayModal({ open, someUpdate, handleCloseClick, user
                 <th>Assert</th>
                 <th>Cat</th>
                 <th>Date</th>
-                <th>Action</th>
+                {type === "daily" ? <th>Action</th> : null}
               </tr>
             </thead>
             {/* eslint-disable */}
@@ -132,14 +162,16 @@ export default function DailyPayModal({ open, someUpdate, handleCloseClick, user
                       <td>{pay.assert ? pay.assert.name : "-"}</td>
                       <td>{pay.cat ? pay.cat.name : "-"}</td>
                       <td>{<Moment format="YYYY-MM-DD HH:mm">{pay.date}</Moment>}</td>
-                      <td>
-                        <Button color="default" className="mr-2" size="xs" onClick={(e) => onPayEditClick(pay)}>
-                          E
-                        </Button>
-                        <Button color="inverse" className="mr-2" size="xs" onClick={(e) => onPayDeleteClick(pay.id)}>
-                          D
-                        </Button>
-                      </td>
+                      {type === "daily" ? (
+                        <td>
+                          <Button color="default" className="mr-2" size="xs" onClick={(e) => onPayEditClick(pay)}>
+                            E
+                          </Button>
+                          <Button color="inverse" className="mr-2" size="xs" onClick={(e) => onPayDeleteClick(pay.id)}>
+                            D
+                          </Button>
+                        </td>
+                      ) : null}
                     </tr>
                   );
                 })}

@@ -38,10 +38,10 @@ export default function Pay() {
       </Row>
       <Row>
         <Col lg={6} md={12} sm={12}>
-          <WeeklyList user={currentUser} isListUpdated={isListUpdated} />
+          <WeeklyList user={currentUser} someUpdate={handleSomeUpdate} isListUpdated={isListUpdated} />
         </Col>
         <Col lg={6} md={12} sm={12}>
-          <MonthlyList user={currentUser} isListUpdated={isListUpdated} />
+          <MonthlyList user={currentUser} someUpdate={handleSomeUpdate} isListUpdated={isListUpdated} />
         </Col>
       </Row>
       <Row>
