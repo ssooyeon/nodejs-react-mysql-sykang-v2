@@ -109,6 +109,48 @@ exports.findAllByDate = (req, res) => {
 };
 
 /**
+ * 사용자 및 카테고리 별 payment 월별 조회 (pie chart 클릭)
+ */
+exports.findAllByCatMonthly = (req, res) => {
+  const { userId, start, end, catId } = req.query;
+  const condition1 = userId ? { createrId: userId } : null;
+  const condition2 = start
+    ? {
+        date: {
+          [Op.gt]: new Date(start).setHours(0, 0, 0, 0),
+          [Op.lt]: new Date(end).setHours(23, 59, 59, 59),
+        },
+      }
+    : null;
+  const condition3 = catId ? { catId: catId } : { catId: { [Op.eq]: null } };
+
+  Pay.findAll({
+    where: [condition1, condition2, condition3],
+    include: [
+      {
+        model: User,
+        as: "creater",
+      },
+      {
+        model: Assert,
+        as: "assert",
+      },
+      {
+        model: Cat,
+        as: "cat",
+      },
+    ],
+    order: [["date", "DESC"]],
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({ message: err.message || "Some error occurred while retrieving pays." });
+    });
+};
+
+/**
  * payment 조회
  */
 exports.findOne = (req, res) => {

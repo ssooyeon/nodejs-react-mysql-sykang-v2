@@ -5,6 +5,7 @@ module.exports = (app) => {
   router.post("/", pays.create);
   router.get("/", pays.findAll);
   router.get("/date", pays.findAllByDate);
+  router.get("/cat", pays.findAllByCatMonthly);
   router.get("/:id", pays.findOne);
   router.put("/:id", pays.update);
   router.delete("/:id", pays.delete);

@@ -12,6 +12,7 @@ import s from "./Charts.module.scss";
 import "./MonthPicker.css";
 
 import PayService from "../../../services/PayService";
+import CatPayModal from "./modal/CatPayModal";
 
 const range = {
   min: { year: new Date().getFullYear() - 2, month: new Date().getMonth() + 1 },
@@ -25,6 +26,9 @@ export default function CatChart({ user, isListUpdated }) {
   const [dataByCat, setDataByCat] = useState([]);
   const [isShowMonthPicker, setIsShowMonthPicker] = useState(false);
   const [monthYear, setMonthYear] = useState({ year: new Date().getFullYear(), month: new Date().getMonth() + 1 });
+
+  const [catPayModalOpen, setCatPayModalOpen] = useState(false);
+  const [catPayModalCatId, setCatPayModalCatId] = useState(0);
 
   useEffect(() => {
     const params = {
@@ -71,6 +75,20 @@ export default function CatChart({ user, isListUpdated }) {
 
   const handleMonthDismiss = () => {
     setIsShowMonthPicker(false);
+  };
+
+  const handlePieChartClick = (e) => {
+    if (e.cat !== null) {
+      setCatPayModalCatId(e.cat.id);
+    } else {
+      setCatPayModalCatId(null);
+    }
+    setCatPayModalOpen(true);
+  };
+
+  // CatPayModal.js 닫기 버튼 클릭
+  const handleCatPayModalClick = (value) => {
+    setCatPayModalOpen(value);
   };
 
   // get yyyy-mm value using month picker value
@@ -131,11 +149,14 @@ export default function CatChart({ user, isListUpdated }) {
                 fill="#6E4141"
                 dataKey="thismonth_spending"
                 onMouseEnter={onCatPieEnter}
+                onClick={handlePieChartClick}
               />
             </PieChart>
           )}
         </ResponsiveContainer>
       </Widget>
+
+      <CatPayModal open={catPayModalOpen} handleCloseClick={handleCatPayModalClick} user={user} date={getMonthValue()} catId={catPayModalCatId} />
     </>
   );
 }

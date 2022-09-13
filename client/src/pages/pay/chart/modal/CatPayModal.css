@@ -1,0 +1,30 @@
+.daily-payment-table {
+  margin-top: 30px;
+  line-height: 10px;
+  text-align: center;
+  table-layout: fixed;
+}
+
+.daily-payment-table tbody {
+  display:block;
+  max-height:500px;
+  overflow:auto;
+  width: 760px;
+  padding-right: 5px;
+}
+
+.daily-payment-table tbody tr {
+  display:table;
+  width:100%;
+  table-layout:fixed;
+}
+
+.daily-payment-table thead tr th {
+  border-bottom: none;
+  padding-bottom: 20px;
+}
+
+.daily-payment-table tbody tr td {
+  vertical-align: middle;
+  padding: 5px 0 10px 0;
+}
