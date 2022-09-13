@@ -179,7 +179,11 @@ export default function PayList({ user, someUpdate, isListUpdated }) {
                       <td style={{ color: pay.amount < 0 ? "#dd2222" : "#7676fb" }}>{pay.amount.toLocaleString()}</td>
                       <td>{pay.assert ? pay.assert.name : "-"}</td>
                       <td>{pay.cat ? pay.cat.name : "-"}</td>
-                      <td>{pay.description ? (pay.description.length > 15 ? pay.description.substr(0, 15) + "..." : pay.description) : "-"}</td>
+                      {pay.description && pay.description.length > 15 ? (
+                        <td title={pay.description}>{pay.description.substr(0, 15) + "..."}</td>
+                      ) : (
+                        <td>{pay.description ? pay.description : "-"}</td>
+                      )}
                       <td>{<Moment format="YYYY-MM-DD HH:mm">{pay.date}</Moment>}</td>
                       <td>
                         <Button color="default" className="mr-2" size="xs" onClick={(e) => onPayEditClick(pay)}>
