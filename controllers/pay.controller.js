@@ -285,11 +285,17 @@ exports.findSpendingByCat = (req, res) => {
       {
         model: Cat,
         as: "cat",
+        include: [
+          {
+            model: Cat,
+            as: "parent",
+          },
+        ],
       },
     ],
     group: ["catId"],
     attributes: [
-      [db.Sequelize.col("cat.name"), "name"],
+      [db.Sequelize.fn("concat", db.Sequelize.col("cat.parent.name"), "-", db.Sequelize.col("cat.name")), "name"],
       [db.Sequelize.fn("count", "*"), "count"],
       [
         db.Sequelize.fn(

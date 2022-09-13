@@ -13,3 +13,7 @@
 .payment_calendar .fc-event {
   font-size: 10px !important;
 }
+
+.fc-day-today {
+  color: #fff;
+} 
