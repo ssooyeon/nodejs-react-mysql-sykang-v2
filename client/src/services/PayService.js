@@ -57,6 +57,11 @@ class PayService {
     return http.get("/pays/month/cat", { params });
   }
 
+  // this month sub cat count 조회
+  getSpendingBySubCat(params) {
+    return http.get("/pays/month/subcat", { params });
+  }
+
   // 6 month amount 조회
   getSixMonthlySpending(params) {
     return http.get("/pays/month/six", { params });

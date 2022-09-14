@@ -161,7 +161,7 @@ export default function DailyPayModal({ open, someUpdate, handleCloseClick, user
                     <tr key={pay.id}>
                       <td style={{ color: pay.amount < 0 ? "#dd2222" : "#7676fb" }}>{pay.amount.toLocaleString()}</td>
                       <td>{pay.assert ? pay.assert.name : "-"}</td>
-                      <td>{pay.cat ? pay.cat.name : "-"}</td>
+                      <td>{pay.cat ? pay.cat.parent.name + ": " + pay.cat.name : "-"}</td>
                       {pay.description && pay.description.length > 15 ? (
                         <td title={pay.description}>{pay.description.substr(0, 15) + "..."}</td>
                       ) : (

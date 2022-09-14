@@ -55,6 +55,12 @@ exports.findAll = (req, res) => {
       {
         model: Cat,
         as: "cat",
+        include: [
+          {
+            model: Cat,
+            as: "parent",
+          },
+        ],
       },
     ],
     order: [["date", "DESC"]],
@@ -96,6 +102,12 @@ exports.findAllByDate = (req, res) => {
       {
         model: Cat,
         as: "cat",
+        include: [
+          {
+            model: Cat,
+            as: "parent",
+          },
+        ],
       },
     ],
     order: [["date", "DESC"]],
@@ -138,6 +150,12 @@ exports.findAllByCatMonthly = (req, res) => {
       {
         model: Cat,
         as: "cat",
+        include: [
+          {
+            model: Cat,
+            as: "parent",
+          },
+        ],
       },
     ],
     order: [["date", "DESC"]],
@@ -168,6 +186,12 @@ exports.findOne = (req, res) => {
       {
         model: Cat,
         as: "cat",
+        include: [
+          {
+            model: Cat,
+            as: "parent",
+          },
+        ],
       },
     ],
   })
@@ -310,9 +334,59 @@ exports.monthAmount = (req, res) => {
 };
 
 /**
- * 카테고리별 지출 내역 조회
+ * 대분류 카테고리별 지출 내역 조회 (pie chart > category)
  */
 exports.findSpendingByCat = (req, res) => {
+  const { userId, date } = req.query;
+  const condition = userId ? { createrId: userId } : null;
+
+  if (!date || date === null) {
+    res.status(400).send({ message: "Date cannot be empty." });
+    return;
+  }
+
+  Pay.findAll({
+    where: condition,
+    include: [
+      {
+        model: Cat,
+        as: "cat",
+        include: [
+          {
+            model: Cat,
+            as: "parent",
+          },
+        ],
+      },
+    ],
+    group: ["cat.parentId"],
+    attributes: [
+      [db.Sequelize.col("cat.parent.name"), "name"],
+      [db.Sequelize.fn("count", "*"), "count"],
+      [
+        db.Sequelize.fn(
+          "SUM",
+          db.Sequelize.literal(
+            `CASE WHEN amount<0 AND DATE_FORMAT(date, '%Y-%m-01') = DATE_FORMAT('${date}', '%Y-%m-01') THEN ABS(amount) ELSE 0 END`
+          )
+        ),
+        "thismonth_spending",
+      ],
+    ],
+    order: [[db.Sequelize.literal("thismonth_spending"), "DESC"]],
+  })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({ message: err.message || "Some error occurred while retrieving payment category statistic." });
+    });
+};
+
+/**
+ * 소분류 카테고리별 지출 내역 조회 (pie chart > sub category)
+ */
+exports.findSpendingBySubCat = (req, res) => {
   const { userId, date } = req.query;
   const condition = userId ? { createrId: userId } : null;
 
@@ -355,7 +429,7 @@ exports.findSpendingByCat = (req, res) => {
       res.send(data);
     })
     .catch((err) => {
-      res.status(500).send({ message: err.message || "Some error occurred while retrieving payment category statistic." });
+      res.status(500).send({ message: err.message || "Some error occurred while retrieving payment sub category statistic." });
     });
 };
 

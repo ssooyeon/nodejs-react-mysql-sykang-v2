@@ -14,6 +14,7 @@ module.exports = (app) => {
   router.get("/today/amount", pays.todayAmount);
   router.get("/month/amount", pays.monthAmount);
   router.get("/month/cat", pays.findSpendingByCat);
+  router.get("/month/subcat", pays.findSpendingBySubCat);
   router.get("/month/six", pays.sixMonthlySpending);
   router.get("/week/six", pays.sixWeeklySpending);
 

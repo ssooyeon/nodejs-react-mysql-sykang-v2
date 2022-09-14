@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { PieChart, Pie, ResponsiveContainer } from "recharts";
-import { Button } from "reactstrap";
+import { Button, InputGroup, Input } from "reactstrap";
 import Moment from "react-moment";
 import MonthPicker from "react-month-picker";
 
@@ -24,6 +24,9 @@ export default function CatChart({ user, isListUpdated }) {
   const [catActiveIndex, setCatActiveIndex] = useState(0);
   const [monthlyTotalSpending, setMonthlyTotalSpending] = useState(0);
   const [dataByCat, setDataByCat] = useState([]);
+
+  const [viewMode, setViewMode] = useState("cat");
+
   const [isShowMonthPicker, setIsShowMonthPicker] = useState(false);
   const [monthYear, setMonthYear] = useState({ year: new Date().getFullYear(), month: new Date().getMonth() + 1 });
 
@@ -35,9 +38,14 @@ export default function CatChart({ user, isListUpdated }) {
       userId: user.id,
       date: `${getMonthValue()}-01`,
     };
-    getDataByCat(params);
-  }, [user, isListUpdated]);
+    if (viewMode === "cat") {
+      getDataByCat(params);
+    } else if (viewMode === "subcat") {
+      getDataBySubCat(params);
+    }
+  }, [user, isListUpdated, viewMode]);
 
+  // 대분류 카테고리 별 차트 표출
   const getDataByCat = (params) => {
     PayService.getSpendingByCat(params)
       .then((res) => {
@@ -51,14 +59,31 @@ export default function CatChart({ user, isListUpdated }) {
       .catch((e) => console.log(e));
   };
 
+  // 소분류 카테고리 별 차트 표출
+  const getDataBySubCat = (params) => {
+    PayService.getSpendingBySubCat(params).then((res) => {
+      setDataByCat(res.data);
+      const spendings = res.data.map((x) => x.thismonth_spending);
+      const total = spendings.reduce(function add(sum, v) {
+        return sum + v;
+      }, 0);
+      setMonthlyTotalSpending(total);
+    });
+  };
+
   // pie chart에서 mouse hover
   const onCatPieEnter = (_, index) => {
     setCatActiveIndex(index);
   };
 
+  // cat view select box click
+  const handleCatViewOption = (e) => {
+    const view = e.target.value;
+    setViewMode(view);
+  };
+
   // month picker button click
   const showMonthPicker = (e) => {
-    // e.preventDefault();
     setIsShowMonthPicker(true);
   };
 
@@ -70,13 +95,18 @@ export default function CatChart({ user, isListUpdated }) {
       userId: user.id,
       date: `${year}-${month}-01`,
     };
-    getDataByCat(params);
+    if (viewMode === "cat") {
+      getDataByCat(params);
+    } else if (viewMode === "subcat") {
+      getDataBySubCat(params);
+    }
   };
 
   const handleMonthDismiss = () => {
     setIsShowMonthPicker(false);
   };
 
+  // pie chart에서 항목 클릭 시 해당 cat별 pay 조회
   const handlePieChartClick = (e) => {
     if (e.cat !== null) {
       setCatPayModalCatId(e.cat.id);
@@ -106,7 +136,18 @@ export default function CatChart({ user, isListUpdated }) {
         title={
           <>
             <h6>
-              Monthly <span className="fw-semi-bold">Spending</span> by Category
+              Monthly <span className="fw-semi-bold">Spending</span> by
+              <Input
+                id="viewModeOption"
+                className={"input-transparent pl-3 " + s.viewModeOption}
+                type="select"
+                name="viewModeOption"
+                value={viewMode}
+                onChange={handleCatViewOption}
+              >
+                <option value="cat">Category</option>
+                <option value="subcat">Sub Category</option>
+              </Input>
               <div className={s.dateWrapper}>
                 <Button color="inverse" size="sm" onClick={showMonthPicker}>
                   {getMonthValue()}
