@@ -31,7 +31,7 @@ export default function CatChart({ user, isListUpdated }) {
   const [monthYear, setMonthYear] = useState({ year: new Date().getFullYear(), month: new Date().getMonth() + 1 });
 
   const [catPayModalOpen, setCatPayModalOpen] = useState(false);
-  const [catPayModalCatId, setCatPayModalCatId] = useState(0);
+  const [catPayModalCatId, setCatPayModalCatId] = useState(null);
 
   useEffect(() => {
     const params = {
@@ -109,7 +109,12 @@ export default function CatChart({ user, isListUpdated }) {
   // pie chart에서 항목 클릭 시 해당 cat별 pay 조회
   const handlePieChartClick = (e) => {
     if (e.cat !== null) {
-      setCatPayModalCatId(e.cat.id);
+      console.log(e.cat);
+      if (viewMode === "cat") {
+        setCatPayModalCatId(e.cat.parentId);
+      } else if (viewMode === "subcat") {
+        setCatPayModalCatId(e.cat.id);
+      }
     } else {
       setCatPayModalCatId(null);
     }
@@ -197,7 +202,14 @@ export default function CatChart({ user, isListUpdated }) {
         </ResponsiveContainer>
       </Widget>
 
-      <CatPayModal open={catPayModalOpen} handleCloseClick={handleCatPayModalClick} user={user} date={getMonthValue()} catId={catPayModalCatId} />
+      <CatPayModal
+        open={catPayModalOpen}
+        handleCloseClick={handleCatPayModalClick}
+        user={user}
+        date={getMonthValue()}
+        catId={catPayModalCatId}
+        viewMode={viewMode}
+      />
     </>
   );
 }

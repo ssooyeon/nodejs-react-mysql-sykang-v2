@@ -7,7 +7,7 @@ import "./CatPayModal.css";
 
 import PayService from "../../../../services/PayService";
 
-export default function CatPayModal({ open, handleCloseClick, user, date, catId }) {
+export default function CatPayModal({ open, handleCloseClick, user, date, catId, viewMode }) {
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -15,13 +15,22 @@ export default function CatPayModal({ open, handleCloseClick, user, date, catId 
     const dt = new Date(date);
     const end = new Date(dt.getFullYear(), dt.getMonth() + 1, 0);
 
-    const params = { userId: user.id, start: start, end: moment(end).format("YYYY-MM-DD"), catId: catId };
-    PayService.getAllByCatMonthly(params)
-      .then((res) => {
-        setData(res.data);
-      })
-      .catch((e) => console.log(e));
-  }, [user, date, catId]);
+    if (viewMode === "cat") {
+      const params = { userId: user.id, start: start, end: moment(end).format("YYYY-MM-DD"), parentId: catId };
+      PayService.getAllByCatMonthly(params)
+        .then((res) => {
+          setData(res.data);
+        })
+        .catch((e) => console.log(e));
+    } else if (viewMode === "subcat") {
+      const params = { userId: user.id, start: start, end: moment(end).format("YYYY-MM-DD"), catId: catId };
+      PayService.getAllBySubCatMonthly(params)
+        .then((res) => {
+          setData(res.data);
+        })
+        .catch((e) => console.log(e));
+    }
+  }, [user, date, catId, viewMode]);
 
   // 부모에게 완료사항 전달
   const handleClose = () => {

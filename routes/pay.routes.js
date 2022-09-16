@@ -6,6 +6,7 @@ module.exports = (app) => {
   router.get("/", pays.findAll);
   router.get("/date", pays.findAllByDate);
   router.get("/cat", pays.findAllByCatMonthly);
+  router.get("/subcat", pays.findAllBySubCatMonthly);
   router.get("/:id", pays.findOne);
   router.put("/:id", pays.update);
   router.delete("/:id", pays.delete);

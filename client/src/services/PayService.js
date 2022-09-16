@@ -11,9 +11,14 @@ class PayService {
     return http.get("/pays/date", { params });
   }
 
-  // payment 카테고리별 월별 전체 조회
+  // payment 대분류 카테고리별 월별 전체 조회
   getAllByCatMonthly(params) {
     return http.get("/pays/cat", { params });
+  }
+
+  // payment 소분류 카테고리별 월별 전체 조회
+  getAllBySubCatMonthly(params) {
+    return http.get("/pays/subcat", { params });
   }
 
   // payment 조회
