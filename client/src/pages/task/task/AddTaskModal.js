@@ -51,6 +51,7 @@ export default function AddTaskModal({ open, handleCloseClick, column }) {
         setTaskForm({ ...taskForm, ordering: lastTaskNum, folderId: column.id });
       })
       .catch((e) => console.log(e));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [column]);
 
   // 부모에게 완료사항 전달

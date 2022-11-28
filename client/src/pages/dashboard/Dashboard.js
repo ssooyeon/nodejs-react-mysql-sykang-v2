@@ -58,6 +58,7 @@ export default function Dashboard() {
     getSystemUsage();
     getAllWeather();
     getLogList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // 시스템 사용량

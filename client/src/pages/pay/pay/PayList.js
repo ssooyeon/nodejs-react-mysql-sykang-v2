@@ -40,6 +40,7 @@ export default function PayList({ user, someUpdate, isListUpdated }) {
     getData();
     dispatch(retrieveAsserts({ userId: user.id }));
     dispatch(retrieveCats({ userId: user.id }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, dispatch, isListUpdated]);
 
   // payment 테이블 페이징

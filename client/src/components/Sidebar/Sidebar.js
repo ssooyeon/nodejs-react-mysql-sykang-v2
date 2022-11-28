@@ -32,6 +32,7 @@ export default function Sidebar() {
     getSchedule();
     getTemp();
     getHumidity();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -92,7 +93,7 @@ export default function Sidebar() {
       {/* <nav className={cx(s.root)}> */}
       <header className={s.logo}>
         <a href="/">
-          🌚 <span className="fw-bold"></span>
+          <span className="fw-bold"></span>
         </a>
       </header>
       <ul className={s.nav}>

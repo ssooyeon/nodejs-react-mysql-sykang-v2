@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { PieChart, Pie, ResponsiveContainer } from "recharts";
-import { Button, InputGroup, Input } from "reactstrap";
+import { Button, Input } from "reactstrap";
 import Moment from "react-moment";
 import MonthPicker from "react-month-picker";
 
@@ -43,6 +43,7 @@ export default function CatChart({ user, isListUpdated }) {
     } else if (viewMode === "subcat") {
       getDataBySubCat(params);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, isListUpdated, viewMode]);
 
   // 대분류 카테고리 별 차트 표출

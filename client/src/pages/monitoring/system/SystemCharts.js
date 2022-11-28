@@ -34,6 +34,7 @@ export default function SystemCharts() {
     getLogChart({ category: "date", status: "BASIC" });
     getLogChart({ category: "date", status: "SUCCESS" });
     getLogChart({ category: "date", status: "ERROR" });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useInterval(() => {

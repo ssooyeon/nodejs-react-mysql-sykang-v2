@@ -72,6 +72,7 @@ export default function Task() {
 
   useEffect(() => {
     getParentFolders();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // 새로운 최상위 폴더가 생성되었을 경우 select option rerendering
@@ -86,6 +87,7 @@ export default function Task() {
         })
         .catch((e) => console.log(e));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newFolderId]);
 
   // 테스크 테마 색상 변경

@@ -63,6 +63,7 @@ export default function AddScheduleModal({ open, handleCloseClick, date }) {
   useEffect(() => {
     setScheduleForm({ ...scheduleForm, start: date, end: date });
     updateRepeatOption(date);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [date]);
 
   // 날짜 변경 시 반복 일정 select option 업데이트

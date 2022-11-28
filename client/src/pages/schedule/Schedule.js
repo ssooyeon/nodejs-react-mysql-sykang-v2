@@ -58,6 +58,7 @@ export default function Schedule(props) {
     if (groups.length > 0) {
       loadCurrentUserSchedule(isUserView);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [groups]);
 
   // isUserView===true 때, currentUser의 group의 schedule을 모두 표출(기본)

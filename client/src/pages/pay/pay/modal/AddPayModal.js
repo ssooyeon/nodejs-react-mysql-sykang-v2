@@ -36,6 +36,7 @@ export default function AddPayModal({ open, handleCloseClick, asserts, cats, dat
       const dt = new Date(date).setHours(9, 0, 0, 0);
       setPayForm({ ...payForm, date: dt });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [date]);
 
   // 부모에게 완료사항 전달

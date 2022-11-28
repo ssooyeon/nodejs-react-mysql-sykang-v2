@@ -44,6 +44,7 @@ export default function Inbox() {
       .catch((e) => {
         console.log(e);
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser, dispatch]);
 
   /*********************************** */

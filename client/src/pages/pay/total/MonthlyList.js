@@ -22,6 +22,7 @@ export default function MonthlyList({ user, someUpdate, isListUpdated }) {
   useEffect(() => {
     const params = { userId: user.id, start: sixMonthAgo, end: lastDayOfCurrentMonth };
     getMonthlySpending(params);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, isListUpdated]);
 
   const getMonthlySpending = (params) => {

@@ -26,6 +26,7 @@ export default function ColorPicker() {
     doSetAnalogousColor(c);
     doSetSplitComplementaryColor(c);
     doSetRectangleColor(c);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [color]);
 
   const doSetComplementaryColor = (originColor) => {

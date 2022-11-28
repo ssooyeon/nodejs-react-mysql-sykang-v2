@@ -227,7 +227,7 @@ function Header(props) {
 
                   {alarms && alarms.length > 0 ? (
                     <div style={{ float: "right", padding: "0 10px 5px 0" }}>
-                      <a className="text-white" style={{ fontSize: "12px" }} onClick={confirmAlarms}>
+                      <a href={() => false} className="text-white" style={{ fontSize: "12px" }} onClick={confirmAlarms}>
                         <i className="fa fa-trash"></i> remove all
                       </a>
                     </div>

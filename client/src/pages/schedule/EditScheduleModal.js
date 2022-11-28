@@ -69,6 +69,7 @@ export default function EditScheduleModal({ open, handleCloseClick, schedule }) 
       setExistSchedule(schedule);
     }
     setScheduleForm(schedule);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [schedule]);
 
   // 선택한 스케줄 기반으로 체크박스, 셀렉트 옵션 등 설정

@@ -32,8 +32,8 @@ const lastDayOfCurrentWeek = () => {
 
 export default function WeeklyList({ user, someUpdate, isListUpdated }) {
   const [data, setData] = useState([]);
-  const [sdt, setSdt] = useState(sixWeeksAgo);
-  const [edt, setEdt] = useState(lastDayOfCurrentWeek);
+  const [sdt] = useState(sixWeeksAgo);
+  const [edt] = useState(lastDayOfCurrentWeek);
   const [isUpdateData, setIsUpdateData] = useState(0);
 
   const [dailyPayModalOpen, setDailyPayModalOpen] = useState(false);
@@ -42,6 +42,7 @@ export default function WeeklyList({ user, someUpdate, isListUpdated }) {
   useEffect(() => {
     const params = { userId: user.id, start: sdt, end: edt };
     getWeeklySpending(params);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, isListUpdated]);
 
   const getWeeklySpending = (params) => {

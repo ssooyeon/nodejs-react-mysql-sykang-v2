@@ -20,6 +20,7 @@ export default function Board() {
 
   useEffect(() => {
     searchBoards();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage]);
 
   // 페이징을 위한 파라미터 가져오기

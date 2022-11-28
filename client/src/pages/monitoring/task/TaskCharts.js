@@ -106,11 +106,11 @@ export default function TaskCharts() {
       const distinctFolderNames = [...new Set(folderNames)];
       setTaskUserFolderColumn(distinctFolderNames);
 
-      data.map((d) => {
+      data.forEach((d) => {
         let item = {};
         const account = d.creater.account;
         item.creater = account;
-        distinctFolderNames.map((folder) => {
+        distinctFolderNames.forEach((folder) => {
           if (folder === d.name) {
             const existIndex = result.findIndex((x) => x.creater === account);
             if (existIndex > -1) {
