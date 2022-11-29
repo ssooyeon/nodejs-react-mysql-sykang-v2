@@ -1,6 +1,6 @@
 const os = require("os");
 const nodeOsUtils = require("node-os-utils");
-//const diskUsage = require("diskusage");
+const diskUsage = require("diskusage");
 
 /**
  * CPU 사용량(%) 조회
@@ -74,33 +74,31 @@ exports.findMemoryFreeSpace = (req, res) => {
  * 디스크 사용량(%) 조회
  */
 exports.findDiskUsage = (req, res) => {
-  res.send("0");
-  // diskUsage
-  //   .check("/")
-  //   .then((info) => {
-  //     const disk = 100 - (info.free / info.total) * 100;
-  //     res.send(disk.toString());
-  //   })
-  //   .catch((err) => {
-  //     res.status(500).send({ message: err.message || "Some error occurred while retrieving disk usage." });
-  //   });
+  diskUsage
+    .check("/")
+    .then((info) => {
+      const disk = 100 - (info.free / info.total) * 100;
+      res.send(disk.toString());
+    })
+    .catch((err) => {
+      res.status(500).send({ message: err.message || "Some error occurred while retrieving disk usage." });
+    });
 };
 
 /**
  * 디스크 남은 용량 조회
  */
 exports.findDiskFreeSpace = (req, res) => {
-  res.send({ value: "0", unit: "K" });
-  // diskUsage
-  //   .check("/")
-  //   .then((info) => {
-  //     const free = info.free;
-  //     const freeArr = convertSize(free);
-  //     res.send(freeArr);
-  //   })
-  //   .catch((err) => {
-  //     res.status(500).send({ message: err.message || "Some error occurred while retrieing disk free space." });
-  //   });
+  diskUsage
+    .check("/")
+    .then((info) => {
+      const free = info.free;
+      const freeArr = convertSize(free);
+      res.send(freeArr);
+    })
+    .catch((err) => {
+      res.status(500).send({ message: err.message || "Some error occurred while retrieing disk free space." });
+    });
 };
 
 /**
